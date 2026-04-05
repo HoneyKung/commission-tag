@@ -12,8 +12,20 @@ const STORAGE_KEYS = { products: 'mofych_products', registrations: 'mofych_regis
 function initData() {
     if (!localStorage.getItem(STORAGE_KEYS.products)) {
         localStorage.setItem(STORAGE_KEYS.products, JSON.stringify([
-            { id: generateId(), name: 'Custom Doll 20cm Long Body', artist: 'Nytan.Cha', status: 'open', image: '', createdAt: new Date().toISOString() }
+            { id: generateId(), name: 'Cotton Doll ตุ๊กตาไอดอล', artist: 'Nytan.Cha', status: 'open', image: 'images/Cottondoll.png', createdAt: new Date().toISOString() }
         ]));
+    } else {
+        // บังคับแก้รูปภาพเก่าที่ผิด/ไม่มี
+        let products = JSON.parse(localStorage.getItem(STORAGE_KEYS.products));
+        let changed = false;
+        products.forEach(p => {
+            if (p.name.includes('Doll') && (!p.image || p.image === 'images/Cotton doll.png' || p.image === '')) {
+                p.image = 'images/Cottondoll.png';
+                p.name = 'Cotton Doll ตุ๊กตาไอดอล';
+                changed = true;
+            }
+        });
+        if (changed) localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(products));
     }
     if (!localStorage.getItem(STORAGE_KEYS.registrations)) {
         localStorage.setItem(STORAGE_KEYS.registrations, JSON.stringify([]));

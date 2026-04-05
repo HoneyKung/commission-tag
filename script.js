@@ -44,6 +44,36 @@ function getSettings() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.set
 function saveRegistrations(r) { localStorage.setItem(STORAGE_KEYS.registrations, JSON.stringify(r)); }
 function generateId() { return Date.now().toString(36) + Math.random().toString(36).substring(2, 7); }
 
+// ============ Sync with Google Sheets ============
+function fetchRegistrations() {
+    fetch(APPS_SCRIPT_URL + '?action=getRegistrations')
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.success && data.data) {
+                const products = getProducts();
+                const newRegs = data.data.map(row => {
+                    const product = products.find(p => p.name === row['สินค้า']);
+                    return {
+                        id: generateId(),
+                        name: row['ชื่อ'],
+                        email: row['Email'],
+                        productId: product ? product.id : row['สินค้า'],
+                        createdAt: row['วันที่'] || new Date().toISOString()
+                    };
+                });
+                // สลับเอาข้อมูลจาก Google Sheets เป็นหลัก
+                saveRegistrations(newRegs);
+                renderProducts(); // อัปเดตหน้าเว็บหลัก
+
+                // ถ้าอยู่หน้าแอดมิน ให้อัปเดตตารางแอดมินด้วย
+                if (typeof renderRegistrations === 'function') renderRegistrations();
+                if (typeof updateStats === 'function') updateStats();
+                if (typeof updateNotifyCount === 'function') updateNotifyCount();
+            }
+        })
+        .catch(err => console.error('Error fetching registrations:', err));
+}
+
 // ============ Init ============
 document.addEventListener('DOMContentLoaded', () => {
     initData();
@@ -54,6 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setupWanderer();
     setupScrollAnimations();
     setupFormHandlers();
+
+    // ดึงข้อมูลรายชื่อจาก Google Sheets ทันทีที่โหลดเว็บ
+    fetchRegistrations();
 });
 
 // ============ Dark/Light Mode ============

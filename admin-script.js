@@ -3,9 +3,6 @@
    Product-based notifications, no queue system
    ======================================== */
 
-// ============ Google Apps Script Backend (ระบบแทค + ส่งเมล) ============
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz61XBdNkAS8IeMzR4CnlojyWbHxVjOHbgjMg6-NgrLPLDORRwIp7V2GQhYFIBsC0dJ/exec';
-
 // ============ Email Templates ============
 const EMAIL_TEMPLATES = [
     {
@@ -205,7 +202,6 @@ function saveProduct() {
     const editId = document.getElementById('editProductId').value;
     if (!name || !artist) { showToast('กรุณากรอกชื่อสินค้าและชื่ออาร์ติสท์', 'error'); return; }
 
-    // บันทึกลง localStorage
     const products = getProducts();
     if (editId) {
         const p = products.find(p => p.id === editId);
@@ -217,7 +213,6 @@ function saveProduct() {
     hideAddProduct();
     renderAdminProducts();
     updateStats();
-
     showToast(editId ? 'แก้ไขสินค้าสำเร็จ' : 'เพิ่มสินค้าสำเร็จ', 'success');
 }
 

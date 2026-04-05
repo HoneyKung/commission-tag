@@ -3,17 +3,16 @@
    Dark Mode + Wanderer + Products w/ Images
    ======================================== */
 
-// ============ Google Apps Script Backend (ระบบแทค + ส่งเมล) ============
+// ============ Google Apps Script Backend ============
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz61XBdNkAS8IeMzR4CnlojyWbHxVjOHbgjMg6-NgrLPLDORRwIp7V2GQhYFIBsC0dJ/exec';
 
 // ============ Data Layer ============
 const STORAGE_KEYS = { products: 'mofych_products', registrations: 'mofych_registrations', settings: 'mofych_settings' };
 
 function initData() {
-    // สินค้าเริ่มต้น (ถ้ายังไม่มีใน cache)
     if (!localStorage.getItem(STORAGE_KEYS.products)) {
         localStorage.setItem(STORAGE_KEYS.products, JSON.stringify([
-            { id: 'cotton-doll', name: 'Cotton Doll ตุ๊กตาไอดอล', artist: 'Nytan.Cha', status: 'open', image: 'images/Cottondoll.png', createdAt: new Date().toISOString() }
+            { id: generateId(), name: 'Custom Doll 20cm Long Body', artist: 'Nytan.Cha', status: 'open', image: '', createdAt: new Date().toISOString() }
         ]));
     }
     if (!localStorage.getItem(STORAGE_KEYS.registrations)) {
@@ -187,7 +186,8 @@ function handleRegister(e) {
     btn.querySelector('.btn-loading').style.display = 'inline-flex';
     btn.disabled = true;
 
-    // ส่งข้อมูลแทคไป Google Sheets ผ่าน Apps Script
+    // ส่งข้อมูลไป Google Sheets ผ่าน Apps Script
+    // fetch จะ error ตอนอ่าน response (CORS redirect) แต่ข้อมูลถึง server แล้ว
     const products = getProducts();
     const promises = selectedProducts.map(pid => {
         const product = products.find(p => p.id === pid);

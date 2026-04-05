@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOFYCH Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Poppins:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+
+<body class="admin-body">
+
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-card">
+            <span class="logo-text hologram">MOFYCH</span>
+            <h2>Admin Dashboard</h2>
+            <p>กรุณาใส่รหัสผ่านเพื่อเข้าสู่ระบบ</p>
+            <form id="loginForm">
+                <input type="password" id="loginPassword" class="form-input" placeholder="รหัสผ่าน" autofocus>
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top:12px;">เข้าสู่ระบบ</button>
+            </form>
+            <p class="login-hint">รหัสเริ่มต้น: mofych2026</p>
+        </div>
+    </div>
+
+    <!-- Admin Layout -->
+    <div class="admin-layout" id="adminLayout" style="display:none;">
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo-text hologram" style="font-size:1.2rem;">MOFYCH</a>
+                <span class="admin-label">ADMIN</span>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="sidebar-link active" data-tab="products" onclick="switchTab('products')">
+                    <span class="sidebar-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="7" width="20" height="14" rx="2" />
+                            <path d="M16 7V5a4 4 0 0 0-8 0v2" />
+                        </svg></span>
+                    <span class="sidebar-label">สินค้า</span>
+                </button>
+                <button class="sidebar-link" data-tab="registrations" onclick="switchTab('registrations')">
+                    <span class="sidebar-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg></span>
+                    <span class="sidebar-label">รายชื่อฝากแทค</span>
+                </button>
+
+                <button class="sidebar-link" data-tab="notify" onclick="switchTab('notify')">
+                    <span class="sidebar-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="4" width="20" height="16" rx="2" />
+                            <polyline points="22 4 12 13 2 4" />
+                        </svg></span>
+                    <span class="sidebar-label">แจ้งเตือน</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="index.html" class="sidebar-link"><span class="sidebar-icon">&larr;</span><span
+                        class="sidebar-label">กลับหน้าเว็บ</span></a>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <!-- Stats -->
+            <div class="stats-bar">
+                <div class="stat-card">
+                    <div class="stat-value" id="statProducts">0</div>
+                    <div class="stat-label">สินค้า</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statRegistrations">0</div>
+                    <div class="stat-label">ฝากแทค</div>
+                </div>
+
+            </div>
+
+            <!-- Tab: Products -->
+            <div class="admin-tab" id="tab-products">
+                <div class="tab-header">
+                    <h2>จัดการสินค้า</h2>
+                    <button class="btn btn-primary btn-sm" onclick="showAddProduct()">+ เพิ่มสินค้า</button>
+                </div>
+                <div class="add-form-card" id="addProductForm" style="display:none;">
+                    <h3 id="productFormTitle">เพิ่มสินค้าใหม่</h3>
+                    <input type="hidden" id="editProductId" value="">
+                    <div class="form-row">
+                        <div class="form-group"><label class="form-label">ชื่อสินค้า</label><input type="text"
+                                id="productName" class="form-input" placeholder="เช่น Custom Doll 20cm"></div>
+                        <div class="form-group"><label class="form-label">ชื่ออาร์ติสท์</label><input type="text"
+                                id="productArtist" class="form-input" placeholder="เช่น Nytan.Cha"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">รูปสินค้า (URL)</label>
+                        <input type="text" id="productImage" class="form-input"
+                            placeholder="https://... หรือ ชื่อไฟล์ เช่น images/product1.jpg">
+                        <span class="form-hint">ใส่ URL รูปสินค้า หรือ path ไฟล์ในโปรเจค (ถ้าไม่ใส่จะแสดง logo
+                            แทน)</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">เปิดรับฝากแทค</label>
+                        <div class="toggle-wrap">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="productStatusToggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="toggle-label" id="toggleLabel">เปิดรับ</span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-primary btn-sm" onclick="saveProduct()">บันทึก</button>
+                        <button class="btn btn-outline btn-sm" onclick="hideAddProduct()">ยกเลิก</button>
+                    </div>
+                </div>
+                <div class="admin-list" id="adminProductsList"></div>
+            </div>
+
+            <!-- Tab: Registrations -->
+            <div class="admin-tab" id="tab-registrations" style="display:none;">
+                <div class="tab-header">
+                    <h2>รายชื่อฝากแทค</h2>
+                    <div class="tab-actions">
+                        <input type="text" id="searchReg" class="form-input" placeholder="ค้นหาชื่อ / Email..."
+                            oninput="renderRegistrations()" style="width:250px;">
+                    </div>
+                </div>
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ชื่อ</th>
+                                <th>Email</th>
+                                <th>สินค้า</th>
+                                <th>วันที่</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="regTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+            <!-- Tab: Notify -->
+            <div class="admin-tab" id="tab-notify" style="display:none;">
+                <div class="tab-header">
+                    <h2>ส่งแจ้งเตือน</h2>
+                </div>
+                <div class="notify-card">
+                    <div class="notify-info">
+                        <h3>ส่ง Email แจ้งเปิดรอบใหม่</h3>
+                        <p>เลือกสินค้าที่จะเปิดรอบ แล้วส่ง Email เฉพาะคนที่ฝากแทคสินค้านั้น</p>
+                    </div>
+
+                    <!-- Product Selector -->
+                    <div class="form-group">
+                        <label class="form-label">เลือกสินค้าที่จะแจ้งเตือน <span class="req">*</span></label>
+                        <select id="notifyProductSelect" class="form-input" onchange="updateNotifyCount()">
+                            <!-- populated by JS -->
+                        </select>
+                        <div class="notify-stats" style="margin-top:8px;">จะส่งถึง: <strong id="notifyCount">0</strong>
+                            คน</div>
+                    </div>
+
+                    <!-- Template Selector -->
+                    <div class="template-tabs">
+                        <button class="template-tab active" onclick="selectTemplate(0)">แบบที่ 1: นับถอยหลัง</button>
+                        <button class="template-tab" onclick="selectTemplate(1)">แบบที่ 2: เปิดรับวันนี้</button>
+                    </div>
+
+                    <!-- Editable Email Template -->
+                    <div class="form-group">
+                        <label class="form-label">หัวเรื่อง Email</label>
+                        <input type="text" id="emailSubject" class="form-input"
+                            value="✦ MOFYCH — เปิดรับ Commission รอบใหม่แล้ว!">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">เนื้อหา Email</label>
+                        <textarea id="emailBody" class="form-input" rows="8"
+                            style="resize:vertical;font-size:0.88rem;line-height:1.7;"></textarea>
+                        <span class="form-hint">ตัวแปร: {name} = ชื่อลูกค้า, {product} = ชื่อสินค้าที่เลือก</span>
+                    </div>
+
+                    <div class="notify-preview-wrap">
+                        <button class="btn btn-outline btn-sm" onclick="togglePreview()">ดูตัวอย่าง</button>
+                        <div class="notify-preview" id="emailPreview" style="display:none;"></div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg" onclick="sendNotification()" id="sendNotifyBtn"
+                        style="width:100%;">
+                        ส่ง Email แจ้งเตือน
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="script.js"></script>
+    <script src="admin-script.js"></script>
+</body>
+
+</html>

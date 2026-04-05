@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOFYCH — ฝากแทค Commission</title>
+    <meta name="description" content="ฝากแทคสินค้าคอมมิชชั่นจาก MOFYCH ลงชื่อง่าย แจ้งเตือนอัตโนมัติเมื่อเปิดรอบ">
+    <link rel="icon" href="logo/Logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Poppins:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Sparkle particles -->
+    <div class="sparkle-container" id="sparkleContainer"></div>
+
+    <!-- Wandering Character -->
+    <div class="wanderer" id="wanderer">
+        <div class="wanderer-inner" id="wandererInner">
+            <img src="logo/Logo.png" alt="MOFYCH mascot" class="wanderer-img">
+        </div>
+        <div class="wanderer-tooltip">ลากฉันไปมาได้นะ</div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+        <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+    </button>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-content">
+            <a href="#" class="nav-logo">
+                <img src="logo/Logo.png" alt="MOFYCH" class="nav-logo-img">
+                <span class="logo-text hologram">MOFYCH</span>
+            </a>
+            <div class="nav-links">
+                <a href="#hero" class="nav-link">ฝากแทค</a>
+                <a href="#lookup" class="nav-link">ตรวจสอบ</a>
+                <a href="#products" class="nav-link">สินค้า</a>
+            </div>
+            <button class="nav-hamburger" id="hamburger" aria-label="เมนู">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#hero" class="mobile-link">ฝากแทค</a>
+            <a href="#lookup" class="mobile-link">ตรวจสอบ</a>
+            <a href="#products" class="mobile-link">สินค้า</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section (Two-Column: Left = Branding, Right = Register Form) -->
+    <section class="hero" id="hero">
+        <!-- Decorative: flowing waves, stars, particles -->
+        <div class="hero-deco">
+            <div class="wave wave-1"></div>
+            <div class="wave wave-2"></div>
+            <div class="wave wave-3"></div>
+            <svg class="star-4pt star-1" viewBox="0 0 24 24">
+                <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z" fill="currentColor" />
+            </svg>
+            <svg class="star-4pt star-2" viewBox="0 0 24 24">
+                <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z" fill="currentColor" />
+            </svg>
+            <svg class="star-4pt star-3" viewBox="0 0 24 24">
+                <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z" fill="currentColor" />
+            </svg>
+            <svg class="star-4pt star-4" viewBox="0 0 24 24">
+                <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z" fill="currentColor" />
+            </svg>
+            <svg class="star-4pt star-5" viewBox="0 0 24 24">
+                <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z" fill="currentColor" />
+            </svg>
+            <div class="shooting-line sl-1"></div>
+            <div class="shooting-line sl-2"></div>
+            <div class="shooting-line sl-3"></div>
+            <div class="dot-particle dot-1"></div>
+            <div class="dot-particle dot-2"></div>
+            <div class="dot-particle dot-3"></div>
+            <div class="dot-particle dot-4"></div>
+            <div class="dot-particle dot-5"></div>
+            <div class="dot-particle dot-6"></div>
+        </div>
+
+        <div class="hero-split">
+            <!-- LEFT: Branding -->
+            <div class="hero-content">
+                <div class="hero-logo-wrap">
+                    <img src="logo/Logo.png" alt="MOFYCH" class="hero-logo-img hologram-glow">
+                </div>
+                <h1 class="hero-title">
+                    <span class="title-brand hologram">MOFYCH</span>
+                </h1>
+                <p class="hero-subtitle">ฝากแทค Commission</p>
+                <p class="hero-desc">ลงชื่อฝากแทค Commission แจ้งเตือนทาง Email อัตโนมัติเมื่อเปิดรอบใหม่</p>
+                <!-- Privacy Notice -->
+                <div class="privacy-notice">
+                    <svg class="privacy-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" />
+                        <path d="M7 11V7a5 5 0 0110 0v4" />
+                        <circle cx="12" cy="16" r="1" />
+                    </svg>
+                    <p>เราเก็บแค่ Email เพื่อ<strong>ส่งแจ้งเตือนเมื่อเปิดรับรอบใหม่</strong>เท่านั้น
+                        ไม่มีการนำข้อมูลไปใช้อย่างอื่น</p>
+                </div>
+                <div class="hero-buttons">
+                    <a href="#lookup" class="btn btn-outline">
+                        <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        ตรวจสอบฝากแทค
+                    </a>
+                </div>
+            </div>
+
+            <!-- RIGHT: Register Form -->
+            <div class="hero-form-col" id="register">
+                <div class="form-card">
+                    <h2 class="form-card-title">ลงชื่อฝากแทค</h2>
+                    <p class="form-card-desc">กรอกข้อมูลด้านล่างเพื่อฝากแทครอเปิดรอบ</p>
+                    <form id="registerForm" class="register-form">
+                        <div class="form-group">
+                            <label for="regName" class="form-label">ชื่อ / นามแฝง <span class="req">*</span></label>
+                            <input type="text" id="regName" class="form-input" placeholder="ชื่อที่ต้องการให้เราเรียก">
+                        </div>
+                        <div class="form-group">
+                            <label for="regEmail" class="form-label">Email <span class="req">*</span></label>
+                            <input type="email" id="regEmail" class="form-input" placeholder="example@email.com">
+                            <span class="form-hint">ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ + ตรวจสอบฝากแทค</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">เลือกสินค้าที่ต้องการฝากแทค <span class="req">*</span></label>
+                            <div class="product-select-list" id="productSelectList"></div>
+                            <span class="form-error" id="productError" style="display:none;">กรุณาเลือกสินค้าอย่างน้อย 1
+                                รายการ</span>
+                        </div>
+                        <!-- Email Confirmation Checkbox -->
+                        <div class="form-group confirm-group">
+                            <label class="confirm-label">
+                                <input type="checkbox" id="confirmEmail">
+                                <span class="confirm-check">
+                                    <svg viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2.5">
+                                        <polyline points="3.5 8 7 11.5 12.5 5" />
+                                    </svg>
+                                </span>
+                                <span>ยืนยันว่า Email ถูกต้องและได้ตรวจสอบแล้ว</span>
+                            </label>
+                            <span class="form-error" id="confirmError" style="display:none;">กรุณาติ๊กยืนยันว่า Email
+                                ถูกต้อง</span>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" id="submitBtn">
+                            <span class="btn-text">
+                                <svg class="btn-icon-svg" viewBox="0 0 24 24">
+                                    <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z"
+                                        fill="currentColor" />
+                                </svg>
+                                ลงชื่อฝากแทค
+                            </span>
+                            <span class="btn-loading" style="display:none;">
+                                <span class="spinner"></span> กำลังส่ง...
+                            </span>
+                        </button>
+                    </form>
+                    <!-- Success Message -->
+                    <div class="form-success" id="formSuccess" style="display:none;">
+                        <div class="success-icon">
+                            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                        </div>
+                        <h3>ลงชื่อสำเร็จ!</h3>
+                        <p>เราจะส่ง Email แจ้งเตือนเมื่อเปิดรอบใหม่</p>
+                        <div class="success-hint">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="4" width="20" height="16" rx="2" />
+                                <polyline points="22 4 12 13 2 4" />
+                            </svg>
+                            <span>เราจะส่ง Email ยืนยันไปที่กล่องจดหมายของคุณ กรุณาเช็ค Inbox (รวมถึง Spam)
+                                เพื่อยืนยันการลงชื่อ</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="resetForm()">ฝากแทคอีกรายการ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lookup / Edit Section -->
+    <section class="section lookup-section" id="lookup">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-deco">
+                    <svg class="section-star" viewBox="0 0 24 24">
+                        <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z" fill="currentColor" />
+                    </svg>
+                </div>
+                <h2 class="section-title">ตรวจสอบ / แก้ไขฝากแทค</h2>
+                <p class="section-desc">ใส่ Email ที่ลงชื่อไว้เพื่อดูหรือแก้ไขรายการฝากแทค</p>
+            </div>
+            <div class="form-card">
+                <div class="lookup-form">
+                    <div class="form-group">
+                        <label for="lookupEmail" class="form-label">Email ที่ลงชื่อไว้</label>
+                        <div class="input-with-btn">
+                            <input type="email" id="lookupEmail" class="form-input" placeholder="example@email.com">
+                            <button class="btn btn-primary" id="lookupBtn" onclick="lookupTags()">ค้นหา</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Forgot Email -->
+                <div class="forgot-email-section">
+                    <button class="forgot-toggle" onclick="toggleForgotEmail()">จำ Email ไม่ได้?</button>
+                    <div class="forgot-content" id="forgotContent" style="display:none;">
+                        <p class="forgot-desc">ลองค้นหาด้วยชื่อที่ลงทะเบียนไว้แทน:</p>
+                        <div class="input-with-btn">
+                            <input type="text" id="forgotName" class="form-input" placeholder="ชื่อ / นามแฝงที่ลงไว้">
+                            <button class="btn btn-primary" onclick="lookupByName()">ค้นหา</button>
+                        </div>
+                        <p class="forgot-hint">ระบบจะแสดงข้อมูลบางส่วนของ Email ที่ลงไว้ (เช่น t***@gmail.com)</p>
+                    </div>
+                </div>
+                <!-- Lookup Results -->
+                <div class="lookup-results" id="lookupResults" style="display:none;">
+                    <div class="results-header">
+                        <h3>รายการฝากแทคของคุณ</h3>
+                        <span class="results-email" id="resultsEmail"></span>
+                    </div>
+                    <div class="results-list" id="resultsList"></div>
+                    <div class="results-actions">
+                        <button class="btn btn-primary" onclick="showAddMore()">+ เพิ่มฝากแทค</button>
+                    </div>
+                </div>
+                <!-- No Results -->
+                <div class="lookup-empty" id="lookupEmpty" style="display:none;">
+                    <img src="logo/Logo.png" alt="" class="empty-img">
+                    <p>ไม่พบรายการฝากแทค</p>
+                    <a href="#hero" class="btn btn-primary">ลงชื่อฝากแทค</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="section products-section" id="products">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-deco">
+                    <svg class="section-star" viewBox="0 0 24 24">
+                        <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z" fill="currentColor" />
+                    </svg>
+                </div>
+                <h2 class="section-title">สินค้าที่เปิดรับฝากแทค</h2>
+                <p class="section-desc">เลือกสินค้าที่ต้องการฝากแทค เราจะแจ้งเตือนเมื่อเปิดรอบ</p>
+            </div>
+            <div class="products-grid" id="productsGrid"></div>
+            <div class="no-products" id="noProducts" style="display:none;">
+                <img src="logo/Logo.png" alt="" class="empty-img">
+                <p>ยังไม่มีสินค้าในขณะนี้ กรุณากลับมาใหม่ภายหลัง</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="logo/Logo.png" alt="MOFYCH" class="footer-logo-img">
+                    <div>
+                        <span class="logo-text hologram">MOFYCH</span>
+                        <p>Commission & Custom Art by Nytan.Cha</p>
+                    </div>
+                </div>
+                <div class="footer-links"><a href="admin.html" class="footer-link">Admin</a></div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 MOFYCH. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="script.js"></script>
+</body>
+
+</html>

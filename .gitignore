@@ -1,0 +1,6 @@
+# ไฟล์ที่ไม่ต้อง upload
+google-apps-script-fixed.js
+implementation_planct
+*.log
+.DS_Store
+Thumbs.db

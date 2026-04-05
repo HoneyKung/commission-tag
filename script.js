@@ -81,7 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProducts();
     renderProductSelect();
     setupNavbar();
-    setupWanderer();
+    setupWanderer('wanderer1', 120, -50);
+    setupWanderer('wanderer2', 150, 50);
     setupScrollAnimations();
     setupFormHandlers();
 
@@ -368,11 +369,11 @@ function maskEmail(email) {
 }
 
 // ============ Wandering Character (GPU-accelerated) ============
-function setupWanderer() {
-    const w = document.getElementById('wanderer');
+function setupWanderer(id, startXOffset, startYOffset) {
+    const w = document.getElementById(id);
     if (!w) return;
 
-    let x = window.innerWidth - 120, y = window.innerHeight / 2;
+    let x = window.innerWidth - startXOffset, y = (window.innerHeight / 2) + startYOffset;
     let isDragging = false, dragOffX = 0, dragOffY = 0, walkTimer = null, walking = true;
 
     function clamp(val, min, max) { return Math.max(min, Math.min(max, val)); }

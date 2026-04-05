@@ -251,11 +251,33 @@ function renderRegistrations() {
 
 function adminDeleteReg(id) {
     if (!confirm('ต้องการลบรายการฝากแทคนี้?')) return;
+
+    // ดึงชื่อสินค้าแบบเดียวกับที่หน้าบ้านทำ เพื่อส่งไปลบในชีท
+    const reg = getRegistrations().find(r => r.id === id);
+    if (!reg) return;
+    const product = getProducts().find(p => p.id === reg.productId);
+    const productName = product ? product.name : reg.productId;
+    const email = reg.email;
+
+    // ส่งคำสั่งลบไปที่ Google Sheets (แอบทำเบื้องหลัง ไม่กระทบการใช้งาน)
+    const payload = {
+        action: 'deleteReg',
+        email: email,
+        productName: productName
+    };
+    fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload)
+    }).catch(() => { });
+
+    // ลบข้อมูลในเครื่องตามปกติ
     const regs = getRegistrations().filter(r => r.id !== id);
     saveRegistrations(regs);
     renderRegistrations();
     updateStats();
-    showToast('ลบรายการสำเร็จ', 'info');
+    showToast('ลบรายการสำเร็จ (พร้อมส่งอีเมลแจ้งยกเลิก)', 'info');
 }
 
 // ============ Email Notifications (Per-Product) ============

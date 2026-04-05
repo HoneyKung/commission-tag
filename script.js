@@ -272,7 +272,7 @@ function displayResults(email) {
 
 function cancelTag(regId, email) {
     if (!confirm('ต้องการลบฝากแทครายการนี้?')) return;
-    
+
     // ดึงชื่อสินค้ามาเตรียมส่งให้ Apps Script ก่อนลบ
     const reg = getRegistrations().find(r => r.id === regId);
     if (!reg) return;
@@ -287,8 +287,10 @@ function cancelTag(regId, email) {
     };
     fetch(APPS_SCRIPT_URL, {
         method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload)
-    }).catch(() => {});
+    }).catch(() => { });
 
     // ลบข้อมูลในเครื่องตามปกติ
     const regs = getRegistrations().filter(r => r.id !== regId);

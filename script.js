@@ -3,7 +3,7 @@
    Dark Mode + Wanderer + Products w/ Images
    ======================================== */
 
-// ============ Google Apps Script Backend ============
+// ============ Google Apps Script Backend (ระบบแทค + ส่งเมล) ============
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz61XBdNkAS8IeMzR4CnlojyWbHxVjOHbgjMg6-NgrLPLDORRwIp7V2GQhYFIBsC0dJ/exec';
 
 // ============ Data Layer ============
@@ -13,7 +13,7 @@ function initData() {
     // สินค้าเริ่มต้น (ถ้ายังไม่มีใน cache)
     if (!localStorage.getItem(STORAGE_KEYS.products)) {
         localStorage.setItem(STORAGE_KEYS.products, JSON.stringify([
-            { id: 'cotton-doll', name: 'Cotton Doll ตุ๊กตาไอดอล', artist: 'Nytan.Cha', status: 'open', image: 'images/Cotton doll.png', createdAt: new Date().toISOString() }
+            { id: 'cotton-doll', name: 'Cotton Doll ตุ๊กตาไอดอล', artist: 'Nytan.Cha', status: 'open', image: 'images/Cottondoll.png', createdAt: new Date().toISOString() }
         ]));
     }
     if (!localStorage.getItem(STORAGE_KEYS.registrations)) {
@@ -33,38 +33,12 @@ function getSettings() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.set
 function saveRegistrations(r) { localStorage.setItem(STORAGE_KEYS.registrations, JSON.stringify(r)); }
 function generateId() { return Date.now().toString(36) + Math.random().toString(36).substring(2, 7); }
 
-// ดึงสินค้าจาก Google Sheets
-function fetchProductsFromSheets() {
-    fetch(APPS_SCRIPT_URL + '?action=getProducts')
-        .then(res => res.json())
-        .then(result => {
-            if (result.success && result.data) {
-                // แปลง format จาก Sheets เป็น format ที่ frontend ใช้
-                const products = result.data.map(row => ({
-                    id: row['ID'] || generateId(),
-                    name: row['ชื่อ'] || '',
-                    artist: row['อาร์ติสท์'] || '',
-                    image: row['รูป'] || '',
-                    status: row['สถานะ'] || 'open',
-                    createdAt: row['วันที่สร้าง'] || new Date().toISOString()
-                }));
-                localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(products));
-                renderProducts();
-                renderProductSelect();
-            }
-        })
-        .catch(err => {
-            console.log('ใช้ข้อมูลสินค้า cache:', err.message);
-        });
-}
-
 // ============ Init ============
 document.addEventListener('DOMContentLoaded', () => {
     initData();
     initTheme();
     renderProducts();
     renderProductSelect();
-    fetchProductsFromSheets(); // ดึงสินค้าล่าสุดจาก Sheets
     setupNavbar();
     setupWanderer();
     setupScrollAnimations();
@@ -213,8 +187,7 @@ function handleRegister(e) {
     btn.querySelector('.btn-loading').style.display = 'inline-flex';
     btn.disabled = true;
 
-    // ส่งข้อมูลไป Google Sheets ผ่าน Apps Script
-    // fetch จะ error ตอนอ่าน response (CORS redirect) แต่ข้อมูลถึง server แล้ว
+    // ส่งข้อมูลแทคไป Google Sheets ผ่าน Apps Script
     const products = getProducts();
     const promises = selectedProducts.map(pid => {
         const product = products.find(p => p.id === pid);

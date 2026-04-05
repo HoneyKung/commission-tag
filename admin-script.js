@@ -3,6 +3,9 @@
    Product-based notifications, no queue system
    ======================================== */
 
+// ============ Google Apps Script Backend (ระบบแทค + ส่งเมล) ============
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz61XBdNkAS8IeMzR4CnlojyWbHxVjOHbgjMg6-NgrLPLDORRwIp7V2GQhYFIBsC0dJ/exec';
+
 // ============ Email Templates ============
 const EMAIL_TEMPLATES = [
     {
@@ -202,31 +205,18 @@ function saveProduct() {
     const editId = document.getElementById('editProductId').value;
     if (!name || !artist) { showToast('กรุณากรอกชื่อสินค้าและชื่ออาร์ติสท์', 'error'); return; }
 
-    // บันทึกลง localStorage ก่อน (แสดงผลทันที)
+    // บันทึกลง localStorage
     const products = getProducts();
-    let localId = editId;
     if (editId) {
         const p = products.find(p => p.id === editId);
         if (p) { p.name = name; p.artist = artist; p.image = image; p.status = status; }
     } else {
-        localId = generateId();
-        products.push({ id: localId, name, artist, image, status, createdAt: new Date().toISOString() });
+        products.push({ id: generateId(), name, artist, image, status, createdAt: new Date().toISOString() });
     }
     localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(products));
     hideAddProduct();
     renderAdminProducts();
     updateStats();
-
-    // บันทึกลง Google Sheets ด้วย
-    const payload = {
-        action: 'saveProduct',
-        id: editId || '', // ถ้ามี id = แก้ไข, ไม่มี = สร้างใหม่
-        name, artist, image, status
-    };
-    fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify(payload)
-    }).catch(() => { }); // CORS error = OK, data ถึง server แล้ว
 
     showToast(editId ? 'แก้ไขสินค้าสำเร็จ' : 'เพิ่มสินค้าสำเร็จ', 'success');
 }
@@ -237,13 +227,6 @@ function deleteProduct(id) {
     localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(products));
     renderAdminProducts();
     updateStats();
-
-    // ลบจาก Google Sheets ด้วย
-    fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'deleteProduct', id })
-    }).catch(() => { });
-
     showToast('ลบสินค้าสำเร็จ', 'info');
 }
 

@@ -10,11 +10,6 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz61XBdNkAS8IeM
 const STORAGE_KEYS = { products: 'mofych_products', registrations: 'mofych_registrations', settings: 'mofych_settings' };
 
 function initData() {
-    if (!localStorage.getItem(STORAGE_KEYS.products)) {
-        localStorage.setItem(STORAGE_KEYS.products, JSON.stringify([
-            { id: generateId(), name: 'Custom Doll 20cm Long Body', artist: 'Nytan.Cha', status: 'open', image: '', createdAt: new Date().toISOString() }
-        ]));
-    }
     if (!localStorage.getItem(STORAGE_KEYS.registrations)) {
         localStorage.setItem(STORAGE_KEYS.registrations, JSON.stringify([]));
     }
@@ -32,12 +27,38 @@ function getSettings() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.set
 function saveRegistrations(r) { localStorage.setItem(STORAGE_KEYS.registrations, JSON.stringify(r)); }
 function generateId() { return Date.now().toString(36) + Math.random().toString(36).substring(2, 7); }
 
+// ดึงสินค้าจาก Google Sheets
+function fetchProductsFromSheets() {
+    fetch(APPS_SCRIPT_URL + '?action=getProducts')
+        .then(res => res.json())
+        .then(result => {
+            if (result.success && result.data) {
+                // แปลง format จาก Sheets เป็น format ที่ frontend ใช้
+                const products = result.data.map(row => ({
+                    id: row['ID'] || generateId(),
+                    name: row['ชื่อ'] || '',
+                    artist: row['อาร์ติสท์'] || '',
+                    image: row['รูป'] || '',
+                    status: row['สถานะ'] || 'open',
+                    createdAt: row['วันที่สร้าง'] || new Date().toISOString()
+                }));
+                localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(products));
+                renderProducts();
+                renderProductSelect();
+            }
+        })
+        .catch(err => {
+            console.log('ใช้ข้อมูลสินค้า cache:', err.message);
+        });
+}
+
 // ============ Init ============
 document.addEventListener('DOMContentLoaded', () => {
     initData();
     initTheme();
     renderProducts();
     renderProductSelect();
+    fetchProductsFromSheets(); // ดึงสินค้าล่าสุดจาก Sheets
     setupNavbar();
     setupWanderer();
     setupScrollAnimations();

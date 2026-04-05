@@ -20,7 +20,7 @@ function initData() {
     }
     if (!localStorage.getItem(STORAGE_KEYS.settings)) {
         localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify({
-            adminPassword: 'mofych2026',
+            adminPasswordHash: '5e09f68817f3bff0e91cced36b88d853b91c32e4f9c2a5e3d2c6e8a0b4f7d1e3',
             queueStages: ['รอคิว', 'กำลังออกแบบ', 'กำลังผลิต', 'ตรวจสอบคุณภาพ', 'เสร็จแล้ว', 'ส่งแล้ว']
         }));
     }

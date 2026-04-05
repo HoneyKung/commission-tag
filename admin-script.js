@@ -47,15 +47,32 @@ document.addEventListener('DOMContentLoaded', () => {
     selectTemplate(0);
 });
 
-function handleLogin(e) {
+async function handleLogin(e) {
     e.preventDefault();
     const pw = document.getElementById('loginPassword').value;
-    if (pw === getSettings().adminPassword) {
+    const hash = await sha256(pw);
+    const settings = getSettings();
+    if (hash === settings.adminPasswordHash || pw === settings.adminPassword) {
         sessionStorage.setItem('mofych_admin_logged', 'true');
+        // อัปเดตจาก plaintext เป็น hash ถ้ายังเป็นแบบเก่า
+        if (settings.adminPassword) {
+            settings.adminPasswordHash = hash;
+            delete settings.adminPassword;
+            localStorage.setItem('mofych_settings', JSON.stringify(settings));
+        }
         showAdmin();
     } else {
         showToast('รหัสผ่านไม่ถูกต้อง', 'error');
     }
+}
+
+// SHA-256 hash function
+async function sha256(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 function showAdmin() {
@@ -124,6 +141,7 @@ function showAddProduct() {
     document.getElementById('productImage').value = '';
     document.getElementById('productStatusToggle').checked = true;
     document.getElementById('toggleLabel').textContent = 'เปิดรับ';
+    resetImagePreview();
     document.getElementById('productName').focus();
 }
 
@@ -140,7 +158,40 @@ function editProduct(id) {
     document.getElementById('productImage').value = p.image || '';
     document.getElementById('productStatusToggle').checked = p.status === 'open';
     document.getElementById('toggleLabel').textContent = p.status === 'open' ? 'เปิดรับ' : 'ปิดรับ';
+    // แสดง preview รูปถ้ามี
+    if (p.image) {
+        document.getElementById('imagePreviewImg').src = p.image;
+        document.getElementById('imagePreviewImg').style.display = 'block';
+        document.getElementById('imagePlaceholder').style.display = 'none';
+    } else {
+        resetImagePreview();
+    }
     document.getElementById('productName').focus();
+}
+
+// ===== Image Upload =====
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+        showToast('ไฟล์รูปใหญ่เกิน 2MB', 'error');
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        document.getElementById('productImage').value = e.target.result;
+        document.getElementById('imagePreviewImg').src = e.target.result;
+        document.getElementById('imagePreviewImg').style.display = 'block';
+        document.getElementById('imagePlaceholder').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+}
+
+function resetImagePreview() {
+    document.getElementById('imagePreviewImg').src = '';
+    document.getElementById('imagePreviewImg').style.display = 'none';
+    document.getElementById('imagePlaceholder').style.display = 'flex';
+    document.getElementById('imageFileInput').value = '';
 }
 
 function saveProduct() {

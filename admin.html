@@ -102,11 +102,25 @@
                                 id="productArtist" class="form-input" placeholder="เช่น Nytan.Cha"></div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">รูปสินค้า (URL)</label>
-                        <input type="text" id="productImage" class="form-input"
-                            placeholder="https://... หรือ ชื่อไฟล์ เช่น images/product1.jpg">
-                        <span class="form-hint">ใส่ URL รูปสินค้า หรือ path ไฟล์ในโปรเจค (ถ้าไม่ใส่จะแสดง logo
-                            แทน)</span>
+                        <label class="form-label">รูปสินค้า</label>
+                        <input type="hidden" id="productImage" value="">
+                        <div class="image-upload-wrap" id="imageUploadWrap"
+                            onclick="document.getElementById('imageFileInput').click()">
+                            <div class="image-upload-placeholder" id="imagePlaceholder">
+                                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                                    <circle cx="8.5" cy="8.5" r="1.5" />
+                                    <path d="M21 15l-5-5L5 21" />
+                                </svg>
+                                <span>คลิกเพื่อเลือกรูป</span>
+                            </div>
+                            <img id="imagePreviewImg" src="" alt=""
+                                style="display:none; max-width:100%; max-height:200px; border-radius:8px;">
+                        </div>
+                        <input type="file" id="imageFileInput" accept="image/*" style="display:none"
+                            onchange="handleImageUpload(event)">
+                        <span class="form-hint">รองรับ JPG, PNG, WebP (ถ้าไม่ใส่จะแสดง logo แทน)</span>
                     </div>
                     <div class="form-group">
                         <label class="form-label">เปิดรับฝากแทค</label>

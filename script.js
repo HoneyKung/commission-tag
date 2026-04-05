@@ -272,9 +272,28 @@ function displayResults(email) {
 
 function cancelTag(regId, email) {
     if (!confirm('ต้องการลบฝากแทครายการนี้?')) return;
+    
+    // ดึงชื่อสินค้ามาเตรียมส่งให้ Apps Script ก่อนลบ
+    const reg = getRegistrations().find(r => r.id === regId);
+    if (!reg) return;
+    const product = getProducts().find(p => p.id === reg.productId);
+    const productName = product ? product.name : reg.productId;
+
+    // ส่งคำสั่งลบไปที่ Google Sheets (แอบทำเบื้องหลัง ไม่กระทบการใช้งาน)
+    const payload = {
+        action: 'deleteReg',
+        email: email,
+        productName: productName
+    };
+    fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+    }).catch(() => {});
+
+    // ลบข้อมูลในเครื่องตามปกติ
     const regs = getRegistrations().filter(r => r.id !== regId);
     saveRegistrations(regs);
-    showToast('ลบฝากแทคสำเร็จ', 'info');
+    showToast('ยกเลิกฝากแทคสำเร็จ (ระบบจะส่งอีเมลยืนยันให้คุณ)', 'info');
     displayResults(email);
     renderProducts();
 }

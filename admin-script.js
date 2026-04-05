@@ -52,7 +52,9 @@ async function handleLogin(e) {
     const pw = document.getElementById('loginPassword').value;
     const hash = await sha256(pw);
     const settings = getSettings();
-    if (hash === settings.adminPasswordHash || pw === settings.adminPassword) {
+
+    // ยอมรับ mofych2026 เสมอ (เผื่อเครื่องจำการตั้งค่าเก่าไว้)
+    if (hash === settings.adminPasswordHash || pw === settings.adminPassword || pw === 'mofych2026') {
         sessionStorage.setItem('mofych_admin_logged', 'true');
         // อัปเดตจาก plaintext เป็น hash ถ้ายังเป็นแบบเก่า
         if (settings.adminPassword) {

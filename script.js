@@ -10,6 +10,11 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz61XBdNkAS8IeM
 const STORAGE_KEYS = { products: 'mofych_products', registrations: 'mofych_registrations', settings: 'mofych_settings' };
 
 function initData() {
+    if (!localStorage.getItem(STORAGE_KEYS.products)) {
+        localStorage.setItem(STORAGE_KEYS.products, JSON.stringify([
+            { id: 'cotton-doll-01', name: 'Cotton Doll ตุ๊กตาไอดอล', artist: 'Nytan.Cha', status: 'open', image: 'images/Cotton doll.png', createdAt: new Date().toISOString() }
+        ]));
+    }
     if (!localStorage.getItem(STORAGE_KEYS.registrations)) {
         localStorage.setItem(STORAGE_KEYS.registrations, JSON.stringify([]));
     }

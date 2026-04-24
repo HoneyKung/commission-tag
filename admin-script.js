@@ -498,18 +498,29 @@ function adminSelect(field, queue) {
     const options = QUEUE_STATUS_OPTIONS[field];
     if (!options) return escapeHtml(queue[field]);
 
-    return `<select class="form-input" style="font-size:0.78rem;padding:4px 6px;min-width:80px;"
-        onchange="updateQueueField('${queue.id}','${field}',this.value)">
+    const badgeClass = STATUS_BADGE_MAP[queue[field]] || 'q-badge-idle';
+
+    return `<select class="form-input admin-q-select ${badgeClass}" style="font-size:0.78rem;padding:4px 6px;min-width:80px;"
+        onchange="updateQueueField('${queue.id}','${field}',this.value); updateSelectColor(this);">
         ${options.map(o => `<option value="${o}" ${queue[field] === o ? 'selected' : ''}>${o}</option>`).join('')}
     </select>`;
 }
 
 function adminWorkTypeSelect(queue) {
     const types = getWorkTypes(adminQueueProductId);
-    return `<select class="form-input" style="font-size:0.78rem;padding:4px 6px;min-width:70px;"
+    return `<select class="form-input admin-q-select" style="font-size:0.78rem;padding:4px 6px;min-width:70px;"
         onchange="updateQueueField('${queue.id}','workType',this.value)">
         ${types.map(t => `<option value="${t}" ${queue.workType === t ? 'selected' : ''}>${t}</option>`).join('')}
     </select>`;
+}
+
+// อัปเดตสี select หลังเปลี่ยนค่า
+function updateSelectColor(selectEl) {
+    // ลบ class สีเก่า
+    selectEl.classList.remove('q-badge-idle', 'q-badge-progress', 'q-badge-partial', 'q-badge-done');
+    // เพิ่ม class สีใหม่
+    const newClass = STATUS_BADGE_MAP[selectEl.value] || 'q-badge-idle';
+    selectEl.classList.add(newClass);
 }
 
 function updateQueueField(queueId, field, value) {

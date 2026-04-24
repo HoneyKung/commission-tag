@@ -245,7 +245,7 @@ function renderRegistrations() {
     tbody.innerHTML = regs.map(r => {
         const product = products.find(p => p.id === r.productId);
         const pName = product ? product.name : '(ลบแล้ว)';
-        const date = new Date(r.createdAt).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' });
+        const date = formatThaiDate(r.createdAt);
         const action = `<button class="btn-icon danger" onclick="adminDeleteReg('${r.id}')">ลบ</button>`;
         return `<tr><td><strong>${escapeHtml(r.name)}</strong></td><td>${escapeHtml(r.email)}</td><td>${escapeHtml(pName)}</td><td>${date}</td><td>${action}</td></tr>`;
     }).join('');

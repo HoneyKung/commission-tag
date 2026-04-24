@@ -44,6 +44,27 @@ function getSettings() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.set
 function saveRegistrations(r) { localStorage.setItem(STORAGE_KEYS.registrations, JSON.stringify(r)); }
 function generateId() { return Date.now().toString(36) + Math.random().toString(36).substring(2, 7); }
 
+// ============ Thai Date Helper ============
+// ป้องกันบวกปีซ้ำ: Sheets เก็บ พ.ศ. แต่ th-TH locale จะบวก +543 อีก
+function formatThaiDate(dateStr) {
+    if (!dateStr) return '-';
+    // ถ้าเป็น format จาก Sheets เช่น "5/4/2569 21:22:53"
+    // แยก parse เอง เพื่อไม่ให้ new Date() ตีความปี 2569 เป็น ค.ศ.
+    const match = dateStr.toString().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (match) {
+        let [, d, m, y] = match;
+        y = parseInt(y);
+        // ถ้าปี > 2400 → น่าจะเป็น พ.ศ. แล้ว แปลงกลับเป็น ค.ศ. ก่อน
+        if (y > 2400) y -= 543;
+        const dt = new Date(y, parseInt(m) - 1, parseInt(d));
+        return dt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+    // ถ้าเป็น ISO format ปกติ เช่น "2026-04-24T07:00:00Z"
+    const dt = new Date(dateStr);
+    if (isNaN(dt.getTime())) return dateStr;
+    return dt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
 // ============ Sync with Google Sheets ============
 function fetchRegistrations() {
     fetch(APPS_SCRIPT_URL + '?action=getRegistrations')
@@ -298,7 +319,7 @@ function displayResults(email) {
     document.getElementById('resultsList').innerHTML = regs.map(reg => {
         const product = products.find(p => p.id === reg.productId);
         const productName = product ? product.name : 'สินค้าที่ถูกลบ';
-        const date = new Date(reg.createdAt).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' });
+        const date = formatThaiDate(reg.createdAt);
         const actions = `<button class="btn btn-danger btn-sm" onclick="cancelTag('${reg.id}','${email}')">ลบ</button>`;
         return `<div class="result-item"><div class="result-info"><div class="result-product">${escapeHtml(productName)}</div><div class="result-date">ลงชื่อเมื่อ ${date}</div></div>${actions}</div>`;
     }).join('');

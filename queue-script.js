@@ -255,14 +255,14 @@ async function selectProduct(productId) {
     document.getElementById('queueViewSection').classList.add('active');
 
     // Update page description
-    document.getElementById('queuePageDesc').textContent = `คิวงาน: ${product.name}`;
+    document.getElementById('queuePageDesc').textContent = `คิวงาน ${product.name}`;
 
     // Update title
     document.getElementById('queueProductTitle').innerHTML = `
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--blue-400);">
             <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z" fill="currentColor"/>
         </svg>
-        คิว: ${escapeHtml(product.name)}
+        คิว ${escapeHtml(product.name)}
     `;
 
     // Show loading state

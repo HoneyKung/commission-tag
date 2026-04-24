@@ -85,6 +85,7 @@ function showAdmin() {
     renderRegistrations();
     populateNotifyProductSelect();
     updateNotifyCount();
+    populateQueueProductSelect();
 }
 
 // ============ Tab Switching ============
@@ -96,6 +97,7 @@ function switchTab(name) {
     if (active) active.classList.add('active');
     if (name === 'registrations') renderRegistrations();
     if (name === 'notify') { populateNotifyProductSelect(); updateNotifyCount(); }
+    if (name === 'queues') { populateQueueProductSelect(); adminSelectQueueProduct(); }
 }
 
 function updateStats() {
@@ -370,5 +372,232 @@ function sendNotification() {
             btn.disabled = false;
             btn.textContent = 'ส่ง Email แจ้งเตือน';
             showToast('เกิดข้อผิดพลาดในการส่ง กรุณาลองใหม่', 'error');
+        });
+}
+
+// ============ Admin Queue Management ============
+let adminQueueProductId = null;
+
+function populateQueueProductSelect() {
+    const select = document.getElementById('queueProductSelect');
+    if (!select) return;
+    const products = getProducts();
+    select.innerHTML = products.map(p =>
+        `<option value="${p.id}">${escapeHtml(p.name)}</option>`
+    ).join('');
+    if (products.length === 0) {
+        select.innerHTML = '<option value="">ยังไม่มีสินค้า</option>';
+    }
+}
+
+function adminSelectQueueProduct() {
+    const select = document.getElementById('queueProductSelect');
+    adminQueueProductId = select?.value || null;
+    renderAdminQueueTable();
+}
+
+function showAddQueueForm() {
+    if (!adminQueueProductId) { showToast('กรุณาเลือกสินค้าก่อน', 'error'); return; }
+    document.getElementById('addQueueForm').style.display = 'block';
+
+    // Populate work type select
+    const types = getWorkTypes(adminQueueProductId);
+    const select = document.getElementById('newQueueWorkType');
+    select.innerHTML = types.map(t => `<option value="${t}">${escapeHtml(t)}</option>`).join('');
+
+    document.getElementById('newQueueRush').checked = false;
+}
+
+function hideAddQueueForm() {
+    document.getElementById('addQueueForm').style.display = 'none';
+}
+
+function addNewQueue() {
+    if (!adminQueueProductId) return;
+
+    const workType = document.getElementById('newQueueWorkType').value;
+    const isRush = document.getElementById('newQueueRush').checked;
+
+    const queues = getQueues();
+    const productQueues = queues.filter(q => q.productId === adminQueueProductId);
+    const maxQ = productQueues.reduce((max, q) => Math.max(max, q.queueNumber || 0), 0);
+
+    const newQueue = {
+        id: generateId(),
+        productId: adminQueueProductId,
+        queueNumber: maxQ + 1,
+        workType: workType,
+        materialStatus: QUEUE_STATUS_OPTIONS.materialStatus[0],
+        designStatus: QUEUE_STATUS_OPTIONS.designStatus[0],
+        faceEmbroidery: QUEUE_STATUS_OPTIONS.faceEmbroidery[0],
+        bodySewing: QUEUE_STATUS_OPTIONS.bodySewing[0],
+        overallStatus: QUEUE_STATUS_OPTIONS.overallStatus[0],
+        shipping: QUEUE_STATUS_OPTIONS.shipping[0],
+        paymentNote: QUEUE_STATUS_OPTIONS.paymentNote[0],
+        isRush: isRush,
+        isDone: false,
+        createdAt: new Date().toISOString()
+    };
+
+    queues.push(newQueue);
+    saveQueues(queues);
+    hideAddQueueForm();
+    renderAdminQueueTable();
+    showToast(`เพิ่มคิว Q${newQueue.queueNumber} สำเร็จ`, 'success');
+}
+
+function renderAdminQueueTable() {
+    if (!adminQueueProductId) return;
+
+    const queues = getQueuesByProduct(adminQueueProductId);
+    const tbody = document.getElementById('adminQueueTableBody');
+    const tableWrap = document.querySelector('#tab-queues .admin-table-wrap');
+    const emptyDiv = document.getElementById('adminQueueEmpty');
+
+    if (queues.length === 0) {
+        tableWrap.style.display = 'none';
+        emptyDiv.style.display = 'block';
+        return;
+    }
+
+    tableWrap.style.display = 'block';
+    emptyDiv.style.display = 'none';
+
+    tbody.innerHTML = queues.map(q => {
+        return `
+        <tr data-queue-id="${q.id}" style="${q.isDone ? 'background:rgba(165,180,252,0.12);' : ''}${q.isRush ? 'border-left:3px solid var(--purple-soft);' : ''}">
+            <td class="admin-q-cell"><strong>Q${q.queueNumber}</strong>
+                <button class="btn-icon danger" onclick="deleteQueue('${q.id}')" title="ลบคิว" style="font-size:0.78rem;padding:4px 10px;">✕</button>
+            </td>
+            <td data-label="วัสดุ">${adminSelect('materialStatus', q)}</td>
+            <td data-label="แบบ">${adminSelect('designStatus', q)}</td>
+            <td data-label="ประเภท">${adminWorkTypeSelect(q)}</td>
+            <td data-label="ปัก">${adminSelect('faceEmbroidery', q)}</td>
+            <td data-label="เย็บ">${adminSelect('bodySewing', q)}</td>
+            <td data-label="สถานะ">${adminSelect('overallStatus', q)}</td>
+            <td data-label="ส่ง">${adminSelect('shipping', q)}</td>
+            <td data-label="จ่าย">${adminSelect('paymentNote', q)}</td>
+            <td data-label="คิวเร่ง" class="admin-toggle-cell">
+                <label class="toggle-switch" style="transform:scale(0.75);">
+                    <input type="checkbox" ${q.isRush ? 'checked' : ''} onchange="toggleQueueField('${q.id}','isRush',this.checked)">
+                    <span class="toggle-slider"></span>
+                </label>
+            </td>
+            <td data-label="เสร็จ" class="admin-toggle-cell">
+                <label class="toggle-switch" style="transform:scale(0.75);">
+                    <input type="checkbox" ${q.isDone ? 'checked' : ''} onchange="toggleQueueDone('${q.id}',this.checked)">
+                    <span class="toggle-slider"></span>
+                </label>
+            </td>
+            <td class="admin-actions-cell"></td>
+        </tr>`;
+    }).join('');
+}
+
+function adminSelect(field, queue) {
+    const options = QUEUE_STATUS_OPTIONS[field];
+    if (!options) return escapeHtml(queue[field]);
+
+    return `<select class="form-input" style="font-size:0.78rem;padding:4px 6px;min-width:80px;"
+        onchange="updateQueueField('${queue.id}','${field}',this.value)">
+        ${options.map(o => `<option value="${o}" ${queue[field] === o ? 'selected' : ''}>${o}</option>`).join('')}
+    </select>`;
+}
+
+function adminWorkTypeSelect(queue) {
+    const types = getWorkTypes(adminQueueProductId);
+    return `<select class="form-input" style="font-size:0.78rem;padding:4px 6px;min-width:70px;"
+        onchange="updateQueueField('${queue.id}','workType',this.value)">
+        ${types.map(t => `<option value="${t}" ${queue.workType === t ? 'selected' : ''}>${t}</option>`).join('')}
+    </select>`;
+}
+
+function updateQueueField(queueId, field, value) {
+    const queues = getQueues();
+    const q = queues.find(q => q.id === queueId);
+    if (q) {
+        q[field] = value;
+        saveQueues(queues);
+    }
+}
+
+function toggleQueueField(queueId, field, value) {
+    const queues = getQueues();
+    const q = queues.find(q => q.id === queueId);
+    if (q) {
+        q[field] = value;
+        saveQueues(queues);
+        renderAdminQueueTable();
+    }
+}
+
+function toggleQueueDone(queueId, isDone) {
+    const queues = getQueues();
+    const q = queues.find(q => q.id === queueId);
+    if (q) {
+        q.isDone = isDone;
+        if (isDone) {
+            // Set all fields to done state
+            Object.keys(DONE_VALUES).forEach(key => {
+                q[key] = DONE_VALUES[key];
+            });
+        }
+        saveQueues(queues);
+        renderAdminQueueTable();
+    }
+}
+
+function deleteQueue(queueId) {
+    if (!confirm('ต้องการลบคิวนี้?')) return;
+    const queues = getQueues().filter(q => q.id !== queueId);
+    saveQueues(queues);
+    renderAdminQueueTable();
+    showToast('ลบคิวสำเร็จ', 'info');
+}
+
+// ============ Sync to Google Sheets ============
+function syncQueuesToSheet() {
+    if (!adminQueueProductId) { showToast('กรุณาเลือกสินค้าก่อน', 'error'); return; }
+
+    const queues = getQueuesByProduct(adminQueueProductId);
+    const btn = document.getElementById('syncQueueBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ กำลัง Sync...';
+
+    const payload = {
+        action: 'bulkUpdate',
+        productId: adminQueueProductId,
+        queues: queues.map(q => ({
+            queueNumber: q.queueNumber,
+            workType: q.workType,
+            materialStatus: q.materialStatus,
+            designStatus: q.designStatus,
+            faceEmbroidery: q.faceEmbroidery,
+            bodySewing: q.bodySewing,
+            overallStatus: q.overallStatus,
+            shipping: q.shipping,
+            paymentNote: q.paymentNote,
+            isRush: q.isRush,
+            isDone: q.isDone,
+            createdAt: q.createdAt
+        }))
+    };
+
+    fetch(QUEUE_API_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload)
+    })
+        .then(() => {
+            btn.disabled = false;
+            btn.textContent = '↑ Sync ไป Google Sheets';
+            showToast(`Sync ${queues.length} คิว ไป Sheets สำเร็จ ✦`, 'success');
+        })
+        .catch(error => {
+            console.error('Sync error:', error);
+            btn.disabled = false;
+            btn.textContent = '↑ Sync ไป Google Sheets';
+            showToast('เกิดข้อผิดพลาด กรุณาลองใหม่', 'error');
         });
 }

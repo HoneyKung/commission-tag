@@ -1,0 +1,826 @@
+/* ========================================
+   MOFYCH Commission Queue — Status Tracker
+   Spreadsheet-style table, theme-consistent
+   Artistic filled badges, no pink
+   ======================================== */
+
+/* ====== QUEUE PAGE BODY ====== */
+.queue-body {
+    min-height: 100vh;
+    background: var(--bg-body);
+    transition: background 0.4s ease;
+}
+
+/* ====== QUEUE HERO (Brand Header) ====== */
+.queue-hero {
+    position: relative;
+    padding: 100px 24px 40px;
+    text-align: center;
+    background: var(--hero-gradient);
+    overflow: hidden;
+    transition: background 0.4s ease;
+}
+
+.queue-hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.queue-hero .hero-logo-wrap {
+    margin: 0 auto 12px;
+}
+
+.queue-page-title {
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.queue-page-desc {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* ====== PRODUCT SELECTOR ====== */
+.product-selector-section {
+    padding: 48px 24px 64px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.product-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+    margin-top: 8px;
+}
+
+.product-select-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--border);
+    overflow: hidden;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.product-select-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple-soft), var(--blue-400));
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.product-select-card:hover {
+    border-color: var(--card-hover-border);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+}
+
+.product-select-card:hover::before {
+    opacity: 1;
+}
+
+.product-select-card-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    background: var(--bg-section-alt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.product-select-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-select-card-body {
+    padding: 20px;
+}
+
+.product-select-card-name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.product-select-card-artist {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.product-select-card-artist span {
+    color: var(--blue-400);
+}
+
+.product-select-card-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    background: linear-gradient(135deg, var(--blue-600), var(--blue-500));
+    color: var(--white);
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: var(--font-th);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.product-select-card-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-blue);
+}
+
+/* ====== QUEUE VIEW (Table Section) ====== */
+.queue-view-section {
+    padding: 0 24px 64px;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: none;
+}
+
+.queue-view-section.active {
+    display: block;
+}
+
+/* Back button */
+.queue-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: var(--blue-400);
+    font-family: var(--font-th);
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 8px 0;
+    margin-bottom: 16px;
+    transition: var(--transition);
+}
+
+.queue-back-btn:hover {
+    color: var(--cyan);
+    transform: translateX(-4px);
+}
+
+/* Product title in queue view */
+.queue-product-title {
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ====== ARTIST CARD + STATS ====== */
+.queue-info-bar {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.artist-card {
+    flex: 1;
+    min-width: 240px;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    backdrop-filter: blur(8px);
+    transition: var(--transition);
+}
+
+.artist-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+}
+
+.artist-info {
+    flex: 1;
+}
+
+.artist-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.artist-role {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.queue-stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.queue-stat {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    padding: 12px 20px;
+    text-align: center;
+    min-width: 90px;
+    transition: var(--transition);
+}
+
+.queue-stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-family: var(--font-en);
+    color: var(--text-primary);
+}
+
+.queue-stat-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.queue-stat-value.stat-total {
+    color: var(--blue-400);
+}
+
+.queue-stat-value.stat-progress {
+    color: var(--cyan);
+}
+
+.queue-stat-value.stat-done {
+    color: var(--mint);
+}
+
+/* ====== QUEUE TABLE ====== */
+.queue-table-container {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    position: relative;
+}
+
+/* Decorative top gradient bar */
+.queue-table-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--blue-500), var(--cyan), var(--purple-soft));
+    z-index: 1;
+}
+
+.queue-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbar styling */
+.queue-table-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.queue-table-scroll::-webkit-scrollbar-track {
+    background: var(--bg-input);
+}
+
+.queue-table-scroll::-webkit-scrollbar-thumb {
+    background: var(--gray-400);
+    border-radius: 3px;
+}
+
+.queue-table-scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--blue-400);
+}
+
+.queue-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    min-width: 900px;
+}
+
+/* Header */
+.queue-table thead th {
+    background: linear-gradient(135deg, var(--royal), var(--blue-700));
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    font-size: 0.78rem;
+    padding: 12px 10px;
+    text-align: center;
+    white-space: nowrap;
+    position: relative;
+    letter-spacing: 0.3px;
+    border-bottom: 2px solid rgba(96, 165, 250, 0.3);
+}
+
+[data-theme="light"] .queue-table thead th {
+    background: linear-gradient(135deg, var(--blue-600), var(--blue-500));
+}
+
+/* Sticky first column */
+.queue-table .col-queue {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    min-width: 50px;
+    width: 50px;
+}
+
+.queue-table thead .col-queue {
+    z-index: 11;
+    background: var(--royal);
+}
+
+[data-theme="light"] .queue-table thead .col-queue {
+    background: var(--blue-600);
+}
+
+/* Body rows */
+.queue-table tbody tr {
+    transition: background 0.2s ease;
+    border-bottom: 1px solid var(--border);
+}
+
+.queue-table tbody tr:nth-child(even) {
+    background: rgba(26, 47, 107, 0.04);
+}
+
+[data-theme="dark"] .queue-table tbody tr:nth-child(even) {
+    background: rgba(26, 47, 107, 0.15);
+}
+
+.queue-table tbody tr:hover {
+    background: rgba(59, 130, 246, 0.06);
+}
+
+[data-theme="dark"] .queue-table tbody tr:hover {
+    background: rgba(59, 130, 246, 0.12);
+}
+
+.queue-table tbody td {
+    padding: 10px;
+    text-align: center;
+    color: var(--text-secondary);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.queue-table tbody .col-queue {
+    background: var(--bg-card);
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: var(--font-en);
+    font-size: 0.82rem;
+    border-right: 1px solid var(--border);
+}
+
+[data-theme="dark"] .queue-table tbody .col-queue {
+    background: var(--navy-deep);
+}
+
+.queue-table tbody tr:nth-child(even) .col-queue {
+    background: var(--bg-card);
+}
+
+[data-theme="dark"] .queue-table tbody tr:nth-child(even) .col-queue {
+    background: rgba(6, 14, 36, 0.95);
+}
+
+/* ====== STATUS BADGES — FILLED STYLE (like reference image) ====== */
+.q-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-size: 0.72rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: var(--transition);
+    line-height: 1.4;
+}
+
+/* Idle / Not started — muted, subtle */
+.q-badge-idle {
+    background: rgba(107, 114, 128, 0.18);
+    color: var(--gray-500);
+}
+
+[data-theme="dark"] .q-badge-idle {
+    background: rgba(107, 114, 128, 0.25);
+    color: var(--gray-400);
+}
+
+/* In progress — lighter cyan */
+.q-badge-progress {
+    background: rgba(103, 232, 249, 0.35);
+    color: #0e7490;
+}
+
+[data-theme="dark"] .q-badge-progress {
+    background: rgba(103, 232, 249, 0.3);
+    color: var(--cyan);
+}
+
+/* Done / Complete — strong saturated blue */
+.q-badge-done {
+    background: rgba(59, 130, 246, 0.55);
+    color: var(--white);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .q-badge-done {
+    background: rgba(96, 165, 250, 0.45);
+    color: var(--white);
+}
+
+/* Partial / deposit / packing — medium blue-purple, filled */
+.q-badge-partial {
+    background: rgba(165, 180, 252, 0.35);
+    color: var(--purple);
+}
+
+[data-theme="dark"] .q-badge-partial {
+    background: rgba(167, 139, 250, 0.3);
+    color: var(--purple-soft);
+}
+
+/* Work type — text style */
+.q-type-text {
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* ====== RUSH ROW — Purple accent (NO pink) ====== */
+.queue-table tbody tr.row-rush {
+    border-left: 3px solid var(--purple-soft);
+}
+
+.queue-table tbody tr.row-rush .col-queue {
+    border-left: 3px solid var(--purple-soft);
+}
+
+.rush-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 0.7rem;
+}
+
+.rush-icon:not(.active) {
+    color: var(--gray-400);
+}
+
+.rush-icon.active {
+    background: rgba(167, 139, 250, 0.2);
+    color: var(--purple-soft);
+}
+
+/* ====== DONE ROW — Lavender background + merged message ====== */
+.queue-table tbody tr.row-done {
+    background: rgba(165, 180, 252, 0.15);
+    border-bottom: 1px solid var(--border);
+}
+
+.queue-table tbody tr.row-done td {
+    border-bottom: none;
+}
+
+[data-theme="dark"] .queue-table tbody tr.row-done {
+    background: rgba(165, 180, 252, 0.1);
+}
+
+.queue-table tbody tr.row-done:hover {
+    background: rgba(165, 180, 252, 0.22);
+}
+
+.queue-table tbody tr.row-done .col-queue {
+    color: var(--purple-soft);
+}
+
+[data-theme="dark"] .queue-table tbody tr.row-done .col-queue {
+    color: var(--purple-soft);
+    background: rgba(165, 180, 252, 0.08);
+}
+
+.done-message {
+    text-align: center !important;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--blue-400);
+    letter-spacing: 1px;
+    padding: 14px 16px !important;
+}
+
+/* ====== LOADING SPINNER ====== */
+.q-loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--border);
+    border-top-color: var(--blue-400);
+    border-radius: 50%;
+    animation: q-spin 0.8s linear infinite;
+}
+
+@keyframes q-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ====== TABLE EMPTY STATE ====== */
+.queue-empty {
+    text-align: center;
+    padding: 64px 24px;
+    color: var(--text-muted);
+}
+
+.queue-empty-img {
+    width: 48px;
+    height: 48px;
+    opacity: 0.2;
+    margin-bottom: 16px;
+    filter: var(--wanderer-filter);
+}
+
+/* ====== QUEUE TABLE FADE-IN ====== */
+.queue-table tbody tr {
+    animation: queue-row-in 0.4s ease both;
+}
+
+.queue-table tbody tr:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.queue-table tbody tr:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.queue-table tbody tr:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.queue-table tbody tr:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.queue-table tbody tr:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.queue-table tbody tr:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+.queue-table tbody tr:nth-child(7) {
+    animation-delay: 0.35s;
+}
+
+.queue-table tbody tr:nth-child(8) {
+    animation-delay: 0.4s;
+}
+
+.queue-table tbody tr:nth-child(9) {
+    animation-delay: 0.45s;
+}
+
+.queue-table tbody tr:nth-child(10) {
+    animation-delay: 0.5s;
+}
+
+@keyframes queue-row-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ====== RESPONSIVE — Mobile vertical card layout (2 per row) ====== */
+@media (max-width: 768px) {
+    .queue-hero {
+        padding: 80px 16px 32px;
+    }
+
+    .product-selector-section {
+        padding: 32px 16px 48px;
+    }
+
+    .product-selector-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .queue-view-section {
+        padding: 0 12px 48px;
+    }
+
+    .queue-info-bar {
+        flex-direction: column;
+    }
+
+    .queue-stats {
+        justify-content: center;
+    }
+
+    .queue-product-title {
+        font-size: 1.1rem;
+    }
+
+    /* --- MOBILE: Table → 2-column Card Grid --- */
+    .queue-table-container {
+        background: none;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .queue-table-container::before {
+        display: none;
+    }
+
+    .queue-table {
+        min-width: unset;
+    }
+
+    .queue-table thead {
+        display: none;
+    }
+
+    .queue-table tbody {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .queue-table tbody tr {
+        display: block;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        background: var(--bg-card);
+        animation: queue-row-in 0.4s ease both;
+    }
+
+    .queue-table tbody tr:nth-child(even) {
+        background: var(--bg-card);
+    }
+
+    .queue-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 10px;
+        text-align: right;
+        border-bottom: 1px solid var(--border);
+        white-space: normal;
+        font-size: 0.75rem;
+    }
+
+    .queue-table tbody td::before {
+        content: attr(data-label);
+        font-weight: 500;
+        color: var(--text-muted);
+        text-align: left;
+        font-size: 0.72rem;
+        flex-shrink: 0;
+        margin-right: 8px;
+    }
+
+    .queue-table tbody td:last-child {
+        border-bottom: none;
+    }
+
+    /* Queue number → card header (use :nth-child(n) to beat even-row specificity) */
+    .queue-table tbody tr:nth-child(n) .col-queue {
+        background: linear-gradient(135deg, var(--royal), var(--blue-700));
+        color: var(--white);
+        font-size: 0.9rem;
+        font-weight: 700;
+        padding: 8px 10px;
+        border-right: none;
+        border-bottom: 2px solid rgba(96, 165, 250, 0.3);
+        position: static;
+        justify-content: center;
+    }
+
+    [data-theme="light"] .queue-table tbody tr:nth-child(n) .col-queue {
+        background: linear-gradient(135deg, var(--blue-600), var(--blue-500));
+    }
+
+    [data-theme="dark"] .queue-table tbody tr:nth-child(n) .col-queue {
+        background: linear-gradient(135deg, var(--royal), var(--blue-700));
+    }
+
+    [data-theme="dark"] .queue-table tbody tr:nth-child(even) {
+        background: var(--bg-card);
+    }
+
+    .queue-table tbody .col-queue::before {
+        display: none;
+    }
+
+    /* Rush card */
+    .queue-table tbody tr.row-rush {
+        border-left: 4px solid var(--purple-soft);
+    }
+
+    .queue-table tbody tr.row-rush .col-queue {
+        border-left: none;
+    }
+
+    /* Done card */
+    .queue-table tbody tr.row-done {
+        border-color: rgba(103, 232, 249, 0.3);
+    }
+
+    .queue-table tbody tr.row-done:nth-child(n) .col-queue {
+        background: linear-gradient(135deg, rgba(165, 180, 252, 0.3), rgba(165, 180, 252, 0.15));
+        color: var(--purple-soft);
+    }
+
+    .queue-table tbody tr.row-done .done-message {
+        justify-content: center;
+        font-size: 0.9rem;
+        padding: 16px 10px;
+        border-bottom: none;
+    }
+
+    .queue-table tbody tr.row-done .done-message::before {
+        display: none;
+    }
+
+    .q-badge {
+        font-size: 0.68rem;
+        padding: 2px 7px;
+    }
+
+    .rush-icon,
+    .done-icon {
+        width: 18px;
+        height: 18px;
+        font-size: 0.6rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .queue-table tbody {
+        gap: 8px;
+    }
+
+    .queue-table tbody td {
+        padding: 5px 8px;
+        font-size: 0.7rem;
+    }
+
+    .queue-table tbody td::before {
+        font-size: 0.68rem;
+    }
+
+    .q-badge {
+        font-size: 0.6rem;
+        padding: 2px 5px;
+    }
+}

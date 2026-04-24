@@ -670,11 +670,13 @@ body {
     transition: var(--transition);
 }
 
-.nav-link:hover {
+.nav-link:hover,
+.nav-link.active-link {
     color: var(--blue-400);
 }
 
-.nav-link:hover::after {
+.nav-link:hover::after,
+.nav-link.active-link::after {
     width: 100%;
 }
 

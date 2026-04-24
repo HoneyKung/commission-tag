@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOFYCH — สถานะคิว Commission</title>
+    <meta name="description" content="ดูสถานะคิวงาน Commission จาก MOFYCH / Nytan.Cha แบบเรียลไทม์">
+    <link rel="icon" href="logo/Logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Poppins:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="queue-style.css">
+</head>
+
+<body class="queue-body">
+    <!-- Sparkle particles -->
+    <div class="sparkle-container" id="sparkleContainer"></div>
+
+    <!-- Wandering Character 1 -->
+    <div class="wanderer" id="wanderer1">
+        <div class="wanderer-inner">
+            <img src="images/charA.png" alt="Mascot 1" class="wanderer-img" id="imgWanderer1">
+        </div>
+        <div class="wanderer-tooltip">Drag Me!</div>
+    </div>
+
+    <!-- Wandering Character 2 -->
+    <div class="wanderer" id="wanderer2">
+        <div class="wanderer-inner">
+            <img src="images/charB.png" alt="Mascot 2" class="wanderer-img" id="imgWanderer2">
+        </div>
+        <div class="wanderer-tooltip">Drag Me!</div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+        <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+    </button>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <img src="logo/Logo.png" alt="MOFYCH" class="nav-logo-img">
+                <span class="logo-text hologram">MOFYCH</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">ฝากแทค</a>
+                <a href="queue.html" class="nav-link active-link">สถานะคิว</a>
+            </div>
+            <button class="nav-hamburger" id="hamburger" aria-label="เมนู">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="index.html" class="mobile-link">ฝากแทค</a>
+            <a href="queue.html" class="mobile-link">สถานะคิว</a>
+        </div>
+    </nav>
+
+    <!-- Hero: Brand Header -->
+    <section class="queue-hero">
+        <!-- Decorative elements -->
+        <div class="hero-deco">
+            <div class="wave wave-1"></div>
+            <div class="wave wave-2"></div>
+            <svg class="star-4pt star-1" viewBox="0 0 24 24">
+                <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z" fill="currentColor" />
+            </svg>
+            <svg class="star-4pt star-2" viewBox="0 0 24 24">
+                <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z" fill="currentColor" />
+            </svg>
+            <svg class="star-4pt star-3" viewBox="0 0 24 24">
+                <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z" fill="currentColor" />
+            </svg>
+            <div class="dot-particle dot-1"></div>
+            <div class="dot-particle dot-2"></div>
+            <div class="dot-particle dot-3"></div>
+            <div class="shooting-line sl-1"></div>
+            <div class="shooting-line sl-2"></div>
+        </div>
+
+        <div class="queue-hero-inner">
+            <div class="hero-logo-wrap">
+                <img src="logo/Logo.png" alt="MOFYCH" class="hero-logo-img hologram-glow">
+            </div>
+            <h1 class="queue-page-title">สถานะคิว Commission</h1>
+            <p class="queue-page-desc" id="queuePageDesc">เลือกสินค้าที่ต้องการดูสถานะคิว</p>
+        </div>
+    </section>
+
+    <!-- Product Selector Section -->
+    <section class="product-selector-section" id="productSelectorSection">
+        <div class="product-selector-grid" id="productSelectorGrid">
+            <!-- Rendered by JS -->
+        </div>
+    </section>
+
+    <!-- Queue View Section (hidden initially) -->
+    <section class="queue-view-section" id="queueViewSection">
+        <!-- Back button -->
+        <button class="queue-back-btn" onclick="showProductSelector()">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6" />
+            </svg>
+            ← กลับเลือกสินค้า
+        </button>
+
+        <!-- Product title -->
+        <h2 class="queue-product-title" id="queueProductTitle"></h2>
+
+        <!-- Info bar: Artist + Stats -->
+        <div class="queue-info-bar">
+            <div class="artist-card">
+                <img src="logo/Logo.png" alt="Nytan.Cha" class="artist-avatar">
+                <div class="artist-info">
+                    <div class="artist-name">Nytan.Cha</div>
+                    <div class="artist-role">Artist</div>
+                </div>
+            </div>
+            <div class="queue-stats">
+                <div class="queue-stat">
+                    <div class="queue-stat-value stat-total" id="statTotal">0</div>
+                    <div class="queue-stat-label">คิวทั้งหมด</div>
+                </div>
+                <div class="queue-stat">
+                    <div class="queue-stat-value stat-progress" id="statProgress">0</div>
+                    <div class="queue-stat-label">กำลังทำ</div>
+                </div>
+                <div class="queue-stat">
+                    <div class="queue-stat-value stat-done" id="statDone">0</div>
+                    <div class="queue-stat-label">เสร็จแล้ว</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Queue Table -->
+        <div class="queue-table-container">
+            <div class="queue-table-scroll">
+                <table class="queue-table" id="queueTable">
+                    <thead>
+                        <tr>
+                            <th class="col-queue">Q</th>
+                            <th title="สถานะวัสดุ">วัสดุ</th>
+                            <th title="ออกแบบ">แบบ</th>
+                            <th title="ประเภทงาน">ประเภท</th>
+                            <th title="ปักหน้า">ปัก</th>
+                            <th title="เย็บตัว">เย็บ</th>
+                            <th title="สถานะรวม">สถานะ</th>
+                            <th title="จัดส่ง">ส่ง</th>
+                            <th title="หมายเหตุ/การจ่าย">จ่าย</th>
+                            <th title="คิวเร่ง">คิวเร่ง</th>
+                        </tr>
+                    </thead>
+                    <tbody id="queueTableBody">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="queue-empty" id="queueEmpty" style="display:none;">
+            <img src="logo/Logo.png" alt="" class="queue-empty-img">
+            <p>ยังไม่มีคิวงานสำหรับสินค้านี้</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="logo/Logo.png" alt="MOFYCH" class="footer-logo-img">
+                    <div>
+                        <span class="logo-text hologram">MOFYCH</span>
+                        <p>Commission & Custom Art by Nytan.Cha</p>
+                    </div>
+                </div>
+                <div class="footer-links"><a href="admin.html" class="footer-link">Admin</a></div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 MOFYCH. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="script.js"></script>
+    <script src="queue-script.js"></script>
+</body>
+
+</html>

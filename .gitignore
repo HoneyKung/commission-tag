@@ -4,3 +4,5 @@ implementation_planct
 *.log
 .DS_Store
 Thumbs.db
+commission_tag_reference.md
+google-apps-script-queue.js

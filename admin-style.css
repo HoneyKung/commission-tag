@@ -560,14 +560,36 @@
     font-size: 0.8rem;
 }
 
-/* Responsive */
+/* ====== Responsive ====== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .admin-main {
+        padding: 24px;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 10px 8px;
+        font-size: 0.82rem;
+    }
+
+    .notify-card {
+        padding: 32px;
+    }
+}
+
+/* Mobile */
 @media (max-width: 768px) {
+
+    /* --- Sidebar: icon-only mode --- */
     .admin-sidebar {
-        width: 64px;
+        width: 56px;
     }
 
     .sidebar-header {
         justify-content: center;
+        padding: 16px 8px;
     }
 
     .sidebar-header .logo-text,
@@ -578,41 +600,287 @@
 
     .sidebar-link {
         justify-content: center;
-        padding: 12px;
+        padding: 12px 8px;
+    }
+
+    .sidebar-icon {
+        width: 22px;
     }
 
     .sidebar-footer {
         display: none;
     }
 
+    /* --- Main content --- */
     .admin-main {
-        margin-left: 64px;
-        max-width: calc(100% - 64px);
-        padding: 16px;
+        margin-left: 56px;
+        max-width: calc(100% - 56px);
+        padding: 12px;
     }
 
-    .form-row {
-        grid-template-columns: 1fr;
+    /* --- Stats bar --- */
+    .stats-bar {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 20px;
     }
 
+    .stat-card {
+        padding: 16px 12px;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.78rem;
+    }
+
+    /* --- Tab headers --- */
     .tab-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .tab-header h2 {
+        font-size: 1.1rem;
     }
 
     .tab-actions {
         width: 100%;
+        flex-wrap: wrap;
     }
 
-    .tab-actions input {
+    .tab-actions input,
+    .tab-actions select {
         width: 100% !important;
+        min-width: 0;
     }
 
+    /* --- Forms --- */
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .add-form-card {
+        padding: 20px 16px;
+        margin-bottom: 20px;
+    }
+
+    .add-form-card h3 {
+        font-size: 1rem;
+    }
+
+    /* --- Product list items --- */
+    .admin-list-item {
+        padding: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .item-info h4 {
+        font-size: 0.92rem;
+    }
+
+    .item-info p {
+        font-size: 0.78rem;
+    }
+
+    .item-actions {
+        width: 100%;
+    }
+
+    .item-actions .btn-icon {
+        flex: 1;
+        text-align: center;
+    }
+
+    /* --- Registration table: card style --- */
+    .admin-table-wrap {
+        border-radius: var(--radius-md);
+        border: none;
+        background: transparent;
+    }
+
+    /* Registration table on mobile → card rows */
+    #tab-registrations .admin-table thead {
+        display: none;
+    }
+
+    #tab-registrations .admin-table tbody tr {
+        display: block;
+        background: var(--white);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-md);
+        margin-bottom: 8px;
+        padding: 14px;
+    }
+
+    #tab-registrations .admin-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 0;
+        border: none;
+        font-size: 0.82rem;
+    }
+
+    #tab-registrations .admin-table tbody td:before {
+        font-weight: 500;
+        color: var(--gray-400);
+        font-size: 0.78rem;
+    }
+
+    #tab-registrations .admin-table tbody td:nth-child(1):before {
+        content: 'ชื่อ';
+    }
+
+    #tab-registrations .admin-table tbody td:nth-child(2):before {
+        content: 'Email';
+    }
+
+    #tab-registrations .admin-table tbody td:nth-child(3):before {
+        content: 'สินค้า';
+    }
+
+    #tab-registrations .admin-table tbody td:nth-child(4):before {
+        content: 'วันที่';
+    }
+
+    #tab-registrations .admin-table tbody td:nth-child(5) {
+        justify-content: flex-end;
+        padding-top: 8px;
+    }
+
+    /* --- Queue admin table: CARD layout --- */
+    #adminQueueTable {
+        border: none;
+    }
+
+    #adminQueueTable thead {
+        display: none;
+    }
+
+    #adminQueueTable tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    #adminQueueTable tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 12px;
+        background: var(--white);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        padding: 14px 16px;
+    }
+
+    #adminQueueTable tbody tr:hover td {
+        background: transparent;
+    }
+
+    #adminQueueTable tbody td {
+        display: flex;
+        flex-direction: column;
+        border: none;
+        padding: 4px 0;
+    }
+
+    #adminQueueTable tbody td::before {
+        content: attr(data-label);
+        font-size: 0.68rem;
+        font-weight: 500;
+        color: var(--gray-400);
+        margin-bottom: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Q number — spans full width as card header */
+    #adminQueueTable tbody td.admin-q-cell {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 8px;
+        margin-bottom: 4px;
+        border-bottom: 1px solid var(--gray-100);
+    }
+
+    #adminQueueTable tbody td.admin-q-cell::before {
+        display: none;
+    }
+
+    /* Actions — spans full width at bottom */
+    #adminQueueTable tbody td.admin-actions-cell {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        justify-content: flex-end;
+        gap: 8px;
+        padding-top: 8px;
+        margin-top: 4px;
+        border-top: 1px solid var(--gray-100);
+    }
+
+    #adminQueueTable tbody td.admin-actions-cell::before {
+        display: none;
+    }
+
+    /* Toggle cells — row layout */
+    #adminQueueTable tbody td.admin-toggle-cell {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+    }
+
+    #adminQueueTable select.form-input {
+        font-size: 0.8rem !important;
+        padding: 6px 8px !important;
+        width: 100%;
+    }
+
+    #adminQueueTable .toggle-switch {
+        transform: scale(0.8) !important;
+    }
+
+    /* --- Notify card --- */
     .notify-card {
-        padding: 24px;
+        padding: 20px 16px;
     }
 
+    .notify-info h3 {
+        font-size: 1rem;
+    }
+
+    .notify-info p {
+        font-size: 0.82rem;
+    }
+
+    .template-tabs {
+        margin-bottom: 16px;
+    }
+
+    .template-tab {
+        font-size: 0.78rem;
+        padding: 8px 14px;
+    }
+
+    /* --- Login --- */
     .login-card {
         padding: 32px 24px;
+    }
+
+    /* --- Buttons --- */
+    .btn-sm {
+        font-size: 0.82rem;
+        padding: 8px 14px;
+    }
+
+    .btn-lg {
+        font-size: 0.95rem;
     }
 }

@@ -370,38 +370,4 @@ function updateQueueStats(queues) {
     if (statDone) statDone.textContent = done;
 }
 
-// ============ Fetch from API (for future use) ============
-function fetchQueuesFromAPI(productId) {
-    if (QUEUE_API_URL === 'YOUR_QUEUE_APPS_SCRIPT_URL_HERE') {
-        // No API configured, use localStorage
-        return;
-    }
 
-    fetch(QUEUE_API_URL + '?action=getQueues&productId=' + encodeURIComponent(productId))
-        .then(res => res.json())
-        .then(data => {
-            if (data && data.success && data.data) {
-                // Merge with localStorage
-                const allQueues = getQueues().filter(q => q.productId !== productId);
-                const apiQueues = data.data.map(row => ({
-                    id: row.id || generateId(),
-                    productId: row.productId,
-                    queueNumber: parseInt(row.queueNumber) || 0,
-                    workType: row.workType || '',
-                    materialStatus: row.materialStatus || 'รอจัดส่ง',
-                    designStatus: row.designStatus || 'ยังไม่เริ่ม',
-                    faceEmbroidery: row.faceEmbroidery || 'ยังไม่เริ่ม',
-                    bodySewing: row.bodySewing || 'ยังไม่เริ่ม',
-                    overallStatus: row.overallStatus || 'ยังไม่เริ่ม',
-                    shipping: row.shipping || 'ยังไม่จัดส่ง',
-                    paymentNote: row.paymentNote || 'ยังไม่จ่าย',
-                    isRush: row.isRush === true || row.isRush === 'TRUE',
-                    isDone: row.isDone === true || row.isDone === 'TRUE',
-                    createdAt: row.createdAt || new Date().toISOString()
-                }));
-                saveQueues([...allQueues, ...apiQueues]);
-                renderQueueTable(productId);
-            }
-        })
-        .catch(err => console.error('Error fetching queues:', err));
-}

@@ -10,15 +10,23 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz61XBdNkAS8IeM
 const STORAGE_KEYS = { products: 'mofych_products', registrations: 'mofych_registrations', settings: 'mofych_settings' };
 
 function initData() {
+    // ใช้ productId คงที่ เพื่อให้ตรงกับ Google Sheets ทุกเครื่อง
+    const FIXED_PRODUCT_ID = 'mnlpjt1xshaa6';
+
     if (!localStorage.getItem(STORAGE_KEYS.products)) {
         localStorage.setItem(STORAGE_KEYS.products, JSON.stringify([
-            { id: generateId(), name: 'Cotton Doll ตุ๊กตาไอดอล', artist: 'Nytan.Cha', status: 'open', image: 'images/Cottondoll.png', createdAt: new Date().toISOString() }
+            { id: FIXED_PRODUCT_ID, name: 'Cotton Doll ตุ๊กตาไอดอล', artist: 'Nytan.Cha', status: 'open', image: 'images/Cottondoll.png', createdAt: new Date().toISOString() }
         ]));
     } else {
-        // บังคับแก้รูปภาพเก่าที่ผิด/ไม่มี
+        // บังคับแก้ productId / รูปภาพเก่าที่ผิด
         let products = JSON.parse(localStorage.getItem(STORAGE_KEYS.products));
         let changed = false;
         products.forEach(p => {
+            // แก้ productId ให้ตรงกับ Google Sheets
+            if (p.name.includes('Doll') && p.id !== FIXED_PRODUCT_ID) {
+                p.id = FIXED_PRODUCT_ID;
+                changed = true;
+            }
             if (p.name.includes('Doll') && (!p.image || p.image === 'images/Cotton doll.png' || p.image === '')) {
                 p.image = 'images/Cottondoll.png';
                 p.name = 'Cotton Doll ตุ๊กตาไอดอล';

@@ -164,7 +164,7 @@ let liveQueueCache = {}; // productId → queues array from API
 // ============ Page Init ============
 document.addEventListener('DOMContentLoaded', () => {
     initData();
-    initQueueDemoData(); // fallback demo data if localStorage empty
+    // ไม่ใช้ demo data แล้ว — ดึงจาก Google Sheets API โดยตรง
 
     // Restore last viewed product (remember page on refresh)
     const lastProduct = sessionStorage.getItem('mofych_queue_product');

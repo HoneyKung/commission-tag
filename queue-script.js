@@ -359,7 +359,14 @@ function doneIcon(isDone) {
 function updateQueueStats(queues) {
     const total = queues.length;
     const done = queues.filter(q => q.isDone).length;
-    const progress = queues.filter(q => !q.isDone && q.overallStatus !== 'ยังไม่เริ่ม').length;
+    // นับ "กำลังทำ" = ยังไม่เสร็จ แต่มี field ไหนเริ่มทำแล้ว (ไม่ใช่สถานะเริ่มต้นทั้งหมด)
+    const INITIAL_VALUES = ['รอผ้าจัดส่ง', 'ยังไม่เริ่ม', 'ยังไม่จัดส่ง', 'ยังไม่จ่าย'];
+    const progress = queues.filter(q => {
+        if (q.isDone) return false;
+        // ถ้ามี field ไหนที่ไม่ใช่ค่าเริ่มต้น = ถือว่ากำลังทำ
+        return [q.materialStatus, q.designStatus, q.faceEmbroidery, q.bodySewing, q.overallStatus, q.shipping]
+            .some(val => val && !INITIAL_VALUES.includes(val));
+    }).length;
 
     const statTotal = document.getElementById('statTotal');
     const statProgress = document.getElementById('statProgress');

@@ -390,10 +390,17 @@ function populateQueueProductSelect() {
     }
 }
 
-function adminSelectQueueProduct() {
+async function adminSelectQueueProduct() {
     const select = document.getElementById('queueProductSelect');
     adminQueueProductId = select?.value || null;
-    renderAdminQueueTable();
+
+    // ถ้าไม่มีคิวใน localStorage สำหรับ product นี้ → ดึงจาก Google Sheets อัตโนมัติ
+    const localQueues = getQueuesByProduct(adminQueueProductId);
+    if (localQueues.length === 0 && adminQueueProductId) {
+        await fetchQueuesFromSheet();
+    } else {
+        renderAdminQueueTable();
+    }
 }
 
 function showAddQueueForm() {
@@ -564,6 +571,59 @@ function deleteQueue(queueId) {
     saveQueues(queues);
     renderAdminQueueTable();
     showToast('ลบคิวสำเร็จ', 'info');
+}
+
+// ============ Fetch from Google Sheets ============
+async function fetchQueuesFromSheet() {
+    if (!adminQueueProductId) { showToast('กรุณาเลือกสินค้าก่อน', 'error'); return; }
+
+    const btn = document.getElementById('fetchQueueBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ กำลังดึงข้อมูล...';
+
+    try {
+        const url = `${QUEUE_API_URL}?action=getQueues&productId=${encodeURIComponent(adminQueueProductId)}`;
+        const response = await fetch(url);
+        const result = await response.json();
+
+        if (result.success && Array.isArray(result.data)) {
+            // ลบคิวเก่าของ product นี้ออกจาก localStorage
+            let queues = getQueues().filter(q => q.productId !== adminQueueProductId);
+
+            // แปลงข้อมูลจาก Sheet ให้อยู่ในรูปแบบ localStorage
+            const sheetQueues = result.data.map(row => ({
+                id: generateId(),
+                productId: row.productId || adminQueueProductId,
+                queueNumber: parseInt(row.queueNumber) || 0,
+                workType: row.workType || '',
+                materialStatus: row.materialStatus || 'รอผ้าจัดส่ง',
+                designStatus: row.designStatus || 'ยังไม่เริ่ม',
+                faceEmbroidery: row.faceEmbroidery || 'ยังไม่เริ่ม',
+                bodySewing: row.bodySewing || 'ยังไม่เริ่ม',
+                overallStatus: row.overallStatus || 'ยังไม่เริ่ม',
+                shipping: row.shipping || 'ยังไม่จัดส่ง',
+                paymentNote: row.paymentNote || 'ยังไม่จ่าย',
+                isRush: row.isRush === true || row.isRush === 'TRUE',
+                isDone: row.isDone === true || row.isDone === 'TRUE',
+                createdAt: row.createdAt || new Date().toISOString()
+            }));
+
+            // รวมคิวจาก sheet เข้ากับคิว product อื่นที่มีอยู่
+            queues = queues.concat(sheetQueues);
+            saveQueues(queues);
+
+            renderAdminQueueTable();
+            showToast(`ดึงข้อมูล ${sheetQueues.length} คิว จาก Sheets สำเร็จ ✦`, 'success');
+        } else {
+            showToast('ไม่พบข้อมูลคิวใน Sheet หรือ Sheet ว่าง', 'info');
+        }
+    } catch (error) {
+        console.error('Fetch error:', error);
+        showToast('เกิดข้อผิดพลาดในการดึงข้อมูล กรุณาลองใหม่', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '↓ ดึงจาก Google Sheets';
+    }
 }
 
 // ============ Sync to Google Sheets ============

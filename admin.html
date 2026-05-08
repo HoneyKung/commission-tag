@@ -238,8 +238,11 @@
                     <p>เลือกสินค้าแล้วกดเพิ่มคิว</p>
                 </div>
 
-                <!-- Sync to Sheets button -->
-                <div style="margin-top:16px;text-align:right;">
+                <!-- Sync buttons -->
+                <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:8px;">
+                    <button class="btn btn-outline btn-sm" onclick="fetchQueuesFromSheet()" id="fetchQueueBtn">
+                        ↓ ดึงจาก Google Sheets
+                    </button>
                     <button class="btn btn-outline btn-sm" onclick="syncQueuesToSheet()" id="syncQueueBtn">
                         ↑ Sync ไป Google Sheets
                     </button>

@@ -12,10 +12,12 @@ const STORAGE_KEYS = { products: 'mofych_products', registrations: 'mofych_regis
 function initData() {
     // ใช้ productId คงที่ เพื่อให้ตรงกับ Google Sheets ทุกเครื่อง
     const FIXED_PRODUCT_ID = 'mnlpjt1xshaa6';
+    const FIXED_COOKIE3D_ID = 'cookie3dprint01';
 
     if (!localStorage.getItem(STORAGE_KEYS.products)) {
         localStorage.setItem(STORAGE_KEYS.products, JSON.stringify([
-            { id: FIXED_PRODUCT_ID, name: 'Cotton Doll ตุ๊กตาไอดอล', artist: 'Nytan.Cha', status: 'open', image: 'images/Cottondoll.png', createdAt: new Date().toISOString() }
+            { id: FIXED_PRODUCT_ID, name: 'Cotton Doll ตุ๊กตาไอดอล', artist: 'Nytan.Cha', status: 'open', image: 'images/Cottondoll.png', createdAt: new Date().toISOString() },
+            { id: FIXED_COOKIE3D_ID, name: 'Cookie 3D Print', artist: 'CNP', status: 'open', image: 'images/Cookie3DPrint.jpg', createdAt: new Date().toISOString() }
         ]));
     } else {
         // บังคับแก้ productId / รูปภาพเก่าที่ผิด
@@ -32,7 +34,17 @@ function initData() {
                 p.name = 'Cotton Doll ตุ๊กตาไอดอล';
                 changed = true;
             }
+            // แก้ Cookie 3D Print productId
+            if (p.name.includes('Cookie 3D') && p.id !== FIXED_COOKIE3D_ID) {
+                p.id = FIXED_COOKIE3D_ID;
+                changed = true;
+            }
         });
+        // เพิ่ม Cookie 3D Print ถ้ายังไม่มี
+        if (!products.find(p => p.id === FIXED_COOKIE3D_ID)) {
+            products.push({ id: FIXED_COOKIE3D_ID, name: 'Cookie 3D Print', artist: 'CNP', status: 'open', image: 'images/Cookie3DPrint.jpg', createdAt: new Date().toISOString() });
+            changed = true;
+        }
         if (changed) localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(products));
     }
     if (!localStorage.getItem(STORAGE_KEYS.registrations)) {

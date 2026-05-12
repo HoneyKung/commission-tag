@@ -177,75 +177,78 @@
 
             <!-- Tab: Queues (Admin) -->
             <div class="admin-tab" id="tab-queues" style="display:none;">
-                <div class="tab-header">
-                    <h2>จัดการคิวงาน</h2>
-                    <div class="tab-actions" style="display:flex;gap:8px;align-items:center;">
-                        <select id="queueProductSelect" class="form-input" onchange="adminSelectQueueProduct()"
-                            style="width:220px;">
-                        </select>
-                        <button class="btn btn-primary btn-sm" onclick="showAddQueueForm()">+ เพิ่มคิว</button>
+                <!-- ===== PRODUCT SELECTOR SCREEN ===== -->
+                <div id="queueProductSelector" class="admin-product-selector">
+                    <div class="selector-header">
+                        <h2>จัดการคิวงาน</h2>
+                        <p>เลือกสินค้าที่ต้องการจัดการคิว</p>
+                    </div>
+                    <div class="selector-grid" id="queueSelectorGrid">
+                        <!-- JS renders product cards here -->
                     </div>
                 </div>
 
-                <!-- Add Queue Form -->
-                <div class="add-form-card" id="addQueueForm" style="display:none;">
-                    <h3>เพิ่มคิวใหม่</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">ประเภทงาน</label>
-                            <select id="newQueueWorkType" class="form-input"></select>
+                <!-- ===== QUEUE CONTENT (ซ่อนจนกว่าจะเลือกสินค้า) ===== -->
+                <div id="queueContentArea" style="display:none;">
+                    <div class="tab-header">
+                        <h2>จัดการคิวงาน</h2>
+                        <div class="tab-actions" style="display:flex;gap:8px;align-items:center;">
+                            <select id="queueProductSelect" class="form-input" onchange="adminSelectQueueProduct()"
+                                style="width:220px;">
+                            </select>
+                            <button class="btn btn-primary btn-sm" onclick="showAddQueueForm()">+ เพิ่มคิว</button>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">คิวเร่ง</label>
-                            <div class="toggle-wrap">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="newQueueRush">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                                <span class="toggle-label">ปกติ</span>
+                    </div>
+
+                    <!-- Add Queue Form -->
+                    <div class="add-form-card" id="addQueueForm" style="display:none;">
+                        <h3>เพิ่มคิวใหม่</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">ประเภทงาน</label>
+                                <select id="newQueueWorkType" class="form-input"></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">คิวเร่ง</label>
+                                <div class="toggle-wrap">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="newQueueRush">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <span class="toggle-label">ปกติ</span>
+                                </div>
                             </div>
                         </div>
+                        <div class="form-actions">
+                            <button class="btn btn-primary btn-sm" onclick="addNewQueue()">เพิ่มคิว</button>
+                            <button class="btn btn-outline btn-sm" onclick="hideAddQueueForm()">ยกเลิก</button>
+                        </div>
                     </div>
-                    <div class="form-actions">
-                        <button class="btn btn-primary btn-sm" onclick="addNewQueue()">เพิ่มคิว</button>
-                        <button class="btn btn-outline btn-sm" onclick="hideAddQueueForm()">ยกเลิก</button>
+
+                    <!-- Queue Table (Admin — editable) -->
+                    <div class="admin-table-wrap">
+                        <table class="admin-table" id="adminQueueTable">
+                            <thead>
+                                <tr id="adminQueueTableHead">
+                                    <!-- Dynamic headers rendered by JS -->
+                                </tr>
+                            </thead>
+                            <tbody id="adminQueueTableBody"></tbody>
+                        </table>
                     </div>
-                </div>
+                    <div id="adminQueueEmpty" style="display:none;text-align:center;padding:48px;color:var(--gray-400);">
+                        <p>เลือกสินค้าแล้วกดเพิ่มคิว</p>
+                    </div>
 
-                <!-- Queue Table (Admin — editable) -->
-                <div class="admin-table-wrap">
-                    <table class="admin-table" id="adminQueueTable">
-                        <thead>
-                            <tr>
-                                <th>Q</th>
-                                <th>วัสดุ</th>
-                                <th>แบบ</th>
-                                <th>ประเภท</th>
-                                <th>ปัก</th>
-                                <th>เย็บ</th>
-                                <th>สถานะ</th>
-                                <th>ส่ง</th>
-                                <th>จ่าย</th>
-                                <th>🔥</th>
-                                <th>✓</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminQueueTableBody"></tbody>
-                    </table>
-                </div>
-                <div id="adminQueueEmpty" style="display:none;text-align:center;padding:48px;color:var(--gray-400);">
-                    <p>เลือกสินค้าแล้วกดเพิ่มคิว</p>
-                </div>
-
-                <!-- Sync buttons -->
-                <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:8px;">
-                    <button class="btn btn-outline btn-sm" onclick="fetchQueuesFromSheet()" id="fetchQueueBtn">
-                        ↓ ดึงจาก Google Sheets
-                    </button>
-                    <button class="btn btn-outline btn-sm" onclick="syncQueuesToSheet()" id="syncQueueBtn">
-                        ↑ Sync ไป Google Sheets
-                    </button>
+                    <!-- Sync buttons -->
+                    <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:8px;">
+                        <button class="btn btn-outline btn-sm" onclick="fetchQueuesFromSheet()" id="fetchQueueBtn">
+                            ↓ ดึงจาก Google Sheets
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="syncQueuesToSheet()" id="syncQueueBtn">
+                            ↑ Sync ไป Google Sheets
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -253,53 +256,67 @@
 
             <!-- Tab: Notify -->
             <div class="admin-tab" id="tab-notify" style="display:none;">
-                <div class="tab-header">
-                    <h2>ส่งแจ้งเตือน</h2>
+                <!-- ===== PRODUCT SELECTOR SCREEN ===== -->
+                <div id="notifyProductSelector" class="admin-product-selector">
+                    <div class="selector-header">
+                        <h2>ส่งแจ้งเตือน</h2>
+                        <p>เลือกสินค้าที่ต้องการส่งแจ้งเตือน</p>
+                    </div>
+                    <div class="selector-grid" id="notifySelectorGrid">
+                        <!-- JS renders product cards here -->
+                    </div>
                 </div>
-                <div class="notify-card">
-                    <div class="notify-info">
-                        <h3>ส่ง Email แจ้งเปิดรอบใหม่</h3>
-                        <p>เลือกสินค้าที่จะเปิดรอบ แล้วส่ง Email เฉพาะคนที่ฝากแทคสินค้านั้น</p>
-                    </div>
 
-                    <!-- Product Selector -->
-                    <div class="form-group">
-                        <label class="form-label">เลือกสินค้าที่จะแจ้งเตือน <span class="req">*</span></label>
-                        <select id="notifyProductSelect" class="form-input" onchange="updateNotifyCount()">
-                            <!-- populated by JS -->
-                        </select>
-                        <div class="notify-stats" style="margin-top:8px;">จะส่งถึง: <strong id="notifyCount">0</strong>
-                            คน</div>
+                <!-- ===== NOTIFY CONTENT (ซ่อนจนกว่าจะเลือกสินค้า) ===== -->
+                <div id="notifyContentArea" style="display:none;">
+                    <div class="tab-header">
+                        <h2>ส่งแจ้งเตือน</h2>
                     </div>
+                    <div class="notify-card">
+                        <div class="notify-info">
+                            <h3>ส่ง Email แจ้งเปิดรอบใหม่</h3>
+                            <p>เลือกสินค้าที่จะเปิดรอบ แล้วส่ง Email เฉพาะคนที่ฝากแทคสินค้านั้น</p>
+                        </div>
 
-                    <!-- Template Selector -->
-                    <div class="template-tabs">
-                        <button class="template-tab active" onclick="selectTemplate(0)">แบบที่ 1: นับถอยหลัง</button>
-                        <button class="template-tab" onclick="selectTemplate(1)">แบบที่ 2: เปิดรับวันนี้</button>
-                    </div>
+                        <!-- Product Selector (dropdown — still usable for switching) -->
+                        <div class="form-group">
+                            <label class="form-label">สินค้าที่เลือก <span class="req">*</span></label>
+                            <select id="notifyProductSelect" class="form-input" onchange="updateNotifyCount()">
+                                <!-- populated by JS -->
+                            </select>
+                            <div class="notify-stats" style="margin-top:8px;">จะส่งถึง: <strong id="notifyCount">0</strong>
+                                คน</div>
+                        </div>
 
-                    <!-- Editable Email Template -->
-                    <div class="form-group">
-                        <label class="form-label">หัวเรื่อง Email</label>
-                        <input type="text" id="emailSubject" class="form-input"
-                            value="✦ MOFYCH — เปิดรับ Commission รอบใหม่แล้ว!">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">เนื้อหา Email</label>
-                        <textarea id="emailBody" class="form-input" rows="8"
-                            style="resize:vertical;font-size:0.88rem;line-height:1.7;"></textarea>
-                        <span class="form-hint">ตัวแปร: {name} = ชื่อลูกค้า, {product} = ชื่อสินค้าที่เลือก</span>
-                    </div>
+                        <!-- Template Selector -->
+                        <div class="template-tabs">
+                            <button class="template-tab active" onclick="selectTemplate(0)">แบบที่ 1: นับถอยหลัง</button>
+                            <button class="template-tab" onclick="selectTemplate(1)">แบบที่ 2: เปิดรับวันนี้</button>
+                        </div>
 
-                    <div class="notify-preview-wrap">
-                        <button class="btn btn-outline btn-sm" onclick="togglePreview()">ดูตัวอย่าง</button>
-                        <div class="notify-preview" id="emailPreview" style="display:none;"></div>
-                    </div>
+                        <!-- Editable Email Template -->
+                        <div class="form-group">
+                            <label class="form-label">หัวเรื่อง Email</label>
+                            <input type="text" id="emailSubject" class="form-input"
+                                value="✦ MOFYCH — เปิดรับ Commission รอบใหม่แล้ว!">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">เนื้อหา Email</label>
+                            <textarea id="emailBody" class="form-input" rows="8"
+                                style="resize:vertical;font-size:0.88rem;line-height:1.7;"></textarea>
+                            <span class="form-hint">ตัวแปร: {name} = ชื่อลูกค้า, {product} = ชื่อสินค้าที่เลือก</span>
+                        </div>
 
-                    <button class="btn btn-primary btn-lg" onclick="sendNotification()" id="sendNotifyBtn"
-                        style="width:100%;">
-                        ส่ง Email แจ้งเตือน
-                    </button>
+                        <div class="notify-preview-wrap">
+                            <button class="btn btn-outline btn-sm" onclick="togglePreview()">ดูตัวอย่าง</button>
+                            <div class="notify-preview" id="emailPreview" style="display:none;"></div>
+                        </div>
+
+                        <button class="btn btn-primary btn-lg" onclick="sendNotification()" id="sendNotifyBtn"
+                            style="width:100%;">
+                            ส่ง Email แจ้งเตือน
+                        </button>
+                    </div>
                 </div>
             </div>
         </main>

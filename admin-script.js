@@ -96,8 +96,77 @@ function switchTab(name) {
     const active = document.querySelector(`[data-tab="${name}"]`);
     if (active) active.classList.add('active');
     if (name === 'registrations') renderRegistrations();
-    if (name === 'notify') { populateNotifyProductSelect(); updateNotifyCount(); }
-    if (name === 'queues') { populateQueueProductSelect(); adminSelectQueueProduct(); }
+    if (name === 'notify') { showNotifySelector(); }
+    if (name === 'queues') { showQueueSelector(); }
+}
+
+// ============ Admin Product Selector ============
+function renderSelectorGrid(gridId, onSelectFn) {
+    const grid = document.getElementById(gridId);
+    if (!grid) return;
+    const products = getProducts();
+
+    grid.innerHTML = products.map(product => {
+        const imageHTML = product.image
+            ? `<div class="selector-card-img"><img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}"></div>`
+            : `<div class="selector-card-img"><img src="logo/Logo.png" alt="" style="width:40px;height:40px;opacity:0.15;object-fit:contain;"></div>`;
+
+        return `
+            <div class="selector-card" onclick="${onSelectFn}('${product.id}')">
+                ${imageHTML}
+                <div class="selector-card-body">
+                    <div class="selector-card-name">${escapeHtml(product.name)}</div>
+                    <div class="selector-card-artist">โดย <span>${escapeHtml(product.artist)}</span></div>
+                    <span class="selector-card-btn">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+                        เลือก
+                    </span>
+                </div>
+            </div>`;
+    }).join('');
+}
+
+// --- Queue tab: selector → content ---
+function showQueueSelector() {
+    document.getElementById('queueProductSelector').style.display = 'block';
+    document.getElementById('queueContentArea').style.display = 'none';
+    renderSelectorGrid('queueSelectorGrid', 'selectProductForQueue');
+}
+
+async function selectProductForQueue(productId) {
+    document.getElementById('queueProductSelector').style.display = 'none';
+    document.getElementById('queueContentArea').style.display = 'block';
+
+    // Set dropdown and load data
+    populateQueueProductSelect();
+    const select = document.getElementById('queueProductSelect');
+    if (select) select.value = productId;
+    adminQueueProductId = productId;
+
+    const localQueues = getQueuesByProduct(adminQueueProductId);
+    if (localQueues.length === 0 && adminQueueProductId) {
+        await fetchQueuesFromSheet();
+    } else {
+        renderAdminQueueTable();
+    }
+}
+
+// --- Notify tab: selector → content ---
+function showNotifySelector() {
+    document.getElementById('notifyProductSelector').style.display = 'block';
+    document.getElementById('notifyContentArea').style.display = 'none';
+    renderSelectorGrid('notifySelectorGrid', 'selectProductForNotify');
+}
+
+function selectProductForNotify(productId) {
+    document.getElementById('notifyProductSelector').style.display = 'none';
+    document.getElementById('notifyContentArea').style.display = 'block';
+
+    // Set dropdown and update count
+    populateNotifyProductSelect();
+    const select = document.getElementById('notifyProductSelect');
+    if (select) select.value = productId;
+    updateNotifyCount();
 }
 
 function updateStats() {
@@ -394,6 +463,10 @@ async function adminSelectQueueProduct() {
     const select = document.getElementById('queueProductSelect');
     adminQueueProductId = select?.value || null;
 
+    // Ensure content area is showing (user might have used selector first)
+    document.getElementById('queueProductSelector').style.display = 'none';
+    document.getElementById('queueContentArea').style.display = 'block';
+
     // ถ้าไม่มีคิวใน localStorage สำหรับ product นี้ → ดึงจาก Google Sheets อัตโนมัติ
     const localQueues = getQueuesByProduct(adminQueueProductId);
     if (localQueues.length === 0 && adminQueueProductId) {
@@ -407,10 +480,18 @@ function showAddQueueForm() {
     if (!adminQueueProductId) { showToast('กรุณาเลือกสินค้าก่อน', 'error'); return; }
     document.getElementById('addQueueForm').style.display = 'block';
 
-    // Populate work type select
-    const types = getWorkTypes(adminQueueProductId);
-    const select = document.getElementById('newQueueWorkType');
-    select.innerHTML = types.map(t => `<option value="${t}">${escapeHtml(t)}</option>`).join('');
+    // Show/hide work type select based on product type
+    const workTypeGroup = document.getElementById('newQueueWorkType')?.closest('.form-group');
+    if (isCookie3D(adminQueueProductId)) {
+        // Cookie 3D Print ไม่มีประเภทงาน
+        if (workTypeGroup) workTypeGroup.style.display = 'none';
+    } else {
+        // Cotton Doll — แสดงประเภทงาน
+        if (workTypeGroup) workTypeGroup.style.display = 'block';
+        const types = getWorkTypes(adminQueueProductId);
+        const select = document.getElementById('newQueueWorkType');
+        select.innerHTML = types.map(t => `<option value="${t}">${escapeHtml(t)}</option>`).join('');
+    }
 
     document.getElementById('newQueueRush').checked = false;
 }
@@ -422,29 +503,32 @@ function hideAddQueueForm() {
 function addNewQueue() {
     if (!adminQueueProductId) return;
 
-    const workType = document.getElementById('newQueueWorkType').value;
     const isRush = document.getElementById('newQueueRush').checked;
 
     const queues = getQueues();
     const productQueues = queues.filter(q => q.productId === adminQueueProductId);
     const maxQ = productQueues.reduce((max, q) => Math.max(max, q.queueNumber || 0), 0);
 
+    const statusOpts = getStatusOptionsForProduct(adminQueueProductId);
     const newQueue = {
         id: generateId(),
         productId: adminQueueProductId,
         queueNumber: maxQ + 1,
-        workType: workType,
-        materialStatus: QUEUE_STATUS_OPTIONS.materialStatus[0],
-        designStatus: QUEUE_STATUS_OPTIONS.designStatus[0],
-        faceEmbroidery: QUEUE_STATUS_OPTIONS.faceEmbroidery[0],
-        bodySewing: QUEUE_STATUS_OPTIONS.bodySewing[0],
-        overallStatus: QUEUE_STATUS_OPTIONS.overallStatus[0],
-        shipping: QUEUE_STATUS_OPTIONS.shipping[0],
-        paymentNote: QUEUE_STATUS_OPTIONS.paymentNote[0],
         isRush: isRush,
         isDone: false,
         createdAt: new Date().toISOString()
     };
+
+    // Set initial values for all status fields of this product type
+    Object.keys(statusOpts).forEach(key => {
+        newQueue[key] = statusOpts[key][0]; // first option = initial value
+    });
+
+    // Cotton Doll also has workType
+    if (!isCookie3D(adminQueueProductId)) {
+        const workType = document.getElementById('newQueueWorkType').value;
+        newQueue.workType = workType;
+    }
 
     queues.push(newQueue);
     saveQueues(queues);
@@ -460,6 +544,15 @@ function renderAdminQueueTable() {
     const tbody = document.getElementById('adminQueueTableBody');
     const tableWrap = document.querySelector('#tab-queues .admin-table-wrap');
     const emptyDiv = document.getElementById('adminQueueEmpty');
+    const columns = getQueueColumns(adminQueueProductId);
+
+    // Render dynamic table headers
+    const thead = document.getElementById('adminQueueTableHead');
+    if (thead) {
+        thead.innerHTML = `<th>Q</th>` +
+            columns.map(col => `<th>${escapeHtml(col.shortLabel)}</th>`).join('') +
+            `<th>🔥</th><th>✓</th><th></th>`;
+    }
 
     if (queues.length === 0) {
         tableWrap.style.display = 'none';
@@ -471,19 +564,21 @@ function renderAdminQueueTable() {
     emptyDiv.style.display = 'none';
 
     tbody.innerHTML = queues.map(q => {
+        // Build cells dynamically
+        const cells = columns.map(col => {
+            if (col.isText) {
+                // Work type select (Cotton Doll only)
+                return `<td data-label="${escapeHtml(col.shortLabel)}">${adminWorkTypeSelect(q)}</td>`;
+            }
+            return `<td data-label="${escapeHtml(col.shortLabel)}">${adminSelect(col.key, q)}</td>`;
+        }).join('');
+
         return `
         <tr data-queue-id="${q.id}" style="${q.isDone ? 'background:rgba(165,180,252,0.12);' : ''}${q.isRush ? 'border-left:3px solid var(--purple-soft);' : ''}">
             <td class="admin-q-cell"><strong>Q${q.queueNumber}</strong>
                 <button class="btn-icon danger" onclick="deleteQueue('${q.id}')" title="ลบคิว" style="font-size:0.78rem;padding:4px 10px;">✕</button>
             </td>
-            <td data-label="วัสดุ">${adminSelect('materialStatus', q)}</td>
-            <td data-label="แบบ">${adminSelect('designStatus', q)}</td>
-            <td data-label="ประเภท">${adminWorkTypeSelect(q)}</td>
-            <td data-label="ปัก">${adminSelect('faceEmbroidery', q)}</td>
-            <td data-label="เย็บ">${adminSelect('bodySewing', q)}</td>
-            <td data-label="สถานะ">${adminSelect('overallStatus', q)}</td>
-            <td data-label="ส่ง">${adminSelect('shipping', q)}</td>
-            <td data-label="จ่าย">${adminSelect('paymentNote', q)}</td>
+            ${cells}
             <td data-label="คิวเร่ง" class="admin-toggle-cell">
                 <label class="toggle-switch" style="transform:scale(0.75);">
                     <input type="checkbox" ${q.isRush ? 'checked' : ''} onchange="toggleQueueField('${q.id}','isRush',this.checked)">
@@ -502,8 +597,9 @@ function renderAdminQueueTable() {
 }
 
 function adminSelect(field, queue) {
-    const options = QUEUE_STATUS_OPTIONS[field];
-    if (!options) return escapeHtml(queue[field]);
+    const statusOpts = getStatusOptionsForProduct(adminQueueProductId);
+    const options = statusOpts[field];
+    if (!options) return escapeHtml(queue[field] || '');
 
     const badgeClass = STATUS_BADGE_MAP[queue[field]] || 'q-badge-idle';
 
@@ -555,9 +651,10 @@ function toggleQueueDone(queueId, isDone) {
     if (q) {
         q.isDone = isDone;
         if (isDone) {
-            // Set all fields to done state
-            Object.keys(DONE_VALUES).forEach(key => {
-                q[key] = DONE_VALUES[key];
+            // Set all fields to done state — ใช้ done values ตาม product
+            const doneVals = getDoneValuesForProduct(adminQueueProductId);
+            Object.keys(doneVals).forEach(key => {
+                q[key] = doneVals[key];
             });
         }
         saveQueues(queues);
@@ -591,22 +688,26 @@ async function fetchQueuesFromSheet() {
             let queues = getQueues().filter(q => q.productId !== adminQueueProductId);
 
             // แปลงข้อมูลจาก Sheet ให้อยู่ในรูปแบบ localStorage
-            const sheetQueues = result.data.map(row => ({
-                id: generateId(),
-                productId: row.productId || adminQueueProductId,
-                queueNumber: parseInt(row.queueNumber) || 0,
-                workType: row.workType || '',
-                materialStatus: row.materialStatus || 'รอผ้าจัดส่ง',
-                designStatus: row.designStatus || 'ยังไม่เริ่ม',
-                faceEmbroidery: row.faceEmbroidery || 'ยังไม่เริ่ม',
-                bodySewing: row.bodySewing || 'ยังไม่เริ่ม',
-                overallStatus: row.overallStatus || 'ยังไม่เริ่ม',
-                shipping: row.shipping || 'ยังไม่จัดส่ง',
-                paymentNote: row.paymentNote || 'ยังไม่จ่าย',
-                isRush: row.isRush === true || row.isRush === 'TRUE',
-                isDone: row.isDone === true || row.isDone === 'TRUE',
-                createdAt: row.createdAt || new Date().toISOString()
-            }));
+            const statusOpts = getStatusOptionsForProduct(adminQueueProductId);
+            const sheetQueues = result.data.map(row => {
+                const q = {
+                    id: generateId(),
+                    productId: row.productId || adminQueueProductId,
+                    queueNumber: parseInt(row.queueNumber) || 0,
+                    isRush: row.isRush === true || row.isRush === 'TRUE',
+                    isDone: row.isDone === true || row.isDone === 'TRUE',
+                    createdAt: row.createdAt || new Date().toISOString()
+                };
+                // Map status fields dynamically based on product type
+                Object.keys(statusOpts).forEach(key => {
+                    q[key] = row[key] || statusOpts[key][0]; // fallback to first option
+                });
+                // Cotton Doll also has workType
+                if (!isCookie3D(adminQueueProductId)) {
+                    q.workType = row.workType || '';
+                }
+                return q;
+            });
 
             // รวมคิวจาก sheet เข้ากับคิว product อื่นที่มีอยู่
             queues = queues.concat(sheetQueues);
@@ -635,23 +736,27 @@ function syncQueuesToSheet() {
     btn.disabled = true;
     btn.textContent = '⏳ กำลัง Sync...';
 
+    const statusOpts = getStatusOptionsForProduct(adminQueueProductId);
     const payload = {
         action: 'bulkUpdate',
         productId: adminQueueProductId,
-        queues: queues.map(q => ({
-            queueNumber: q.queueNumber,
-            workType: q.workType,
-            materialStatus: q.materialStatus,
-            designStatus: q.designStatus,
-            faceEmbroidery: q.faceEmbroidery,
-            bodySewing: q.bodySewing,
-            overallStatus: q.overallStatus,
-            shipping: q.shipping,
-            paymentNote: q.paymentNote,
-            isRush: q.isRush,
-            isDone: q.isDone,
-            createdAt: q.createdAt
-        }))
+        queues: queues.map(q => {
+            const data = {
+                queueNumber: q.queueNumber,
+                isRush: q.isRush,
+                isDone: q.isDone,
+                createdAt: q.createdAt
+            };
+            // Include all status fields for this product type
+            Object.keys(statusOpts).forEach(key => {
+                data[key] = q[key];
+            });
+            // Cotton Doll also has workType
+            if (!isCookie3D(adminQueueProductId)) {
+                data.workType = q.workType;
+            }
+            return data;
+        })
     };
 
     fetch(QUEUE_API_URL, {

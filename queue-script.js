@@ -6,12 +6,24 @@
 // ============ Queue API (separate deployment) ============
 const QUEUE_API_URL = 'https://script.google.com/macros/s/AKfycbxyX8fxW13LZhRyEvABkBVkTC5JxWzrAyo52pcWiJA-1pRTbEuf4zkbD5hQtLZKqT_9/exec'; // Deploy separately from email system
 
-// ============ Queue Status Options ============
+// ============ Queue Status Options (Cotton Doll) ============
 const QUEUE_STATUS_OPTIONS = {
     materialStatus: ['รอผ้าจัดส่ง', 'มีผ้าแล้ว'],
     designStatus: ['ยังไม่เริ่ม', 'กำลังทำ...', 'เสร็จสิ้น!'],
     faceEmbroidery: ['ยังไม่เริ่ม', 'กำลังทำ...', 'เสร็จสิ้น!'],
     bodySewing: ['ยังไม่เริ่ม', 'กำลังทำ...', 'เสร็จสิ้น!'],
+    overallStatus: ['ยังไม่เริ่ม', 'กำลังทำ...', 'เสร็จสิ้น!'],
+    shipping: ['ยังไม่จัดส่ง', 'แพคสินค้าแล้ว', 'จัดส่งแล้ว!'],
+    paymentNote: ['ยังไม่จ่าย', 'มัดจำ', 'จ่ายแล้ว']
+};
+
+// ============ Queue Status Options (Cookie 3D Print) ============
+const COOKIE3D_STATUS_OPTIONS = {
+    designStatus: ['ยังไม่เริ่ม', 'กำลังทำ...', 'เสร็จสิ้น!'],
+    modeling3D: ['ยังไม่เริ่ม', 'กำลังทำ...', 'เสร็จสิ้น!'],
+    printing: ['รอปริ้น', 'กำลังปริ้น...', 'ปริ้นแล้ว!'],
+    painting: ['ยังไม่เริ่ม', 'กำลังทำ...', 'เสร็จสิ้น!'],
+    coating: ['ยังไม่เริ่ม', 'กำลังทำ...', 'เสร็จสิ้น!'],
     overallStatus: ['ยังไม่เริ่ม', 'กำลังทำ...', 'เสร็จสิ้น!'],
     shipping: ['ยังไม่จัดส่ง', 'แพคสินค้าแล้ว', 'จัดส่งแล้ว!'],
     paymentNote: ['ยังไม่จ่าย', 'มัดจำ', 'จ่ายแล้ว']
@@ -24,8 +36,10 @@ const STATUS_BADGE_MAP = {
     'ยังไม่เริ่ม': 'q-badge-idle',
     'ยังไม่จัดส่ง': 'q-badge-idle',
     'ยังไม่จ่าย': 'q-badge-idle',
+    'รอปริ้น': 'q-badge-idle',
     // Progress (blue) — กำลังทำ
     'กำลังทำ...': 'q-badge-progress',
+    'กำลังปริ้น...': 'q-badge-progress',
     // Partial (purple) — บางส่วน
     'มัดจำ': 'q-badge-partial',
     'แพคสินค้าแล้ว': 'q-badge-partial',
@@ -33,10 +47,11 @@ const STATUS_BADGE_MAP = {
     'มีผ้าแล้ว': 'q-badge-done',
     'เสร็จสิ้น!': 'q-badge-done',
     'จัดส่งแล้ว!': 'q-badge-done',
-    'จ่ายแล้ว': 'q-badge-done'
+    'จ่ายแล้ว': 'q-badge-done',
+    'ปริ้นแล้ว!': 'q-badge-done'
 };
 
-// "Done" state for each field (when isDone toggled)
+// "Done" state for each field — Cotton Doll
 const DONE_VALUES = {
     materialStatus: 'มีผ้าแล้ว',
     designStatus: 'เสร็จสิ้น!',
@@ -46,6 +61,68 @@ const DONE_VALUES = {
     shipping: 'จัดส่งแล้ว!',
     paymentNote: 'จ่ายแล้ว'
 };
+
+// "Done" state for each field — Cookie 3D Print
+const COOKIE3D_DONE_VALUES = {
+    designStatus: 'เสร็จสิ้น!',
+    modeling3D: 'เสร็จสิ้น!',
+    printing: 'ปริ้นแล้ว!',
+    painting: 'เสร็จสิ้น!',
+    coating: 'เสร็จสิ้น!',
+    overallStatus: 'เสร็จสิ้น!',
+    shipping: 'จัดส่งแล้ว!',
+    paymentNote: 'จ่ายแล้ว'
+};
+
+// ============ Product Type Helpers ============
+const COOKIE3D_PRODUCT_ID = 'cookie3dprint01';
+
+function isCookie3D(productId) {
+    return productId === COOKIE3D_PRODUCT_ID;
+}
+
+function getStatusOptionsForProduct(productId) {
+    return isCookie3D(productId) ? COOKIE3D_STATUS_OPTIONS : QUEUE_STATUS_OPTIONS;
+}
+
+function getDoneValuesForProduct(productId) {
+    return isCookie3D(productId) ? COOKIE3D_DONE_VALUES : DONE_VALUES;
+}
+
+// Queue table column definitions per product type
+function getQueueColumns(productId) {
+    if (isCookie3D(productId)) {
+        return [
+            { key: 'designStatus', label: 'ออกแบบ', shortLabel: 'ออกแบบ' },
+            { key: 'modeling3D', label: 'ปั้น3D', shortLabel: 'ปั้น3D' },
+            { key: 'printing', label: 'ปริ้น', shortLabel: 'ปริ้น' },
+            { key: 'painting', label: 'เพ้นสี', shortLabel: 'เพ้นสี' },
+            { key: 'coating', label: 'เคลือบ', shortLabel: 'เคลือบ' },
+            { key: 'overallStatus', label: 'สถานะรวม', shortLabel: 'สถานะ' },
+            { key: 'shipping', label: 'จัดส่ง', shortLabel: 'ส่ง' },
+            { key: 'paymentNote', label: 'การจ่าย', shortLabel: 'จ่าย' }
+        ];
+    }
+    // Cotton Doll
+    return [
+        { key: 'materialStatus', label: 'สถานะวัสดุ', shortLabel: 'วัสดุ' },
+        { key: 'designStatus', label: 'ออกแบบ', shortLabel: 'แบบ' },
+        { key: 'workType', label: 'ประเภทงาน', shortLabel: 'ประเภท', isText: true },
+        { key: 'faceEmbroidery', label: 'ปักหน้า', shortLabel: 'ปัก' },
+        { key: 'bodySewing', label: 'เย็บตัว', shortLabel: 'เย็บ' },
+        { key: 'overallStatus', label: 'สถานะรวม', shortLabel: 'สถานะ' },
+        { key: 'shipping', label: 'จัดส่ง', shortLabel: 'ส่ง' },
+        { key: 'paymentNote', label: 'หมายเหตุ/การจ่าย', shortLabel: 'จ่าย' }
+    ];
+}
+
+// Get artist info for product
+function getArtistInfo(productId) {
+    if (isCookie3D(productId)) {
+        return { name: 'CNP', role: 'Artist', avatar: 'logo/Logo.png' };
+    }
+    return { name: 'Nytan.Cha', role: 'Artist', avatar: 'logo/nytancha.png' };
+}
 
 // ============ Queue Data Layer ============
 const QUEUE_STORAGE_KEY = 'mofych_queues';
@@ -265,9 +342,28 @@ async function selectProduct(productId) {
         คิว ${escapeHtml(product.name)}
     `;
 
+    // Update artist card dynamically
+    const artistInfo = getArtistInfo(productId);
+    const artistAvatar = document.querySelector('.artist-avatar');
+    const artistName = document.querySelector('.artist-name');
+    const artistRole = document.querySelector('.artist-role');
+    if (artistAvatar) artistAvatar.src = artistInfo.avatar;
+    if (artistName) artistName.textContent = artistInfo.name;
+    if (artistRole) artistRole.textContent = artistInfo.role;
+
+    // Update table headers dynamically
+    const columns = getQueueColumns(productId);
+    const thead = document.querySelector('#queueTable thead tr');
+    if (thead) {
+        thead.innerHTML = `<th class="col-queue">Q</th>` +
+            columns.map(col => `<th title="${escapeHtml(col.label)}">${escapeHtml(col.shortLabel)}</th>`).join('') +
+            `<th title="คิวเร่ง">คิวเร่ง</th>`;
+    }
+
     // Show loading state
+    const colCount = columns.length + 2; // Q + columns + rush
     const tbody = document.getElementById('queueTableBody');
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:48px;color:var(--text-muted);">
+    tbody.innerHTML = `<tr><td colspan="${colCount}" style="text-align:center;padding:48px;color:var(--text-muted);">
         <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
             <div class="q-loading-spinner"></div>
             <span>กำลังโหลดคิว...</span>
@@ -298,11 +394,13 @@ function renderQueueTable(productId, queues) {
     const tbody = document.getElementById('queueTableBody');
     const emptyDiv = document.getElementById('queueEmpty');
     const tableContainer = document.querySelector('.queue-table-container');
+    const columns = getQueueColumns(productId);
+    const colCount = columns.length + 2; // Q + columns + rush
 
     if (queues.length === 0) {
         tableContainer.style.display = 'none';
         emptyDiv.style.display = 'block';
-        updateQueueStats(queues);
+        updateQueueStats(queues, productId);
         return;
     }
 
@@ -319,26 +417,27 @@ function renderQueueTable(productId, queues) {
             return `
             <tr class="${rowClasses.join(' ')}">
                 <td class="col-queue" data-label="">Q${q.queueNumber}</td>
-                <td colspan="9" class="done-message" data-label="">เสร็จเรียบร้อยแล้ว~</td>
+                <td colspan="${colCount - 1}" class="done-message" data-label="">เสร็จเรียบร้อยแล้ว~</td>
             </tr>`;
         }
+
+        // Build cells dynamically based on columns
+        const cells = columns.map(col => {
+            if (col.isText) {
+                return `<td data-label="${escapeHtml(col.shortLabel)}"><span class="q-type-text">${escapeHtml(q[col.key] || '')}</span></td>`;
+            }
+            return `<td data-label="${escapeHtml(col.shortLabel)}">${badge(q[col.key])}</td>`;
+        }).join('');
 
         return `
             <tr class="${rowClasses.join(' ')}">
                 <td class="col-queue" data-label="">Q${q.queueNumber}</td>
-                <td data-label="วัสดุ">${badge(q.materialStatus)}</td>
-                <td data-label="ออกแบบ">${badge(q.designStatus)}</td>
-                <td data-label="ประเภท"><span class="q-type-text">${escapeHtml(q.workType)}</span></td>
-                <td data-label="ปักหน้า">${badge(q.faceEmbroidery)}</td>
-                <td data-label="เย็บตัว">${badge(q.bodySewing)}</td>
-                <td data-label="สถานะ">${badge(q.overallStatus)}</td>
-                <td data-label="จัดส่ง">${badge(q.shipping)}</td>
-                <td data-label="การจ่าย">${badge(q.paymentNote)}</td>
+                ${cells}
                 <td data-label="คิวเร่ง">${rushIcon(q.isRush)}</td>
             </tr>`;
     }).join('');
 
-    updateQueueStats(queues);
+    updateQueueStats(queues, productId);
 }
 
 // ============ Badge Helper ============
@@ -356,15 +455,18 @@ function doneIcon(isDone) {
 }
 
 // ============ Stats ============
-function updateQueueStats(queues) {
+function updateQueueStats(queues, productId) {
     const total = queues.length;
     const done = queues.filter(q => q.isDone).length;
     // นับ "กำลังทำ" = ยังไม่เสร็จ แต่มี field ไหนเริ่มทำแล้ว (ไม่ใช่สถานะเริ่มต้นทั้งหมด)
-    const INITIAL_VALUES = ['รอผ้าจัดส่ง', 'ยังไม่เริ่ม', 'ยังไม่จัดส่ง', 'ยังไม่จ่าย'];
+    const INITIAL_VALUES = ['รอผ้าจัดส่ง', 'ยังไม่เริ่ม', 'ยังไม่จัดส่ง', 'ยังไม่จ่าย', 'รอปริ้น'];
+    const columns = getQueueColumns(productId || currentProductId);
     const progress = queues.filter(q => {
         if (q.isDone) return false;
-        // ถ้ามี field ไหนที่ไม่ใช่ค่าเริ่มต้น = ถือว่ากำลังทำ
-        return [q.materialStatus, q.designStatus, q.faceEmbroidery, q.bodySewing, q.overallStatus, q.shipping]
+        // ตรวจทุก field ที่ไม่ใช่ text column
+        return columns
+            .filter(col => !col.isText)
+            .map(col => q[col.key])
             .some(val => val && !INITIAL_VALUES.includes(val));
     }).length;
 
@@ -376,5 +478,4 @@ function updateQueueStats(queues) {
     if (statProgress) statProgress.textContent = progress;
     if (statDone) statDone.textContent = done;
 }
-
 

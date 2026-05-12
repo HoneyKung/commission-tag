@@ -203,12 +203,10 @@ function renderProductSelect() {
     if (!list) return;
     if (products.length === 0) { list.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;">ยังไม่มีสินค้าในขณะนี้</p>'; return; }
     list.innerHTML = products.map((product, i) => {
-        const checked = i === 0 ? 'checked' : '';
-        const sel = i === 0 ? 'selected' : '';
         const thumb = product.image ? `<img src="${escapeHtml(product.image)}" alt="" class="product-select-thumb">` : '';
         return `
-            <label class="product-select-item ${sel}" data-product-id="${product.id}">
-                <input type="checkbox" name="products" value="${product.id}" ${checked}>
+            <label class="product-select-item" data-product-id="${product.id}">
+                <input type="checkbox" name="products" value="${product.id}">
                 <div class="product-checkbox">&#10003;</div>
                 ${thumb}
                 <div class="product-select-info">

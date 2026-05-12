@@ -5,6 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MOFYCH Admin Dashboard</title>
+    <link rel="icon" id="dynamicFavicon" href="logo/Logo.png" type="image/png">
+    <script>
+        (function () {
+            var img = new Image();
+            img.onload = function () {
+                var c = document.createElement('canvas');
+                c.width = 64; c.height = 64;
+                var ctx = c.getContext('2d');
+                ctx.beginPath(); ctx.arc(32, 32, 32, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
+                ctx.drawImage(img, 8, 8, 48, 48);
+                var link = document.getElementById('dynamicFavicon');
+                if (link) { link.href = c.toDataURL('image/png'); }
+            };
+            img.src = 'logo/Logo.png';
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -153,7 +169,12 @@
             <div class="admin-tab" id="tab-registrations" style="display:none;">
                 <div class="tab-header">
                     <h2>รายชื่อฝากแทค</h2>
-                    <div class="tab-actions">
+                    <div class="tab-actions" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                        <select id="filterRegProduct" class="form-input" onchange="renderRegistrations()"
+                            style="width:200px;">
+                            <option value="">ทุกสินค้า</option>
+                            <!-- populated by JS -->
+                        </select>
                         <input type="text" id="searchReg" class="form-input" placeholder="ค้นหาชื่อ / Email..."
                             oninput="renderRegistrations()" style="width:250px;">
                     </div>
@@ -236,7 +257,8 @@
                             <tbody id="adminQueueTableBody"></tbody>
                         </table>
                     </div>
-                    <div id="adminQueueEmpty" style="display:none;text-align:center;padding:48px;color:var(--gray-400);">
+                    <div id="adminQueueEmpty"
+                        style="display:none;text-align:center;padding:48px;color:var(--gray-400);">
                         <p>เลือกสินค้าแล้วกดเพิ่มคิว</p>
                     </div>
 
@@ -284,13 +306,15 @@
                             <select id="notifyProductSelect" class="form-input" onchange="updateNotifyCount()">
                                 <!-- populated by JS -->
                             </select>
-                            <div class="notify-stats" style="margin-top:8px;">จะส่งถึง: <strong id="notifyCount">0</strong>
+                            <div class="notify-stats" style="margin-top:8px;">จะส่งถึง: <strong
+                                    id="notifyCount">0</strong>
                                 คน</div>
                         </div>
 
                         <!-- Template Selector -->
                         <div class="template-tabs">
-                            <button class="template-tab active" onclick="selectTemplate(0)">แบบที่ 1: นับถอยหลัง</button>
+                            <button class="template-tab active" onclick="selectTemplate(0)">แบบที่ 1:
+                                นับถอยหลัง</button>
                             <button class="template-tab" onclick="selectTemplate(1)">แบบที่ 2: เปิดรับวันนี้</button>
                         </div>
 

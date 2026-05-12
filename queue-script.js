@@ -28,6 +28,7 @@ const COOKIE3D_STATUS_OPTIONS = {
     shipping: ['ยังไม่จัดส่ง', 'แพคสินค้าแล้ว', 'จัดส่งแล้ว!'],
     paymentNote: ['ยังไม่จ่าย', 'มัดจำ', 'จ่ายแล้ว']
 };
+// Note: quantity (จำนวนที่สั่ง) is a free-text field, not in status options
 
 // Status → badge class mapping
 const STATUS_BADGE_MAP = {
@@ -93,6 +94,7 @@ function getDoneValuesForProduct(productId) {
 function getQueueColumns(productId) {
     if (isCookie3D(productId)) {
         return [
+            { key: 'quantity', label: 'จำนวนที่สั่ง', shortLabel: 'จำนวน', isText: true },
             { key: 'designStatus', label: 'ออกแบบ', shortLabel: 'ออกแบบ' },
             { key: 'modeling3D', label: 'ปั้น3D', shortLabel: 'ปั้น3D' },
             { key: 'printing', label: 'ปริ้น', shortLabel: 'ปริ้น' },

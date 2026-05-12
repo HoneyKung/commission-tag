@@ -301,14 +301,30 @@ function deleteProduct(id) {
 // ============ Registrations ============
 function renderRegistrations() {
     const search = (document.getElementById('searchReg')?.value || '').toLowerCase();
+    const filterProduct = document.getElementById('filterRegProduct')?.value || '';
     let regs = getRegistrations();
     const products = getProducts();
+
+    // Populate product filter dropdown
+    const filterSelect = document.getElementById('filterRegProduct');
+    if (filterSelect && filterSelect.options.length <= 1) {
+        products.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = p.name;
+            filterSelect.appendChild(opt);
+        });
+    }
+
+    // Filter by product
+    if (filterProduct) regs = regs.filter(r => r.productId === filterProduct);
+    // Filter by search text
     if (search) regs = regs.filter(r => r.name.toLowerCase().includes(search) || r.email.toLowerCase().includes(search));
     regs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     const tbody = document.getElementById('regTableBody');
 
     if (regs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:48px;color:var(--gray-400);">${search ? 'ไม่พบผลลัพธ์' : 'ยังไม่มีรายการฝากแทค'}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:48px;color:var(--gray-400);">${search || filterProduct ? 'ไม่พบผลลัพธ์' : 'ยังไม่มีรายการฝากแทค'}</td></tr>`;
         return;
     }
     tbody.innerHTML = regs.map(r => {
@@ -567,8 +583,16 @@ function renderAdminQueueTable() {
         // Build cells dynamically
         const cells = columns.map(col => {
             if (col.isText) {
-                // Work type select (Cotton Doll only)
-                return `<td data-label="${escapeHtml(col.shortLabel)}">${adminWorkTypeSelect(q)}</td>`;
+                if (col.key === 'workType') {
+                    // Work type select (Cotton Doll only)
+                    return `<td data-label="${escapeHtml(col.shortLabel)}">${adminWorkTypeSelect(q)}</td>`;
+                }
+                // Generic text input (e.g. quantity for Cookie 3D Print)
+                return `<td data-label="${escapeHtml(col.shortLabel)}">
+                    <input type="text" class="form-input" value="${escapeHtml(q[col.key] || '')}"
+                        onchange="updateQueueTextField('${q.id}','${col.key}',this.value)"
+                        style="width:70px;padding:4px 8px;font-size:0.85rem;text-align:center;">
+                </td>`;
             }
             return `<td data-label="${escapeHtml(col.shortLabel)}">${adminSelect(col.key, q)}</td>`;
         }).join('');
@@ -642,6 +666,16 @@ function toggleQueueField(queueId, field, value) {
         q[field] = value;
         saveQueues(queues);
         renderAdminQueueTable();
+    }
+}
+
+function updateQueueTextField(queueId, field, value) {
+    const queues = getQueues();
+    const q = queues.find(q => q.id === queueId);
+    if (q) {
+        q[field] = value;
+        saveQueues(queues);
+        // Don't re-render to avoid losing input focus
     }
 }
 

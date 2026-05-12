@@ -6,7 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MOFYCH — ฝากแทค Commission</title>
     <meta name="description" content="ฝากแทคสินค้าคอมมิชชั่นจาก MOFYCH ลงชื่อง่าย แจ้งเตือนอัตโนมัติเมื่อเปิดรอบ">
-    <link rel="icon" href="logo/Logo.png" type="image/png">
+    <link rel="icon" id="dynamicFavicon" href="logo/Logo.png" type="image/png">
+    <script>
+        // Generate favicon with white circle background (like GitHub)
+        (function () {
+            var img = new Image();
+            img.onload = function () {
+                var c = document.createElement('canvas');
+                c.width = 64; c.height = 64;
+                var ctx = c.getContext('2d');
+                ctx.beginPath();
+                ctx.arc(32, 32, 32, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+                ctx.drawImage(img, 8, 8, 48, 48);
+                var link = document.getElementById('dynamicFavicon');
+                if (link) { link.href = c.toDataURL('image/png'); }
+            };
+            img.src = 'logo/Logo.png';
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link

@@ -2,5 +2,5 @@ cd /d f:\commission-tag
 
 
 git add .
-git commit -m "update แก้ไขสินค้า"
+git commit -m "update แก้รูป"
 git push

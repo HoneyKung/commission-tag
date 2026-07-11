@@ -1,0 +1,168 @@
+# Vallejo Game Color (72.xxx) — ใส่ hex หลังเครื่องหมาย |
+# Format: รหัสขวด | #HEX
+# รายการนี้เป็นรหัสมาตรฐาน — กรุณาเพิ่ม/ลบรหัสตามขวดจริงที่มี (ฝาดำรุ่นใหม่)
+# ถ้ารหัสไหนไม่มีในรุ่นใหม่ ให้ลบออก / ถ้ามีรหัสใหม่ ให้เพิ่มเอง
+72.001 | #FFFFFF Dead White
+72.002 | 
+72.003 | #CF9A7B Pale Flesh
+72.004 | #C57E52 Elf Skin Tone
+72.005 | #EEB800 Moon Yellow
+72.006 | #F49304 Sun Yellow
+72.007 | #E77713 Gold Yellow
+72.008 | #E9531E Orange Fire
+72.009 | #D8311E Hot Orange
+72.010 | #AA1F18 Bloody Red
+72.011 | #611716 Gory Red
+72.012 | #571A22 Scarlet Red
+72.013 | #CB6F9E Squid Pink
+72.014 | #7F223D Warlord Purple
+72.015 | #341938 Hexed Lichen
+72.016 | #25192F Royal Purple
+72.017 | 
+72.018 | 
+72.019 | #0F0F1B Night Blue
+72.020 | #132033 Imperial Blue
+72.021 | #143D7D Magic Blue
+72.022 | #1B224C Ultramarine Blue
+72.023 | #006C88 Electric Blue
+72.024 | #004145 Turquoise
+72.025 | #156D54 Foul Green
+72.026 | #004938 Jade Green
+72.027 | #003427 Scurvy Green
+72.028 | #122418 Dark Green
+72.029 | #3B5B32 Sick Green
+72.030 | #44502A Goblin Green
+72.031 | #6D6127 Camouflage Green
+72.032 | #417A33 Scorpy Green
+72.033 | 
+72.034 | #D4C9A9 Bone White
+72.035 | #937F3A Dead Flesh
+72.036 | #985B1C Bronze Brown
+72.037 | 
+72.038 | #A85E17 Scrofulous Brown
+72.039 | #8F5E24 Plague Brown
+72.040 | #4E3413 Leather Brown
+72.041 | 
+72.042 | #6E3C19 Parasite Brown
+72.043 | #55371B Beasty Brown
+72.044 | #411F15 Dark Fleshtone
+72.045 | #281B15 Charred Brown
+72.046 | 
+72.047 | #96B4BC Wolf Grey
+72.048 | #373E46 
+72.049 | #625E5B Stonewall Grey
+72.050 | #484743 Neutral Grey
+72.051 | #000000 Black
+72.052 | Silver (Metallic)
+72.053 | Chainmail (Metallic)
+72.054 | Dark Gunmetal (Metallic)
+72.055 | Polished Gold (Metallic)
+72.056 | Glorious Gold (Metallic)
+72.057 | Bright Bronze (Metallic)
+72.058 | Brassy Brass (Metallic)
+72.059 | Hammered Copper (Metallic)
+72.060 | Tinny Tin (Metallic)
+72.061 | #776247 Khaki
+72.062 | #563E26 Earth
+72.063 | #7B5B2C Desert Yellow
+72.064 | 
+72.065 | 
+72.066 | #7D4C3E Tan
+72.067 | #42391A Cayman Green
+72.068 | 
+72.069 | 
+72.070 | 
+72.071 | #785A3E Barbarian Skin
+72.072 | 
+72.073 | 
+72.074 | 
+72.075 | 
+72.076 | #54407D Alien Purple
+72.077 | 
+72.078 | 
+72.079 | 
+72.080 | 
+72.081 | 
+72.082 | #FFFFFF White (Ink)
+72.083 | #9B2241 Magenta (Ink)
+72.084 | #043F3D Dark Turquoise (Ink)
+72.085 | #E99C12 Yellow (Ink)
+72.086 | #A71520 Red (Ink)
+72.087 | #48315D Violet (Ink)
+72.088 | #153767 Blue (Ink)
+72.089 | #007133 Green (Ink)
+72.090 | #253C2C Black Green (Ink)
+72.091 | #352613 Sepia (Ink)
+72.092 | 
+72.093 | #462118 Skin
+72.094 | #000000 Black (Ink)
+72.095 | #B7D1EC Glacial Blue
+72.096 | #86C7A9 Verdigris
+72.097 | 
+72.098 | #F1D5A3 Elfic Flesh
+72.099 | #F6B281 Skin Tone
+72.100 | #E27362 Rosy Flesh
+72.101 | #FFF0B9 Off White
+72.102 | #495A62 Steel Grey
+72.103 | #FBEB3D Yellow (Fluorescent)
+72.104 | #5AB031 Green (Fluorescent)
+72.105 | 
+72.106 | #AD1F1D Scarlet Blood
+72.107 | #B26354 Athena Skin
+72.108 | #72413C Succubus Skin
+72.109 | #E3C33A Toxic Yellow
+72.110 | #F08331 Sunset Orange
+72.111 | #39191A Nocturnal Red
+72.112 | #341A23 Evil Red
+72.113 | #4B1C30 Deep Magenta
+72.114 | #7E6092 Lustful Purple
+72.115 | #69361B Grunge Brown
+72.116 | #251530 Midnight Purple
+72.117 | #3C5574 Elfic Blue
+72.118 | #60B8E0 Sunrise Blue
+72.119 | #007473 Aquamarine
+72.120 | #132533 Abyssal Turquoise
+72.121 | #5BB889 Ghost Green
+72.122 | #D5D900 Bile Green (Fluorescent)
+72.123 | #253822 Angel Green
+72.124 | #3E2417 Gorgon Brown
+72.125 | 
+72.126 | 
+72.127 | 
+72.128 | 
+72.129 | 
+72.130 | 
+72.131 | 
+72.132 | 
+72.133 | 
+72.134 | 
+72.135 | 
+72.136 | 
+72.137 | 
+72.138 | 
+72.139 | 
+72.140 | 
+72.141 | 
+72.142 | 
+72.143 | 
+72.144 | 
+72.145 | #493E20 Dirty Grey
+72.146 | 
+72.147 | 
+72.148 | #80655E Warm Grey
+72.149 | 
+72.150 | 
+72.151 | 
+72.152 | 
+72.153 | 
+72.154 | 
+72.155 | #1A1710 Charcoal
+72.156 | #E63B10 Orange (Fluorescent)
+72.157 | #E42D3F Red (Fluorescent)
+72.158 | #E8348B Magenta (Fluorescent)
+72.159 | #6F257A Violet (Fluorescent)
+72.160 | #007AB9 Blue (Fluorescent)
+72.161 | #015F4D Cold Green (Fluorescent)
+
+
+

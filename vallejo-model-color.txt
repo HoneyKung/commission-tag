@@ -1,0 +1,207 @@
+# Vallejo Model Color (70.xxx) — ใส่ hex หลังเครื่องหมาย |
+# Format: รหัสขวด | #HEX
+# ข้อมูลจาก CSV (github.com/Ferror/vallejo-model-color-data) — กรุณาตรวจสอบและเติม hex เอง
+70.740 | #513E20 Camouflage Middle Brown
+70.741 | #313129 Camouflage Black Green
+70.745 | #805252 Dark Rose
+70.746 | #603F36 Chestnut Brown
+70.747 | #BA584F Faded Red
+70.748 | #E18DA4 Light Pink
+70.749 | #452733 Dark Purple
+70.750 | #A893BC Light Violet
+70.751 | #392A31 BLack Violet
+70.752 | #25212F Infantry Blue
+70.753 | #0098A5 Light Blue Green
+70.754 | #25242A Continental Blue
+70.755 | #027B74 Light Emerald
+70.756 | #456341 Splinter Green
+70.757 | #586F65 Pacific Green
+70.758 | #6F8348 Bright Green
+70.759 | #544A3F German Tank Crew
+70.760 | #7C755B Light Mud
+70.761 | #816D54 Old wood
+70.762 | #5B4921 Grey Brown
+70.763 | #4D3E1F Canvas
+70.764 | #937626 Military Yellow
+70.765 | #B5A188 Desert Tan
+70.766 | #E3D1C3 Cream white
+70.767 | #AB8556 Desert Brown
+70.768 | #76563D BC Dark brown
+70.769 | #9D714A Mustard Brown
+70.770 | #8A633C New Wood
+70.771 | #3B2625 Dark Rust
+70.772 | #779D92 Medium Grey Blue
+70.773 | #5A5957 Violet Grey
+70.774 | #7F6F6F Lavender Grey
+70.800 | #282834 Gunmetal Blue (Metallic)
+70.801 | #643B1D Brass (Metallic)
+70.802 | #C02B49 Sunset Red
+70.803 | #9C6560 Brown Rose
+70.804 | #B06E4B Beige Red
+70.805 | #BA6254 German Orange
+70.806 | #CEB65E German Yellow
+70.807 | #3E3A53 Oxford Blue
+70.808 | #007A89 Blue Green
+70.809 | #1A427D Royal Blue
+70.810 | #4D2740 Royal Purple
+70.811 | #58477E Blue Violet
+70.812 | #63353F Violet Red
+70.814 | #763C3A Burnt Red
+70.815 | #E9AC8D Basic skin tone
+70.816 | #44404E Luftwaffe Uniform WWII
+70.817 | #C13D2E Scarlet
+70.818 | #95553C Red Leather
+70.819 | #B4935E Iraqi Sand
+70.820 | #F4EDE7 Off white
+70.821 | #796950 German Beige WWII
+70.822 | #403436 Camoflague Black Brown
+70.823 | #393F25 Luftwaffe Green
+70.824 | #AC8035 Orange Ochre
+70.825 | #9F8375 Pale Brown
+70.826 | #5B483A Medium Brown
+70.827 | #7F9435 Lime Green
+70.828 | #674641 Mahogany Ink
+70.829 | #D04F30 Amaranth Red
+70.830 | #57523C German Field Grey WWII
+70.833 | #465534 Fern Green
+70.835 | #E28F7D Salmon Rose
+70.836 | #696363 London Grey
+70.837 | #E3C28D Pale Sand
+70.838 | #006249 Emerald
+70.840 | #006989 Light Turquoise
+70.841 | #0270AF Andrea Blue
+70.843 | #A16F4E Cork Brown
+70.844 | #4D95C5 Deep Sky Blue
+70.845 | #ED9646 Sunny Skin Tone
+70.846 | #79504A Mahogany Brown
+70.847 | #CBA868 Dark Sand
+70.850 | #404F32 Medium Olive
+70.851 | #E05921 Bright Orange
+70.856 | #AA793E Ochre Brown
+70.858 | #EDD072 Ice Yellow
+70.859 | #552F2C Black Red
+70.860 | #B07940 Medium Fleshtone
+70.861 | #241E1E Glossy Black
+70.862 | #2F2822 Black Grey
+70.863 | #342B2E Gunmetal (Metallic)
+70.864 | #535258 Natural Steel (Metallic)
+70.865 | #484246 Oily Steel (Metallic)
+70.866 | #41403E Grey Green
+70.867 | #424345 Dark Blue Grey
+70.868 | #4B4545 Dark Sea Green
+70.869 | #5C5A5D Basalt Grey
+70.870 | #7D7B7C Medium Sea Grey 
+70.871 | #594335 Leather Brown
+70.872 | #58443D Chocolate Brown
+70.873 | #826545 US Field Drab
+70.874 | #997457 Tan Earth
+70.875 | #816041 Beige Brown
+70.876 | #906143 Brown Sand
+70.877 | #BF873C Gold Brown
+70.878 | #55371D Old Gold (Metallic)
+70.879 | #816D32 Green Brown
+70.880 | #7E6338 Khaki Grey
+70.881 | #6E653C Green Yellow
+70.882 | #937F42 Middle Stone
+70.883 | #D8CDC7 Silver Grey
+70.884 | #8C7C63 Stone Grey
+70.885 | #939870 Pastel Green
+70.886 | #65624F Green Grey
+70.887 | #59513C US Olive Drab
+70.888 | #40422D Olive Green
+70.889 | #3F3126 Olive Brown
+70.890 | #474A35 Refractive Green
+70.891 | #506642 Intermediate Green
+70.892 | #383B32 Yellow Olive
+70.893 | #494B36 US Dark Green
+70.894 | #3C3D2F Camouflage Olive Green
+70.895 | #4C5840 Gunship Green
+70.896 | #282A14 Extra Dark Green
+70.897 | #313A29 Bronze Green
+70.898 | #262C38 Dark Sea Blue
+70.899 | #372741 Dark Prussian Blue
+70.901 | #607A93 Pastel Blue
+70.902 | #5B6B9E Azure
+70.905 | #808686 Blue Grey Pale
+70.906 | #90A3A9 Pale Blue
+70.907 | #A7B6B3 Pale Grey Blue
+70.908 | #97211F Carmine Red
+70.909 | #C42A28 Vermillion
+70.911 | #ED7326 Light Orange
+70.913 | #DEAA45 Yellow Ochre
+70.914 | #A08035 Green Ochre
+70.915 | #F1C701 Deep Yellow
+70.916 | #EABF56 Sand Yellow
+70.917 | #DFBE6F Beige
+70.918 | #EBE2D1 Ivory
+70.919 | #F6F6F8 Cold white
+70.920 | #424E42 German Uniform
+70.921 | #6F532B English Uniform
+70.922 | #4B5230 Uniform Green
+70.923 | #9E802A Japanese Uniform WWII
+70.924 | #575336 Russian Uniform WWII
+70.925 | #372C4C Blue
+70.926 | #792825 Red
+70.927 | #D3933B Dark Flesh
+70.928 | #F3D4B8 Light Flesh
+70.929 | #A25B31 Light Brown
+70.930 | #273461 Dark Blue
+70.939 | #5C4945 Smoke Ink
+70.940 | #8C645C Saddle Brown
+70.941 | #513B2E Burnt Umber
+70.943 | #596D85 Grey Blue
+70.944 | #BC6D70 Old Rose
+70.945 | #903153 Magenta
+70.946 | #692F24 Dark Red
+70.947 | #B52A27 Dark Vermillion
+70.948 | #F8A734 Golden Yellow
+70.949 | #F8D346 Light Yellow
+70.950 | #231D1D Black
+70.951 | #FFFFFF Blanc D'espagne
+70.952 | #E4D202 Lemon Yellow
+70.953 | #F6BA35 Flat Yellow
+70.954 | #263123 Yellow Green
+70.955 | #DF9A59 Flat Flesh
+70.956 | #CC4527 Clear Orange
+70.957 | #A12B29 Flat Red
+70.958 | #B04F7C Pink
+70.959 | #533152 Purple
+70.960 | #3C2C49 Violet
+70.961 | #74B8CF Sky Blue
+70.962 | #3F4873 Flat Blue
+70.963 | #16416C Medium Blue
+70.964 | #4D5256 Field Blue
+70.965 | #3B405D Prussian Blue
+70.966 | #0C425A Turquoise
+70.967 | #516238 Olive Green
+70.968 | #374B2F Flat Green
+70.969 | #1F634A Park Green Flat
+70.970 | #1B4B31 Deep Green
+70.971 | #B5B7AC Green Grey
+70.972 | #86958E Light Green Blue
+70.974 | #7A9165 Green Sky
+70.975 | #434434 Military Green
+70.976 | #D7AF4D Buff
+70.977 | #B6854A Desert Yellow
+70.978 | #908738 Dark Yellow
+70.979 | #263123 Camouflage Dark Green
+70.980 | #29352B Black Green
+70.981 | #AC633A Orange Brown
+70.982 | #84443A Cavalry Brown
+70.983 | #69442A Flat Earth
+70.984 | #703F38 Flat Brown
+70.985 | #5C383A Hull Red
+70.986 | #ABA290 Deck Tan
+70.987 | #867259 Medium Grey
+70.988 | #6F5F3B Khaki
+70.989 | #AAABAD Sky Grey
+70.990 | #919294 Light Grey
+70.991 | #6C6B69 Dark Sea Grey
+70.992 | #61615F Neutral Grey
+70.993 | #E3E2E0 White Grey
+70.994 | #312F32 Dark Grey
+70.995 | #2E2E2C German Grey
+70.996 | #996728 Gold (Metallic)
+70.997 | #939290 Silver (Metallic)
+70.998 | #533C1D Bronze (Metallic)
+70.999 | #803427 Copper (Metallic)

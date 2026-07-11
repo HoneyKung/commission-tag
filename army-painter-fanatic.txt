@@ -1,0 +1,287 @@
+# Army Painter Warpaints Fanatic — ใส่ hex หลังเครื่องหมาย |
+# Format: รหัสขวด | #HEX ชื่อสี
+# รายการนี้เป็นรหัสมาตรฐาน — กรุณาเพิ่ม/ลบรหัสตามขวดจริงที่มี
+# ฝาขาว = Acrylics / ฝาดำ = Metallics / ฝาแดง = Washes / ฝาเขียว = Effects
+
+# ── Acrylics (162 สี) ──────────────────────────────────
+
+# Blacks & Greys
+WP3001 | #000000 Matt Black
+WP3002 | #535663 Deep Grey
+WP3003 | #727880 Uniform Grey
+WP3004 | #8F9294 Ash Grey
+WP3005 | #C5C6C9 Company Grey
+WP3006 | #D8D8DA Brigade Grey
+
+# Warm Greys & Whites
+WP3007 | #9B9A8F Grey Castle
+WP3008 | #B1AC9C Gargoyle Grey
+WP3009 | #C4BDAF Great Hall Grey
+WP3010 | #CBC8B8 Worn Stone
+WP3011 | #E4E2D8 Brainmatter Beige
+WP3012 | #FFFFFF Matt White
+
+# Dark Blues
+WP3013 | #394858 Night Sky
+WP3014 | #355577 Thunderous Blue
+WP3015 | #32628E Stratos Blue
+WP3016 | #577CA4 Wolf Grey
+WP3017 | #7B97B3 Runic Cobalt
+WP3018 | #A5C2DE Frost Blue
+
+# Blue Triad 2
+WP3019 | #1B2B52 Triumphant Navy
+WP3020 | #2A3971 Gothic Blue
+WP3021 | #264587 Ultramarine Blue
+WP3022 | #697BB9 Alpha Blue
+WP3023 | #8497CA Baron Blue
+WP3024 | #B6C3E3 Augur Blue
+
+# Blue Triad 3
+WP3025 | #1B2B52 Imperial Navy
+WP3026 | #004A84 Regal Blue
+WP3027 | #0057A5 Royal Blue
+WP3028 | #006CB4 Crystal Blue
+WP3029 | #0190CE Arctic Gem
+WP3030 | #94CFF0 Bright Sapphire
+
+# Blue-Teal
+WP3031 | #223242 Deep Ocean Blue
+WP3032 | #004F6B Abyssal Blue
+WP3033 | #006A93 Tidal Blue
+WP3034 | #0086AD Phalanx Blue
+WP3035 | #009FC7 Shieldwall Blue
+WP3036 | #41AFD1 Aegis Aqua
+
+# Teal-Turquoise
+WP3037 | #006A78 Deep Azure
+WP3038 | #008F94 Hydra Turquoise
+WP3039 | #28ADB4 Turquoise Siren
+WP3040 | #5CC1C7 Aquamarine
+WP3041 | #80CBD1 Neptune Glow
+WP3042 | #9ED5D3 Marine Mist
+
+# Teal Triad 2
+WP3043 | #1F3C42 Scarab Green
+WP3044 | #005E4F Temple Gate Teal
+WP3045 | #00765C Pharaoh Guard
+WP3046 | #00765C #00A485Talisman Teal
+WP3047 | #2EB39B Aqua Alchemy
+WP3048 | #6BC1AF Amulet Aqua
+
+# Greens Dark
+WP3049 | #1F3E2B Angel Green
+WP3050 | #216143 Guardian Green
+WP3051 | #066D2C Greenskin
+WP3052 | #179239 Eternal Hunt
+WP3053 | #3BAB41 Wild Green
+WP3054 | #75BC69 Ferocious Green
+
+# Greens Bright
+WP3055 | #55AF30 Emerald Forest
+WP3056 | #72B61C Leafy Green
+WP3057 | #8BBD0D Rainforest
+WP3058 | #BDD000 Electric Lime
+WP3059 | #D2DB39 Vivid Volt
+WP3060 | #E7EA89 Afterglow
+
+# Greens Muted
+WP3061 | #3D665E Evergreen Fog
+WP3062 | #447B6B Medieval Forest
+WP3063 | #64937D Patagon Pine
+WP3064 | #78AC95 Autumn Sage
+WP3065 | #A7C9AB Forest Faun
+WP3066 | #B7DCBE Mossy Green
+
+# Camo Greens
+WP3067 | #3F4C34 Woodland Camo
+WP3068 | #4E6038 Army Green
+WP3069 | #627247 Camouflage Green
+WP3070 | #728552 Olive Drab
+WP3071 | #A1AC82 Necrotic Flesh
+WP3072 | #B8C89F Grotesque Green
+
+# Browns Dark
+WP3073 | #2C241F Brigandine Brown
+WP3074 | #4C332C Bootstrap Brown
+WP3075 | #694433 Leather Brown
+WP3076 | #9E7B6C Paratrooper Tan
+WP3077 | #B99889 Command Khaki
+WP3078 | #DEBCAB Urban Buff
+
+# Browns Light / Tan
+WP3079 | #52533B Tundra Taupe
+WP3080 | #6F683E Prairie Ochre
+WP3081 | #897440 Desert Yellow
+WP3082 | #A98C4E Wasteland Clay
+WP3083 | #C19C50 Burnt Turf
+WP3084 | #DEBC6C Barren Dune
+
+# Bone & Ivory
+WP3085 | #91856E Dusty Skull
+WP3086 | #AB9C7E Tomb King Tan
+WP3087 | #C6BA98 Skeleton Bone
+WP3088 | #D4CAA9 Ancient Stone
+WP3089 | #E9D9C1 Boney Spikes
+WP3090 | #F2ECD7 Pale Sand
+
+# Yellows
+WP3091 | #D37933 Demigod Flames
+WP3092 | #E49D0E Fiendish Yellow
+WP3093 | #FECB00 Daemonic Yellow
+WP3094 | #FFD434 Warped Yellow
+WP3095 | #FFE481 Space Dust
+WP3096 | #FFEFAE Ice Yellow
+
+# Oranges
+WP3097 | #EA4326 Molten Lava
+WP3098 | #ED5717 Burning Ore
+WP3099 | #F07500 Lava Orange
+WP3100 | #F28629 Flickering Flame
+WP3101 | #F59829 Glowing Inferno
+WP3102 | #FDCA53 Inner Light
+
+# Reds Bright
+WP3103 | #992426 Resplendent Red
+WP3104 | #D2212C Angelic Red
+WP3105 | #EA3A30 Legendary Red
+WP3106 | #EC563E Sacred Scarlet
+WP3107 | #EF735A Violent Vermilion
+WP3108 | #F28E7F Raging Rouge
+
+# Browns Warm
+WP3109 | #3C2C29 Oak Brown
+WP3110 | #513930 Tree Ancient
+WP3111 | #643B2E Dryad Brown
+WP3112 | #7D4742 Fur Brown
+WP3113 | #9B5B4D Ruddy Umber
+WP3114 | #B77867 Buffed Hide
+
+# Reds Dark
+WP3115 | #712836 Basilisk Red
+WP3116 | #9C2E3D Wyvern Fury
+WP3117 | #BE2131 Dragon Red
+WP3118 | #B90119 Pure Red
+WP3119 | #D63E43 Blood Chalice
+WP3120 | #E55D5A Raging Rose
+
+# Pinks
+WP3121 | #CD0079 Wicked Pink
+WP3122 | #D94C95 Impish Rouge
+WP3123 | #D96AA5 Pixie Pink
+WP3124 | #E395BE Weird Elixir
+WP3125 | #F7BCD5 Pink Potion
+WP3126 | #FBDCEA Doomfire Drab
+
+# Purples
+WP3127 | #363246 Terrestrial Titan
+WP3128 | #5F4796 Alien Purple
+WP3129 | #6C5AA1 Cultist Purple
+WP3130 | #9482BA Hexed Violet
+WP3131 | #B19CC8 Violet Coven
+WP3132 | #DCCFE6 Kraken Lavender
+
+# Magentas
+WP3133 | #56286A Diabolic Plum
+WP3134 | #6F328A Magecast Magenta
+WP3135 | #843F90 Warlock Magenta
+WP3136 | #B04492 Spellbound Fuchsia
+WP3137 | #B867A4 Enchanted Pink
+WP3138 | #D8A2C8 Diviner Light
+
+# Dusty Pinks / Wines
+WP3139 | #663746 Mulled Berry
+WP3140 | #81344E Moldy Wine
+WP3141 | #AB5578 Elder Flower
+WP3142 | #D18DA8 Forbidden Fruit
+WP3143 | #E6B3C8 Figgy Pink
+WP3144 | #EEC8DA Wilted Rose
+
+# Skin Tones Light
+WP3145 | #C87B71 Moonstone Skin
+WP3146 | #D88779 Agate Skin
+WP3147 | #F49A7D Barbarian Flesh
+WP3148 | #F8BCA8 Ruby Skin
+WP3149 | #FBD5C7 Opal Skin
+WP3150 | #FDE6DC Pearl Skin
+
+# Skin Tones Medium
+WP3151 | #644245 Carnelian Skin
+WP3152 | #944E4E Tiger's Eye Skin
+WP3153 | #B5564D Topaz Skin
+WP3154 | #BE7772 Jasper Skin
+WP3155 | #E39D8B Tourmaline Skin
+WP3156 | #E9B9B3 Leopard Stone Skin
+
+# Skin Tones Dark
+WP3157 | #4B4344 Obsidian Skin
+WP3158 | #6C4F48 Onyx Skin
+WP3159 | #896B5A Mocca Skin
+WP3160 | #C7A482 Amber Skin
+WP3161 | #EECA9F Dorado Skin
+WP3162 | #F1D4B5 Quartz Skin
+
+# ── Effects (18 สี) ────────────────────────────────────
+
+WP3163 | Disgusting Slime (Effect)
+WP3164 | Dry Blood (Effect)
+WP3165 | True Blood (Effect)
+WP3166 | Dark Rust (Effect)
+WP3167 | Fresh Rust (Effect)
+WP3168 | Verdigris (Effect)
+WP3169 | Oil Stains (Effect)
+WP3170 | Oozing Vomit (Effect)
+WP3171 | Warpaints Stabilizer (Effect)
+WP3172 | Warpaints Retarder (Effect)
+WP3173 | Gloss Varnish (Effect)
+WP3174 | Matt Varnish (Effect)
+WP3175 | Brush-On Primer (Effect)
+WP3176 | Plasma Coil Glow (Effect)
+WP3177 | Data System Glow (Effect)
+WP3178 | Lens Flare Glow (Effect)
+WP3179 | Radiation Glow (Effect)
+WP3180 | Power Node Glow (Effect)
+
+# ── Metallics (18 สี) ──────────────────────────────────
+
+WP3181 | Rough Iron (Metallic)
+WP3182 | Red Copper (Metallic)
+WP3183 | Weapon Bronze (Metallic)
+WP3184 | True Copper (Metallic)
+WP3185 | Evil Chrome (Metallic)
+WP3186 | True Brass (Metallic)
+WP3187 | Tainted Gold (Metallic)
+WP3188 | Greedy Gold (Metallic)
+WP3189 | Bright Gold (Metallic)
+WP3190 | Mithril (Metallic)
+WP3191 | Shining Silver (Metallic)
+WP3192 | Plate Mail Metal (Metallic)
+WP3193 | Gun Metal (Metallic)
+WP3194 | Cobalt Metal (Metallic)
+WP3195 | Death Metal (Metallic)
+WP3196 | Dark Emerald (Metallic)
+WP3197 | Glittering Green (Metallic)
+WP3198 | Gemstone Red (Metallic)
+
+# ── Washes (18 สี) ─────────────────────────────────────
+
+WP3199 | Dark Tone (Wash)
+WP3200 | Strong Tone (Wash)
+WP3201 | Soft Tone (Wash)
+WP3202 | Light Tone (Wash)
+WP3203 | Sepia Tone (Wash)
+WP3204 | Rust Tone (Wash)
+WP3205 | Dark Red Tone (Wash)
+WP3206 | Red Tone (Wash)
+WP3207 | Orange Tone (Wash)
+WP3208 | Green Tone (Wash)
+WP3209 | Military Shade (Wash)
+WP3210 | Blue Tone (Wash)
+WP3211 | Dark Blue Tone (Wash)
+WP3212 | Purple Tone (Wash)
+WP3213 | Magenta Tone (Wash)
+WP3214 | Strong Skin Shade (Wash)
+WP3215 | Dark Skin Shade (Wash)
+WP3216 | Wash Medium (Wash)
+
+

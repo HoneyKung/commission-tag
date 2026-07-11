@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOFYCH — รายงานสี</title>
+    <meta name="description" content="เครื่องมือค้นหาและจับคู่สี Vallejo สำหรับเพ้นท์คุกกี้">
+    <link rel="icon" id="dynamicFavicon" href="logo/Logo.png" type="image/png">
+    <script>
+        (function () { var i = new Image(); i.onload = function () { var c = document.createElement('canvas'); c.width = 64; c.height = 64; var x = c.getContext('2d'); x.beginPath(); x.arc(32, 32, 32, 0, Math.PI * 2); x.fillStyle = '#fff'; x.fill(); x.drawImage(i, 8, 8, 48, 48); var l = document.getElementById('dynamicFavicon'); if (l) l.href = c.toDataURL('image/png'); }; i.src = 'logo/Logo.png'; })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Poppins:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="colors-style.css">
+</head>
+
+<body class="colors-body">
+
+    <!-- Login Overlay (same as admin) -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-card">
+            <span class="logo-text hologram">MOFYCH</span>
+            <h2>รายงานสี</h2>
+            <p>กรุณาใส่รหัสผ่านเพื่อเข้าใช้งาน</p>
+            <form id="loginForm">
+                <input type="password" id="loginPassword" class="form-input" placeholder="รหัสผ่าน" autofocus>
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top:12px;">เข้าสู่ระบบ</button>
+            </form>
+            <p class="login-hint">เฉพาะแอดมินเท่านั้น</p>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="colors-layout" id="colorsLayout" style="display:none;">
+
+        <!-- LEFT PANEL — Color Chart (60%) -->
+        <div class="colors-left" id="colorsLeft">
+            <div class="colors-left-header">
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <a href="index.html" class="back-btn">← กลับ</a>
+                    <button class="inventory-toggle-btn" id="inventoryToggleBtn" onclick="toggleInventoryModal()">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                        <span>คลังสี</span>
+                    </button>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span class="owned-counter" id="ownedCounter"></span>
+                    <a href="index.html" class="logo-text hologram"
+                        style="font-size:1.1rem;text-decoration:none;">MOFYCH</a>
+                </div>
+            </div>
+
+            <!-- Category -->
+            <div class="category-tabs">
+                <button class="category-tab active" id="catPaint" onclick="selectCategory('paint')">🎨 สีเพ้นท์คุกกี้</button>
+                <button class="category-tab locked" id="catFabric" onclick="return false;">🧵 สีผ้า</button>
+            </div>
+
+            <!-- Sub-tabs: all paint lines -->
+            <div class="line-tabs" id="lineTabs">
+                <button class="line-tab active" data-line="all" onclick="selectLine('all')">ทั้งหมด</button>
+                <button class="line-tab" data-line="model" onclick="selectLine('model')">Model Color</button>
+                <button class="line-tab" data-line="game" onclick="selectLine('game')">Game Color</button>
+                <button class="line-tab" data-line="fanatic" onclick="selectLine('fanatic')">Fanatic</button>
+                <button class="line-tab" data-line="citadel" onclick="selectLine('citadel')">Citadel</button>
+                <button class="line-tab" data-line="ak3rdgen" onclick="selectLine('ak3rdgen')">AK 3rd Gen</button>
+                <button class="line-tab" data-line="thaitone" onclick="selectLine('thaitone')">ไทยโทน</button>
+                </div>
+
+            <!-- Search -->
+            <div class="colors-search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="M21 21l-4.35-4.35" />
+                </svg>
+                <input type="text" class="colors-search" id="colorSearch"
+                    placeholder="ค้นหาชื่อสี, รหัสขวด, หรือ hex..." oninput="renderSwatches()">
+            </div>
+
+            <!-- Count -->
+            <div class="color-count" id="colorCount"></div>
+
+            <!-- Swatch Grid -->
+            <div class="swatch-grid" id="swatchGrid"></div>
+
+            <!-- Inventory Modal -->
+            <div class="inventory-modal-overlay" id="inventoryModalOverlay" onclick="closeInventoryIfOverlay(event)">
+                <div class="inventory-modal">
+                    <div class="inventory-modal-header">
+                        <div class="inventory-modal-title">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                            <h3>📦 คลังสี — สีที่มีแล้ว</h3>
+                            <span class="inventory-count" id="inventoryCount">0 / 0</span>
+                        </div>
+                        <div class="inventory-modal-actions">
+                            <button class="inv-action-btn inv-select-all" onclick="selectAllVisible()" title="เลือกทั้งหมดที่แสดง">✓ ทั้งหมด</button>
+                            <button class="inv-action-btn inv-deselect-all" onclick="deselectAllVisible()" title="ยกเลิกทั้งหมดที่แสดง">✕ ล้าง</button>
+                            <button class="inv-close-btn" onclick="toggleInventoryModal()">✕</button>
+                        </div>
+                    </div>
+                    <!-- Line filter in modal -->
+                    <div class="inventory-filter-row">
+                        <button class="inv-filter active" data-inv-line="all" onclick="setInvFilter('all')">ทั้งหมด</button>
+                        <button class="inv-filter" data-inv-line="model" onclick="setInvFilter('model')">Model Color</button>
+                        <button class="inv-filter" data-inv-line="game" onclick="setInvFilter('game')">Game Color</button>
+                        <button class="inv-filter" data-inv-line="fanatic" onclick="setInvFilter('fanatic')">Fanatic</button>
+                        <button class="inv-filter" data-inv-line="citadel" onclick="setInvFilter('citadel')">Citadel</button>
+                        <button class="inv-filter" data-inv-line="ak3rdgen" onclick="setInvFilter('ak3rdgen')">AK 3rd Gen</button>
+                        <button class="inv-filter" data-inv-line="thaitone" onclick="setInvFilter('thaitone')">ไทยโทน</button>
+                        </div>
+                    <div class="inventory-search-row">
+                        <input type="text" class="inventory-search" id="inventorySearch" placeholder="ค้นหาสีในคลัง..." oninput="renderInventoryTable()">
+                    </div>
+                    <div class="inventory-table-wrap" id="inventoryTableWrap">
+                        <!-- Table rendered by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL — Tools (40%) -->
+        <div class="colors-right" id="colorsRight">
+
+            <!-- Color Picker -->
+            <div class="tools-section">
+                <h3>🎯 ค้นหาสี</h3>
+                <div class="color-picker-wrap">
+                    <div class="color-input-row">
+                        <div class="color-preview-box" id="previewBox"
+                            onclick="document.getElementById('colorWheel').click()">
+                            <div class="color-preview-fill" id="previewFill" style="background:#3b82f6;"></div>
+                        </div>
+                        <input type="text" class="hex-input" id="hexInput" value="#3B82F6" placeholder="#RRGGBB"
+                            maxlength="7">
+                        <input type="color" class="color-wheel" id="colorWheel" value="#3b82f6">
+                    </div>
+                    <button class="btn-find" id="btnFind" onclick="findClosestColors()">🔍 ค้นหาสีใกล้เคียง</button>
+                </div>
+            </div>
+
+            <!-- Results (placeholder) -->
+            <div class="tools-section" id="resultsSection" style="display:none;">
+                <h3>📋 สีที่ใกล้เคียง</h3>
+                <div class="match-results" id="matchResults"></div>
+            </div>
+
+            <!-- Mixing Recipes -->
+            <div class="tools-section" id="mixSection" style="display:none;">
+                <h3>🧪 แนะนำผสมสี</h3>
+                <div class="mix-label">สูตรแม่สี (ขาว ดำ แดง เหลือง น้ำเงิน)</div>
+                <div class="mix-results" id="mixPrimaryResults"></div>
+                <div class="mix-label" style="margin-top:16px;">สูตรสีอื่น</div>
+                <div class="mix-results" id="mixExtendedResults"></div>
+            </div>
+
+            <!-- Selected Color Detail -->
+            <div class="tools-section" id="detailSection" style="display:none;">
+                <h3>🔎 รายละเอียดสี</h3>
+                <div class="selected-detail" id="selectedDetail"></div>
+            </div>
+
+            <!-- Placeholder -->
+            <div class="tools-placeholder" id="toolsPlaceholder">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 8v4l3 3" />
+                </svg>
+                <p>กรอก Hex หรือเลือกสีจากวงล้อ<br>เพื่อค้นหาสีที่ใกล้เคียงจากทุกแบรนด์</p>
+                <p style="font-size:0.78rem;margin-top:8px;color:var(--gray-300);">
+                    หรือคลิกที่แถบสีฝั่งซ้ายเพื่อดูรายละเอียด</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="colors-data.js"></script>
+    <script src="colors-script.js"></script>
+</body>
+
+</html>

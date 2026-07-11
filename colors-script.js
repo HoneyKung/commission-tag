@@ -60,9 +60,16 @@ function showColors() {
 
 // ============ Category / Line Selection ============
 function selectCategory(cat) {
-    if (cat === 'fabric') return;
     document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('catPaint').classList.add('active');
+
+    if (cat === 'fabric') {
+        document.getElementById('catFabric').classList.add('active');
+        document.body.classList.add('fabric-mode');
+        renderFabricCards();
+    } else {
+        document.getElementById('catPaint').classList.add('active');
+        document.body.classList.remove('fabric-mode');
+    }
 }
 
 function selectLine(line) {
@@ -666,3 +673,81 @@ function deselectAllVisible() {
 document.addEventListener('DOMContentLoaded', () => {
     updateOwnedCounter();
 });
+
+// ============ FABRIC CARDS ============
+let currentFabricTab = 'all'; // 'all' | 'skin' | 'hair'
+
+function selectFabricTab(tab) {
+    currentFabricTab = tab;
+    document.querySelectorAll('.fabric-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.fabric-tab[data-fabric="${tab}"]`).classList.add('active');
+    renderFabricCards();
+}
+
+function renderFabricCards() {
+    const area = document.getElementById('fabricGridArea');
+    if (!area) return;
+
+    const search = (document.getElementById('fabricSearch')?.value || '').toLowerCase().trim();
+
+    const filterList = (list) => {
+        if (!search) return list;
+        return list.filter(f =>
+            f.code.toLowerCase().includes(search) ||
+            f.name.toLowerCase().includes(search) ||
+            f.hex.toLowerCase().includes(search)
+        );
+    };
+
+    let html = '';
+
+    if (currentFabricTab === 'all' || currentFabricTab === 'skin') {
+        const skinList = filterList(typeof FABRIC_SKIN !== 'undefined' ? FABRIC_SKIN : []);
+        html += renderFabricSection('🧑 สีผิว', skinList);
+    }
+
+    if (currentFabricTab === 'all' || currentFabricTab === 'hair') {
+        const hairList = filterList(typeof FABRIC_HAIR !== 'undefined' ? FABRIC_HAIR : []);
+        html += renderFabricSection('💇 สีผม', hairList);
+    }
+
+    if (!html.trim()) {
+        html = '<div style="text-align:center;padding:48px;color:var(--text-muted);">ไม่พบผ้าที่ค้นหา</div>';
+    }
+
+    area.innerHTML = html;
+}
+
+function renderFabricSection(title, items) {
+    if (!items || items.length === 0) return '';
+
+    const availCount = items.filter(f => f.available).length;
+
+    let html = `
+        <div class="fabric-category-header">
+            <h3>${title}</h3>
+            <span class="fabric-count">มี ${availCount} / ${items.length} สี</span>
+        </div>
+        <div class="fabric-grid">`;
+
+    items.forEach(f => {
+        const isAvail = f.available;
+        const badgeClass = isAvail ? 'available' : 'unavailable';
+        const badgeIcon = isAvail ? '✓' : '✕';
+        const cardClass = isAvail ? '' : ' unavailable';
+
+        html += `
+            <div class="fabric-card${cardClass}">
+                <div class="fabric-swatch">
+                    <div class="fabric-swatch-fill" style="background:${f.hex};"></div>
+                    <div class="fabric-badge ${badgeClass}">${badgeIcon}</div>
+                </div>
+                <div class="fabric-info">
+                    <div class="fabric-code">${f.name}</div>
+                </div>
+            </div>`;
+    });
+
+    html += '</div>';
+    return html;
+}

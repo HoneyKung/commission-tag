@@ -59,7 +59,7 @@
             <!-- Category -->
             <div class="category-tabs">
                 <button class="category-tab active" id="catPaint" onclick="selectCategory('paint')">🎨 สีเพ้นท์คุกกี้</button>
-                <button class="category-tab locked" id="catFabric" onclick="return false;">🧵 สีผ้า</button>
+                <button class="category-tab" id="catFabric" onclick="selectCategory('fabric')">🧵 สีผ้า</button>
             </div>
 
             <!-- Sub-tabs: all paint lines -->
@@ -88,6 +88,26 @@
 
             <!-- Swatch Grid -->
             <div class="swatch-grid" id="swatchGrid"></div>
+
+            <!-- Fabric Cards Section -->
+            <div class="fabric-container" id="fabricContainer">
+                <div class="fabric-tabs" id="fabricTabs">
+                    <button class="fabric-tab active" data-fabric="all" onclick="selectFabricTab('all')">ทั้งหมด</button>
+                    <button class="fabric-tab" data-fabric="skin" onclick="selectFabricTab('skin')">🧑 สีผิว</button>
+                    <button class="fabric-tab" data-fabric="hair" onclick="selectFabricTab('hair')">💇 สีผม</button>
+                </div>
+
+                <div class="fabric-search-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="M21 21l-4.35-4.35" />
+                    </svg>
+                    <input type="text" class="fabric-search" id="fabricSearch"
+                        placeholder="ค้นหารหัสผ้าหรือชื่อสี..." oninput="renderFabricCards()">
+                </div>
+
+                <div id="fabricGridArea"></div>
+            </div>
 
             <!-- Inventory Modal -->
             <div class="inventory-modal-overlay" id="inventoryModalOverlay" onclick="closeInventoryIfOverlay(event)">
@@ -180,6 +200,7 @@
 
     <script src="script.js"></script>
     <script src="colors-data.js"></script>
+    <script src="fabric-data.js"></script>
     <script src="colors-script.js"></script>
 </body>
 

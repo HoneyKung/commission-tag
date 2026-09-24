@@ -740,6 +740,10 @@ async function fetchQueuesFromSheet() {
                 if (!isCookie3D(adminQueueProductId)) {
                     q.workType = row.workType || '';
                 }
+                // Cookie 3D Print also has quantity (free-text, not in statusOpts)
+                if (isCookie3D(adminQueueProductId)) {
+                    q.quantity = row.quantity || '';
+                }
                 return q;
             });
 
@@ -788,6 +792,10 @@ function syncQueuesToSheet() {
             // Cotton Doll also has workType
             if (!isCookie3D(adminQueueProductId)) {
                 data.workType = q.workType;
+            }
+            // Cookie 3D Print also has quantity (free-text, not in statusOpts)
+            if (isCookie3D(adminQueueProductId)) {
+                data.quantity = q.quantity;
             }
             return data;
         })

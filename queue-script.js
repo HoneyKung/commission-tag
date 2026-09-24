@@ -243,7 +243,6 @@ let liveQueueCache = {}; // productId → queues array from API
 // ============ Page Init ============
 document.addEventListener('DOMContentLoaded', () => {
     initData();
-    // ไม่ใช้ demo data แล้ว — ดึงจาก Google Sheets API โดยตรง
 
     // Restore last viewed product (remember page on refresh)
     const lastProduct = sessionStorage.getItem('mofych_queue_product');
@@ -251,6 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectProduct(lastProduct);
     } else {
         renderProductSelector();
+        fetchAllQueueCounts(); // ดึงจำนวนคิวจาก API ทันที เหมือน fetchRegistrations() ของระบบฝากแทค
     }
 });
 
@@ -275,6 +275,17 @@ async function fetchQueuesFromAPI(productId) {
     }
     // Fallback to localStorage
     return getQueuesByProduct(productId);
+}
+
+// ============ Fetch Queue Counts for All Products (เรียลไทม์) ============
+// ดึงจำนวนคิวจาก API ทุก product แล้ว render การ์ดใหม่ — เหมือน fetchRegistrations() ของระบบฝากแทค
+async function fetchAllQueueCounts() {
+    const products = getProducts();
+    const promises = products.map(product =>
+        fetchQueuesFromAPI(product.id).catch(() => [])
+    );
+    await Promise.all(promises);
+    renderProductSelector(); // Re-render การ์ดด้วยตัวเลขจริงจาก API
 }
 
 // ============ Product Selector ============
@@ -387,6 +398,7 @@ function showProductSelector() {
     document.getElementById('queueViewSection').classList.remove('active');
     document.getElementById('queuePageDesc').textContent = 'เลือกสินค้าที่ต้องการดูสถานะคิว';
     renderProductSelector();
+    fetchAllQueueCounts(); // refresh จำนวนคิวทุกครั้งที่กลับมาหน้าเลือกสินค้า
 }
 
 // ============ Render Queue Table ============

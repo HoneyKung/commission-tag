@@ -31,10 +31,55 @@ const EMAIL_TEMPLATES = [
     }
 ];
 
+function getRegistrations() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.registrations) || '[]'); }
+function saveRegistrations(registrations) { localStorage.setItem(STORAGE_KEYS.registrations, JSON.stringify(registrations)); }
+
+function fetchRegistrationRows(productName) {
+    return postToRegistrationBackend({ action: 'getRegistrations', productName: productName || '' })
+        .then(result => {
+            if (!result || result.success !== true || !Array.isArray(result.data)) throw new Error('รูปแบบข้อมูลจาก Google Sheets ไม่ถูกต้อง');
+            return result.data;
+        });
+}
+
+function applyRegistrationRows(rows) {
+    const products = getProducts();
+    const newRegs = rows.map(row => {
+        const product = products.find(product => product.name === row['สินค้า']);
+        return {
+            id: generateId(), name: row['ชื่อ'], email: row['Email'],
+            productId: product ? product.id : row['สินค้า'],
+            createdAt: row['วันที่'] || new Date().toISOString()
+        };
+    });
+    saveRegistrations(newRegs);
+    renderRegistrations();
+    updateStats();
+    updateNotifyCount();
+}
+
+function fetchRegistrations() {
+    if (!sessionStorage.getItem('mofych_admin_key')) return Promise.resolve(null);
+    return fetchRegistrationRows().then(rows => {
+        applyRegistrationRows(rows);
+        return rows;
+    }).catch(error => {
+        console.error('Error fetching registrations:', error);
+        return null;
+    });
+}
+
 // ============ Init ============
 document.addEventListener('DOMContentLoaded', () => {
     initData();
-    if (sessionStorage.getItem('mofych_admin_logged')) { showAdmin(); }
+    if (sessionStorage.getItem('mofych_admin_logged')) {
+        validateAdminSession().then(valid => {
+            if (!valid) return;
+            fetchRegistrations().then(() => {
+                if (sessionStorage.getItem('mofych_admin_key')) showAdmin();
+            });
+        });
+    }
     document.getElementById('loginForm').addEventListener('submit', handleLogin);
     // Toggle label update
     const toggle = document.getElementById('productStatusToggle');
@@ -49,32 +94,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function handleLogin(e) {
     e.preventDefault();
-    const pw = document.getElementById('loginPassword').value;
-    const hash = await sha256(pw);
-    const settings = getSettings();
-
-    // ยอมรับ mofych2026 เสมอ (เผื่อเครื่องจำการตั้งค่าเก่าไว้)
-    if (hash === settings.adminPasswordHash || pw === settings.adminPassword || pw === 'mofych2026') {
-        sessionStorage.setItem('mofych_admin_logged', 'true');
-        // อัปเดตจาก plaintext เป็น hash ถ้ายังเป็นแบบเก่า
-        if (settings.adminPassword) {
-            settings.adminPasswordHash = hash;
-            delete settings.adminPassword;
-            localStorage.setItem('mofych_settings', JSON.stringify(settings));
-        }
-        showAdmin();
-    } else {
-        showToast('รหัสผ่านไม่ถูกต้อง', 'error');
+    const key = document.getElementById('loginPassword').value;
+    const results = await verifyAdminKey(key);
+    const failed = results.filter(result => !result.success).map(result => result.service);
+    if (failed.length) {
+        showToast('ตรวจรหัสไม่ผ่าน: ' + failed.join(' และ ') + ' กรุณาตั้ง ADMIN_KEY ใน Apps Script', 'error');
+        return;
     }
-}
-
-// SHA-256 hash function
-async function sha256(text) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(text);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    sessionStorage.setItem('mofych_admin_key', key);
+    sessionStorage.setItem('mofych_admin_logged', 'true');
+    await fetchRegistrations();
+    if (!sessionStorage.getItem('mofych_admin_key')) return;
+    showAdmin();
 }
 
 function showAdmin() {
@@ -339,36 +370,22 @@ function renderRegistrations() {
 
 function adminDeleteReg(id) {
     if (!confirm('ต้องการลบรายการฝากแทคนี้?')) return;
-
-    // ดึงชื่อสินค้าแบบเดียวกับที่หน้าบ้านทำ เพื่อส่งไปลบในชีท
     const reg = getRegistrations().find(r => r.id === id);
     if (!reg) return;
-    // ต้องเป็นชื่อมาตรฐาน ไม่งั้น Apps Script จะไปลบผิดแท็บ (helper อยู่ใน script.js)
     const productName = getCanonicalRegistrationProductName(reg.productId);
     if (!productName) { showToast('ระบบไม่รู้จักสินค้าของรายการนี้', 'error'); return; }
-    const email = reg.email;
 
-    // ส่งคำสั่งลบไปที่ Google Sheets — อ่านคำตอบได้แล้ว จะได้รู้ว่าลบจริงกี่แถว
-    fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-        body: JSON.stringify({ action: 'deleteReg', email: email, productName: productName })
-    })
-        .then(res => res.json())
+    postToRegistrationBackend({ action: 'deleteReg', email: reg.email, productName: productName })
         .then(res => {
             if (!res || res.success !== true) throw new Error((res && res.error) || 'ลบไม่สำเร็จ');
+            return fetchRegistrations().then(() => {
+                showToast('ลบรายการสำเร็จ (พร้อมส่งอีเมลแจ้งยกเลิก)', 'info');
+            });
         })
         .catch(err => {
             console.error('Delete on Sheets failed:', err);
-            showToast('ลบในหน้านี้แล้ว แต่ลบใน Google Sheets ไม่สำเร็จ กรุณาตรวจสอบ', 'error');
+            showToast(err.message || 'ลบใน Google Sheets ไม่สำเร็จ กรุณาตรวจสอบ', 'error');
         });
-
-    // ลบข้อมูลในเครื่องตามปกติ
-    const regs = getRegistrations().filter(r => r.id !== id);
-    saveRegistrations(regs);
-    renderRegistrations();
-    updateStats();
-    showToast('ลบรายการสำเร็จ (พร้อมส่งอีเมลแจ้งยกเลิก)', 'info');
 }
 
 // ============ Email Notifications (Per-Product) ============
@@ -451,12 +468,7 @@ function sendNotification() {
     /* ⭐ อ่านคำตอบจริง ไม่เดาจากจำนวนในเครื่อง
        ของเดิมขึ้น "สำเร็จ N คน" โดย N มาจากรายชื่อในเครื่อง ต่อให้ฝั่ง Apps Script
        ส่งไปได้แค่ 3 คนแล้วชนโควตา หน้านี้ก็ยังขึ้นว่าสำเร็จทั้งหมด */
-    fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-        body: JSON.stringify(payload)
-    })
-        .then(res => res.json())
+    postToRegistrationBackend(payload)
         .then(res => {
             btn.disabled = false;
             btn.textContent = 'ส่ง Email แจ้งเตือน';
@@ -825,13 +837,9 @@ function syncQueuesToSheet() {
         })
     };
 
-    fetch(QUEUE_API_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload)
-    })
-        .then(() => {
+    postBackendRequest(QUEUE_API_URL, payload, sessionStorage.getItem('mofych_admin_key'))
+        .then(result => {
+            if (!result || result.success !== true) throw new Error((result && result.error) || 'Sync ไม่สำเร็จ');
             btn.disabled = false;
             btn.textContent = '↑ Sync ไป Google Sheets';
             showToast(`Sync ${queues.length} คิว ไป Sheets สำเร็จ ✦`, 'success');

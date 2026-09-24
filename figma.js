@@ -252,12 +252,12 @@
     function paintCounters() {
         if (typeof getProducts !== 'function') return;
         var products = getProducts();
-        var regs = (typeof getRegistrations === 'function') ? getRegistrations() : [];
+        var countFor = (typeof getRegistrationCount === 'function') ? getRegistrationCount : function () { return 0; };
         [['countLeft', 0, true], ['countRight', 1, false]].forEach(function (row) {
             var span = document.getElementById(row[0]);
             var p = products[row[1]];
             if (!span || !p) return;
-            var n = regs.filter(function (r) { return r.productId === p.id; }).length;
+            var n = countFor(p.id);
 
             span.textContent = 'ฝากแทคแล้ว ' + n + ' คน';
         });

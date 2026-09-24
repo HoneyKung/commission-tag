@@ -5,6 +5,7 @@
 
 // ============ Google Apps Script Backend ============
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz61XBdNkAS8IeMzR4CnlojyWbHxVjOHbgjMg6-NgrLPLDORRwIp7V2GQhYFIBsC0dJ/exec';
+const ADMIN_QUEUE_API_URL = 'https://script.google.com/macros/s/AKfycbxyX8fxW13LZhRyEvABkBVkTC5JxWzrAyo52pcWiJA-1pRTbEuf4zkbD5hQtLZKqT_9/exec';
 
 /* ============ ชื่อสินค้ามาตรฐานของระบบฝากแทค ============
    Google Apps Script เลือกแท็บในชีตจาก "ชื่อสินค้า" ไม่ใช่รหัส
@@ -69,21 +70,18 @@ function initData() {
         }
         if (changed) localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(products));
     }
-    if (!localStorage.getItem(STORAGE_KEYS.registrations)) {
+    if (!localStorage.getItem(STORAGE_KEYS.registrations) && document.getElementById('adminLayout')) {
         localStorage.setItem(STORAGE_KEYS.registrations, JSON.stringify([]));
     }
     if (!localStorage.getItem(STORAGE_KEYS.settings)) {
         localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify({
-            adminPasswordHash: '5e09f68817f3bff0e91cced36b88d853b91c32e4f9c2a5e3d2c6e8a0b4f7d1e3',
             queueStages: ['รอคิว', 'กำลังออกแบบ', 'กำลังผลิต', 'ตรวจสอบคุณภาพ', 'เสร็จแล้ว', 'ส่งแล้ว']
         }));
     }
 }
 
 function getProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.products) || '[]'); }
-function getRegistrations() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.registrations) || '[]'); }
 function getSettings() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.settings) || '{}'); }
-function saveRegistrations(r) { localStorage.setItem(STORAGE_KEYS.registrations, JSON.stringify(r)); }
 function generateId() { return Date.now().toString(36) + Math.random().toString(36).substring(2, 7); }
 
 // ============ Thai Date Helper ============
@@ -108,103 +106,95 @@ function formatThaiDate(dateStr) {
 }
 
 // ============ Sync with Google Sheets ============
-function fetchRegistrationRows() {
-    return fetch(APPS_SCRIPT_URL + '?action=getRegistrations', { cache: 'no-store' })
-        .then(res => {
-            if (!res.ok) throw new Error(`โหลดข้อมูลไม่สำเร็จ (${res.status})`);
-            return res.json();
-        })
-        .then(data => {
-            if (!data || data.success !== true || !Array.isArray(data.data)) {
-                throw new Error('รูปแบบข้อมูลจาก Google Sheets ไม่ถูกต้อง');
-            }
-            return data.data;
-        });
-}
+let registrationCounts = {};
 
-function applyRegistrationRows(rows) {
-    const products = getProducts();
-    const newRegs = rows.map(row => {
-        const product = products.find(p => p.name === row['สินค้า']);
-        return {
-            id: generateId(),
-            name: row['ชื่อ'],
-            email: row['Email'],
-            productId: product ? product.id : row['สินค้า'],
-            createdAt: row['วันที่'] || new Date().toISOString()
-        };
-    });
-
-    // Google Sheets เป็นแหล่งข้อมูลหลัก อัปเดต local cache หลังอ่านสำเร็จเท่านั้น
-    saveRegistrations(newRegs);
-    renderProducts();
-
-    if (typeof renderRegistrations === 'function') renderRegistrations();
-    if (typeof updateStats === 'function') updateStats();
-    if (typeof updateNotifyCount === 'function') updateNotifyCount();
-    if (typeof window.paintCounters === 'function') window.paintCounters();
-}
-
-function fetchRegistrations() {
-    return fetchRegistrationRows()
-        .then(rows => {
-            applyRegistrationRows(rows);
-            return rows;
-        })
-        .catch(err => {
-            console.error('Error fetching registrations:', err);
-            return null;
-        });
-}
-
-/* ⭐ deployment ตัวนี้ตอบกลับข้ามออริจินได้จริง (ยิงเทสแล้วอ่าน JSON กลับมาได้ 2026-08-19)
-   จึงเลิกใช้ no-cors = อ่านผลจากคำตอบได้เลย ไม่ต้องวนอ่านชีตมายืนยันอีก
-   ⚠ Content-Type ต้องเป็น text/plain เท่านั้น จะได้เป็น simple request ไม่มี preflight
-     (Apps Script ไม่ตอบ OPTIONS ถ้าโดน preflight คำขอจะตายก่อนถึง doPost) */
-function postToRegistrationBackend(payload) {
-    return fetch(APPS_SCRIPT_URL, {
+function postBackendRequest(url, payload, adminKey) {
+    const body = Object.assign({}, payload);
+    if (adminKey) body.adminKey = adminKey;
+    return fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(body)
     }).then(res => {
-        if (!res.ok) throw new Error(`ส่งข้อมูลไม่สำเร็จ (${res.status})`);
+        if (!res.ok) throw new Error('ส่งข้อมูลไม่สำเร็จ (' + res.status + ')');
         return res.json();
+    }).then(result => {
+        if (result && result.error === 'UNAUTHORIZED') {
+            expireAdminSession();
+            throw new Error('รหัสผู้ดูแลใช้ไม่ได้ กรุณาเข้าสู่ระบบใหม่');
+        }
+        return result;
     });
 }
 
-/* ⚠ ตั้งแต่ 2026-08-19 การลงชื่อ/ยกเลิกไม่ใช้ชุดนี้แล้ว เพราะอ่านคำตอบของ POST ได้ตรงๆ
-   เก็บไว้เผื่อโค้ดส่วนอื่นเรียกใช้ และเผื่อ deployment ใหม่ในอนาคตตอบข้ามออริจินไม่ได้ */
-const VERIFY_DELAYS = [600, 1000, 1600, 2400];
-
-function wait(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+function postToRegistrationBackend(payload) {
+    return postBackendRequest(APPS_SCRIPT_URL, payload, sessionStorage.getItem('mofych_admin_key'));
 }
 
-function rowMatchesRegistration(row, email, productName) {
-    return String(row['Email'] || '').trim().toLowerCase() === email.toLowerCase()
-        && String(row['สินค้า'] || '').trim() === productName;
+function verifyAdminKey(key) {
+    return Promise.all([
+        postBackendRequest(APPS_SCRIPT_URL, { action: 'verifyAdmin' }, key)
+            .then(result => ({ service: 'ฝากแทค', success: !!(result && result.success) }))
+            .catch(() => ({ service: 'ฝากแทค', success: false })),
+        postBackendRequest(ADMIN_QUEUE_API_URL, { action: 'verifyAdmin' }, key)
+            .then(result => ({ service: 'คิว', success: !!(result && result.success) }))
+            .catch(() => ({ service: 'คิว', success: false }))
+    ]);
 }
 
-function verifyRemoteRegistration(email, productNames, shouldExist, attempt) {
-    const n = attempt || 0;
-    return fetchRegistrationRows()
-        .then(rows => {
-            const matchesExpectedState = productNames.every(productName => {
-                const found = rows.some(row => rowMatchesRegistration(row, email, productName));
-                return shouldExist ? found : !found;
-            });
-            if (matchesExpectedState) return rows;
-            throw new Error('ยังไม่พบผลที่ต้องการใน Google Sheets');
-        })
-        .catch(err => {
-            if (n >= VERIFY_DELAYS.length) throw err;
-            return wait(VERIFY_DELAYS[n]).then(() =>
-                verifyRemoteRegistration(email, productNames, shouldExist, n + 1));
-        });
+function expireAdminSession() {
+    if (!sessionStorage.getItem('mofych_admin_logged')) return;
+    sessionStorage.removeItem('mofych_admin_logged');
+    sessionStorage.removeItem('mofych_admin_key');
+    ['adminLayout', 'colorsLayout'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+    ['loginOverlay'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'flex';
+    });
+    const login = document.getElementById('loginPassword');
+    if (login) login.value = '';
+    if (typeof showToast === 'function') showToast('รหัสผู้ดูแลใช้ไม่ได้ กรุณาเข้าสู่ระบบใหม่', 'error');
+}
+
+async function validateAdminSession() {
+    const key = sessionStorage.getItem('mofych_admin_key');
+    if (!key || !sessionStorage.getItem('mofych_admin_logged')) {
+        sessionStorage.removeItem('mofych_admin_logged');
+        sessionStorage.removeItem('mofych_admin_key');
+        return false;
+    }
+    const results = await verifyAdminKey(key);
+    if (results.every(item => item.success)) return true;
+    expireAdminSession();
+    return false;
+}
+
+function fetchRegistrationCounts() {
+    return postToRegistrationBackend({ action: 'getCounts' }).then(result => {
+        if (!result || result.success !== true || !result.counts) throw new Error('โหลดตัวนับไม่สำเร็จ');
+        registrationCounts = result.counts;
+        renderProducts();
+        if (typeof window.paintCounters === 'function') window.paintCounters();
+        return registrationCounts;
+    }).catch(err => {
+        console.error('Error fetching registration counts:', err);
+        return null;
+    });
+}
+
+function getRegistrationCount(productId) {
+    const productName = getCanonicalRegistrationProductName(productId);
+    return productName ? (Number(registrationCounts[productName]) || 0) : 0;
 }
 
 // ============ Init ============
 document.addEventListener('DOMContentLoaded', () => {
+    if (!document.getElementById('adminLayout') && !document.getElementById('colorsLayout')) {
+        localStorage.removeItem(STORAGE_KEYS.registrations);
+    }
     initData();
     initTheme();
     renderProducts();
@@ -214,8 +204,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setupScrollAnimations();
     setupFormHandlers();
 
-    // ดึงข้อมูลรายชื่อจาก Google Sheets ทันทีที่โหลดเว็บ
-    fetchRegistrations();
+    if (!document.getElementById('adminLayout') && !document.getElementById('colorsLayout')) {
+        fetchRegistrationCounts();
+    }
 });
 
 // ============ ธีม ============
@@ -255,7 +246,7 @@ function renderProducts() {
     const heartSVG = `<svg class="heart-icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
 
     grid.innerHTML = products.map(product => {
-        const regCount = getRegistrations().filter(r => r.productId === product.id).length;
+        const regCount = getRegistrationCount(product.id);
         const statusClass = product.status === 'open' ? 'status-open' : 'status-closed';
         const statusText = product.status === 'open' ? 'เปิดรับ' : 'ปิดรับ';
         const imageHTML = product.image
@@ -334,16 +325,6 @@ function handleRegister(e) {
         showToast('กรุณาติ๊กยืนยันว่า Email ถูกต้อง', 'error'); return;
     }
 
-    const regs = getRegistrations();
-    const dupes = [];
-    selectedProducts.forEach(pid => {
-        if (regs.find(r => r.email.toLowerCase() === email.toLowerCase() && r.productId === pid)) {
-            const p = getProducts().find(p => p.id === pid);
-            dupes.push(p ? p.name : pid);
-        }
-    });
-    if (dupes.length) { showToast(`คุณเคยฝากแทค "${dupes.join(', ')}" แล้ว`, 'error'); return; }
-
     // แปลงรหัสเป็นชื่อมาตรฐานก่อนส่งเสมอ ถ้าแปลงไม่ได้แปลว่ามีสินค้าที่ระบบไม่รู้จัก
     const selectedProductNames = [];
     for (const pid of selectedProducts) {
@@ -372,29 +353,24 @@ function handleRegister(e) {
         productName: selectedProductNames[0]
     })
         .then(res => {
-            if (!res || res.success !== true) {
-                throw new Error((res && res.error) || 'บันทึกไม่สำเร็จ');
+            if (!res || res.success !== true) throw new Error((res && res.error) || 'บันทึกไม่สำเร็จ');
+            if (res.duplicates && res.duplicates.length && (!res.saved || !res.saved.length)) {
+                throw new Error('คุณเคยฝากแทค "' + res.duplicates.join(', ') + '" แล้ว');
             }
-            /* Apps Script ตัวใหม่ตอบ saved มาว่าบันทึกอะไรไปบ้าง
-               ถ้าไม่มี saved แปลว่ายังเป็นตัวเก่าที่บันทึกได้ทีละสินค้า → ส่งที่เหลือตามไป */
-            const saved = Array.isArray(res.saved) ? res.saved : [selectedProductNames[0]];
-            const missing = selectedProductNames.filter(n => saved.indexOf(n) === -1);
-            if (!missing.length) return res;
-            return Promise.all(missing.map(productName => postToRegistrationBackend({
-                action: 'register',
-                name: name,
-                email: email.toLowerCase(),
-                productName: productName
-            }))).then(() => res);
+            return res;
         })
-        .then(() => {
+        .then(res => {
             /* เซิร์ฟเวอร์ยืนยันมาแล้วว่าเขียนลงชีตจริง แสดงผลได้เลย ไม่ต้องวนอ่านชีตมายืนยัน */
             document.getElementById('registerForm').style.display = 'none';
             document.getElementById('formSuccess').style.display = 'block';
             createSparkles(btn, 12);
-            showToast('ลงชื่อฝากแทคสำเร็จ!', 'success');
+            if (res.duplicates && res.duplicates.length) {
+                showToast('คุณเคยฝากแทค "' + res.duplicates.join(', ') + '" แล้ว', 'error');
+            } else {
+                showToast('ลงชื่อฝากแทคสำเร็จ!', 'success');
+            }
             // อัปเดตตัวนับ/รายการตามหลังเงียบๆ ผู้ใช้ไม่ต้องรอ
-            fetchRegistrations();
+            fetchRegistrationCounts();
         })
         .catch(err => {
             console.error('Registration failed:', err);
@@ -424,50 +400,33 @@ function lookupTags() {
 function displayResults(email) {
     const resultsDiv = document.getElementById('lookupResults');
     const emptyDiv = document.getElementById('lookupEmpty');
-    const regs = getRegistrations().filter(r => r.email === email);
-    const products = getProducts();
-
-    if (regs.length === 0) { resultsDiv.style.display = 'none'; emptyDiv.style.display = 'block'; return; }
-    emptyDiv.style.display = 'none';
-    resultsDiv.style.display = 'block';
-    document.getElementById('resultsEmail').textContent = email;
-
-    document.getElementById('resultsList').innerHTML = regs.map(reg => {
-        const product = products.find(p => p.id === reg.productId);
-        const productName = product ? product.name : 'สินค้าที่ถูกลบ';
-        const date = formatThaiDate(reg.createdAt);
-        const actions = `<button class="btn btn-danger btn-sm" onclick="cancelTag('${reg.id}','${email}')">ลบ</button>`;
-        return `<div class="result-item"><div class="result-info"><div class="result-product">${escapeHtml(productName)}</div><div class="result-date">ลงชื่อเมื่อ ${date}</div></div>${actions}</div>`;
-    }).join('');
+    postToRegistrationBackend({ action: 'lookupByEmail', email: email }).then(result => {
+        const regs = result && Array.isArray(result.data) ? result.data : [];
+        if (regs.length === 0) { resultsDiv.style.display = 'none'; emptyDiv.style.display = 'block'; return; }
+        emptyDiv.style.display = 'none';
+        resultsDiv.style.display = 'block';
+        document.getElementById('resultsEmail').textContent = email;
+        document.getElementById('resultsList').innerHTML = regs.map(reg => {
+            const date = formatThaiDate(reg.date);
+            const encodedEmail = encodeURIComponent(email);
+            const encodedProduct = encodeURIComponent(reg.productName);
+            const actions = '<button class="btn btn-danger btn-sm" onclick="cancelTag(\'' + encodedEmail + '\',\'' + encodedProduct + '\')">ลบ</button>';
+            return '<div class="result-item"><div class="result-info"><div class="result-product">' + escapeHtml(reg.productName) + '</div><div class="result-date">ลงชื่อเมื่อ ' + date + '</div></div>' + actions + '</div>';
+        }).join('');
+    }).catch(err => showToast(err.message || 'ค้นหาไม่สำเร็จ กรุณาลองใหม่', 'error'));
 }
 
-function cancelTag(regId, email) {
+function cancelTag(encodedEmail, encodedProductName) {
     if (!confirm('ต้องการลบฝากแทครายการนี้?')) return;
-
-    // ดึงชื่อสินค้ามาเตรียมส่งให้ Apps Script ก่อนลบ
-    const reg = getRegistrations().find(r => r.id === regId);
-    if (!reg) return;
-    // ต้องเป็นชื่อมาตรฐาน ไม่งั้น Apps Script จะไปลบผิดแท็บ
-    const productName = getCanonicalRegistrationProductName(reg.productId);
-    if (!productName) { showToast('ระบบไม่รู้จักสินค้าของรายการนี้', 'error'); return; }
-
-    postToRegistrationBackend({
-        action: 'deleteReg',
-        email: email,
-        productName: productName
-    })
+    const email = decodeURIComponent(encodedEmail);
+    const productName = decodeURIComponent(encodedProductName);
+    postToRegistrationBackend({ action: 'deleteReg', email: email, productName: productName })
         .then(res => {
-            if (!res || res.success !== true) {
-                throw new Error((res && res.error) || 'ลบไม่สำเร็จ');
-            }
+            if (!res || res.success !== true) throw new Error((res && res.error) || 'ลบไม่สำเร็จ');
             showToast('ยกเลิกฝากแทคสำเร็จ (ระบบจะส่งอีเมลยืนยันให้คุณ)', 'info');
-            // อ่านรายการใหม่มาอัปเดตหน้า แล้วค่อยแสดงผลลัพธ์ที่เหลือ
-            return fetchRegistrations().then(() => displayResults(email));
+            return displayResults(email);
         })
-        .catch(err => {
-            console.error('Delete failed:', err);
-            showToast(err.message || 'ยกเลิกไม่สำเร็จ กรุณาลองใหม่', 'error');
-        });
+        .catch(err => showToast(err.message || 'ยกเลิกไม่สำเร็จ กรุณาลองใหม่', 'error'));
 }
 
 function showAddMore() {
@@ -483,18 +442,13 @@ function toggleForgotEmail() {
 }
 
 function lookupByName() {
-    const name = document.getElementById('forgotName').value.trim().toLowerCase();
+    const name = document.getElementById('forgotName').value.trim();
     if (!name) { showToast('กรุณากรอกชื่อ', 'error'); return; }
-
-    const regs = getRegistrations();
-    const matches = regs.filter(r => r.name.toLowerCase().includes(name));
-    if (matches.length === 0) { showToast('ไม่พบชื่อนี้ในระบบ', 'error'); return; }
-
-    // Show masked emails
-    const uniqueEmails = [...new Set(matches.map(r => r.email))];
-    const masked = uniqueEmails.map(maskEmail);
-    const msg = 'พบ Email ที่ลงไว้:\n' + masked.join('\n') + '\n\nลองใส่ Email เต็มเพื่อค้นหา';
-    alert(msg);
+    postToRegistrationBackend({ action: 'lookupByName', name: name }).then(result => {
+        const masked = result && Array.isArray(result.emails) ? result.emails : [];
+        if (!masked.length) { showToast('ไม่พบชื่อนี้ในระบบ', 'error'); return; }
+        alert('พบ Email ที่ลงไว้:\n' + masked.join('\n') + '\n\nลองใส่ Email เต็มเพื่อค้นหา');
+    }).catch(err => showToast(err.message || 'ค้นหาไม่สำเร็จ กรุณาลองใหม่', 'error'));
 }
 
 function maskEmail(email) {

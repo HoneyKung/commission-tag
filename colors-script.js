@@ -10,7 +10,7 @@ let selectedColor = null;
 // ============ Admin Lock ============
 document.addEventListener('DOMContentLoaded', () => {
     if (sessionStorage.getItem('mofych_admin_logged')) {
-        showColors();
+        validateAdminSession().then(valid => { if (valid) showColors(); });
     }
     document.getElementById('loginForm').addEventListener('submit', handleLogin);
 
@@ -35,21 +35,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function handleLogin(e) {
     e.preventDefault();
-    const pw = document.getElementById('loginPassword').value;
-    const hash = await sha256(pw);
-    const settings = getSettings();
-    if (hash === settings.adminPasswordHash || pw === settings.adminPassword || pw === 'mofych2026') {
-        sessionStorage.setItem('mofych_admin_logged', 'true');
-        showColors();
-    } else {
-        alert('รหัสผ่านไม่ถูกต้อง');
+    const key = document.getElementById('loginPassword').value;
+    const results = await verifyAdminKey(key);
+    const failed = results.filter(result => !result.success).map(result => result.service);
+    if (failed.length) {
+        alert('ตรวจรหัสไม่ผ่าน: ' + failed.join(' และ ') + ' กรุณาตั้ง ADMIN_KEY ใน Apps Script');
+        return;
     }
-}
-
-async function sha256(text) {
-    const data = new TextEncoder().encode(text);
-    const buf = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    sessionStorage.setItem('mofych_admin_key', key);
+    sessionStorage.setItem('mofych_admin_logged', 'true');
+    showColors();
 }
 
 function showColors() {

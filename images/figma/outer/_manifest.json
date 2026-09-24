@@ -1,0 +1,306 @@
+[
+  {
+    "file": "Group 25.svg",
+    "viewBox": "0 0 191 167",
+    "w": "191",
+    "h": "167",
+    "ids": [
+      "Group 25",
+      "Line 3",
+      "Star 4",
+      "Line 4",
+      "Line 6",
+      "paint0_linear_0_1",
+      "paint1_linear_0_1",
+      "paint2_linear_0_1"
+    ],
+    "fills": [
+      "#EFF6FF"
+    ],
+    "strokes": [
+      "#0E00A8",
+      "url(#paint0_linear_0_1)",
+      "url(#paint1_linear_0_1)",
+      "url(#paint2_linear_0_1)"
+    ],
+    "bgRemoved": 1
+  },
+  {
+    "file": "Line 4-1.svg",
+    "viewBox": "0 0 178 146",
+    "w": "178",
+    "h": "146",
+    "ids": [
+      "Line 4",
+      "Line 4_2",
+      "Line 5",
+      "Line 6",
+      "paint0_linear_0_1",
+      "paint1_linear_0_1",
+      "paint2_linear_0_1",
+      "paint3_linear_0_1"
+    ],
+    "fills": [],
+    "strokes": [
+      "url(#paint0_linear_0_1)",
+      "url(#paint1_linear_0_1)",
+      "url(#paint2_linear_0_1)",
+      "url(#paint3_linear_0_1)"
+    ],
+    "bgRemoved": 1
+  },
+  {
+    "file": "Line 4.svg",
+    "viewBox": "0 0 482 379",
+    "w": "482",
+    "h": "379",
+    "ids": [
+      "Group 25",
+      "Line 3",
+      "Star 4",
+      "Line 4",
+      "rope",
+      "Group 19",
+      "Ellipse 31",
+      "Line 4_2",
+      "Line 5",
+      "Line 6",
+      "paint0_linear_0_1",
+      "paint1_linear_0_1",
+      "paint2_radial_0_1",
+      "paint3_linear_0_1",
+      "paint4_linear_0_1",
+      "paint5_linear_0_1"
+    ],
+    "fills": [
+      "#EFF6FF"
+    ],
+    "strokes": [
+      "#0E00A8",
+      "url(#paint0_linear_0_1)",
+      "url(#paint1_linear_0_1)",
+      "url(#paint3_linear_0_1)",
+      "url(#paint4_linear_0_1)",
+      "url(#paint5_linear_0_1)"
+    ],
+    "bgRemoved": 1
+  },
+  {
+    "file": "Line 5.svg",
+    "viewBox": "0 0 178 146",
+    "w": "178",
+    "h": "146",
+    "ids": [
+      "Line 4",
+      "Line 4_2",
+      "Line 5",
+      "Line 6",
+      "paint0_linear_0_1",
+      "paint1_linear_0_1",
+      "paint2_linear_0_1",
+      "paint3_linear_0_1"
+    ],
+    "fills": [],
+    "strokes": [
+      "url(#paint0_linear_0_1)",
+      "url(#paint1_linear_0_1)",
+      "url(#paint2_linear_0_1)",
+      "url(#paint3_linear_0_1)"
+    ],
+    "bgRemoved": 1
+  },
+  {
+    "file": "Line 6.svg",
+    "viewBox": "0 0 178 146",
+    "w": "178",
+    "h": "146",
+    "ids": [
+      "Group 25",
+      "Line 3",
+      "Line 4",
+      "Line 4_2",
+      "Line 5",
+      "Line 6",
+      "paint0_linear_0_1",
+      "paint1_linear_0_1",
+      "paint2_linear_0_1",
+      "paint3_linear_0_1",
+      "paint4_linear_0_1"
+    ],
+    "fills": [],
+    "strokes": [
+      "url(#paint0_linear_0_1)",
+      "url(#paint1_linear_0_1)",
+      "url(#paint2_linear_0_1)",
+      "url(#paint3_linear_0_1)",
+      "url(#paint4_linear_0_1)"
+    ],
+    "bgRemoved": 1
+  },
+  {
+    "file": "Rectangle 25.svg",
+    "viewBox": "0 0 70 70",
+    "w": "70",
+    "h": "70",
+    "ids": [
+      "Rectangle 25"
+    ],
+    "fills": [
+      "#71EAF3"
+    ],
+    "strokes": [],
+    "bgRemoved": 1
+  },
+  {
+    "file": "Rectangle 26.svg",
+    "viewBox": "0 0 70 70",
+    "w": "70",
+    "h": "70",
+    "ids": [
+      "Rectangle 26"
+    ],
+    "fills": [
+      "#9DF3C9"
+    ],
+    "strokes": [],
+    "bgRemoved": 1
+  },
+  {
+    "file": "Rectangle 27.svg",
+    "viewBox": "0 0 70 70",
+    "w": "70",
+    "h": "70",
+    "ids": [
+      "Rectangle 27"
+    ],
+    "fills": [
+      "#C8A6F7"
+    ],
+    "strokes": [],
+    "bgRemoved": 1
+  },
+  {
+    "file": "Rectangle 28.svg",
+    "viewBox": "0 0 70 70",
+    "w": "70",
+    "h": "70",
+    "ids": [
+      "Rectangle 28"
+    ],
+    "fills": [
+      "#F8A9D6"
+    ],
+    "strokes": [],
+    "bgRemoved": 1
+  },
+  {
+    "file": "rope.svg",
+    "viewBox": "0 0 154 652",
+    "w": "154",
+    "h": "652",
+    "ids": [
+      "Line 4",
+      "rope",
+      "Group 17",
+      "Vector 31",
+      "Vector 32",
+      "Group 19",
+      "Star 3",
+      "Ellipse 31",
+      "Group 20",
+      "Vector 30",
+      "Ellipse 30",
+      "paint0_linear_0_1",
+      "paint1_radial_0_1"
+    ],
+    "fills": [
+      "#7C2D45",
+      "#D8B45A",
+      "#EFF6FF"
+    ],
+    "strokes": [
+      "#7C2D45",
+      "black",
+      "url(#paint0_linear_0_1)"
+    ],
+    "bgRemoved": 1
+  },
+  {
+    "file": "Star 10.svg",
+    "viewBox": "0 0 76 117",
+    "w": "76",
+    "h": "117",
+    "ids": [
+      "Star 5",
+      "Star 10"
+    ],
+    "fills": [
+      "#EFF6FF"
+    ],
+    "strokes": [
+      "#0E00A8"
+    ],
+    "bgRemoved": 1
+  },
+  {
+    "file": "Star 2.svg",
+    "viewBox": "0 0 72 113",
+    "w": "72",
+    "h": "113",
+    "ids": [
+      "Star 2"
+    ],
+    "fills": [],
+    "strokes": [],
+    "bgRemoved": 1
+  },
+  {
+    "file": "Star 5-1.svg",
+    "viewBox": "0 0 76 117",
+    "w": "76",
+    "h": "117",
+    "ids": [
+      "Star 5",
+      "Star 10"
+    ],
+    "fills": [
+      "#EFF6FF"
+    ],
+    "strokes": [
+      "#0E00A8"
+    ],
+    "bgRemoved": 1
+  },
+  {
+    "file": "Star 5.svg",
+    "viewBox": "0 0 52 79",
+    "w": "52",
+    "h": "79",
+    "ids": [
+      "Star 5"
+    ],
+    "fills": [
+      "#EFF6FF"
+    ],
+    "strokes": [
+      "#0E00A8"
+    ],
+    "bgRemoved": 1
+  },
+  {
+    "file": "Star 6.svg",
+    "viewBox": "0 0 40 60",
+    "w": "40",
+    "h": "60",
+    "ids": [
+      "Star 6"
+    ],
+    "fills": [
+      "#EFF6FF"
+    ],
+    "strokes": [
+      "#0E00A8"
+    ],
+    "bgRemoved": 1
+  }
+]

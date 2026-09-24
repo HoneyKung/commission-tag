@@ -1,0 +1,35 @@
+{
+  "picks": [
+    {
+      "id": "Line 1",
+      "file": "Line-1.svg",
+      "bytes": 600
+    },
+    {
+      "id": "Line 2",
+      "file": "Line-2.svg",
+      "bytes": 600
+    },
+    {
+      "id": "Line 3",
+      "file": "Line-3.svg",
+      "bytes": 601
+    },
+    {
+      "id": "Line 4",
+      "file": "Line-4.svg",
+      "bytes": 600
+    },
+    {
+      "id": "Line 5",
+      "file": "Line-5.svg",
+      "bytes": 600
+    },
+    {
+      "id": "Line 6",
+      "file": "Line-6.svg",
+      "bytes": 599
+    }
+  ],
+  "viewBox": "0 0 1920 2879"
+}

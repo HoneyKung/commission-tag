@@ -1,0 +1,3063 @@
+/* ============================================================
+   MOFYCH — HERO สเก็ตช์ลายเส้น (ตามภาพร่าง)
+   พื้นหลังฟ้าลาเวนเดอร์เรียบ ทุกอย่างเป็นหมึกดำลายมือ
+   ริมซ้าย = วงกลม "ภาพงาน" / ซ้าย = โลโก้+ปุ่มวงรี / ขวา = กระดาษฟอร์ม
+
+   หมายเหตุชื่อไฟล์: ยังใช้ชื่อเดิม hero-space.* เพื่อไม่ให้มีไฟล์ตกค้างเพิ่ม
+   (hero-scene.css / hero-scene.js เป็นของเก่าที่เลิกใช้แล้ว)
+   ============================================================ */
+
+.sketch-hero {
+    /* ---------- หมึก / กระดาษ ---------- */
+    /* หมึกคือสีนำ #0E00A8 — เส้นบางต้องอ่านออกว่าเป็นน้ำเงิน ไม่ใช่ดำ */
+    --sk-ink: var(--pal-primary);
+    --sk-ink-2: var(--primary-deep);
+    --sk-muted: var(--gray-500);
+    --sk-paper: var(--white);
+    --sk-fill: rgba(255, 255, 255, .88);
+    --sk-fill-soft: rgba(255, 255, 255, .5);
+
+    /* ---------- พาเลตต์ Game UI (ธีมสว่าง) ---------- */
+    /* ทุกค่าดึงมาจากพาเลต 11 สีใน style.css — สีนำเดี่ยวคือน้ำเงินหลัก
+       ม่วงอวกาศเป็น "ขั้นสว่างขึ้น" ของสีนำ (ใช้ตอน hover) */
+    --gx-primary: var(--pal-primary);
+    --gx-primary-lit: var(--primary-lit);
+    --gx-primary-soft: var(--primary-soft);
+    --gx-tint: var(--primary-tint);
+    --gx-sky: var(--pal-blue);
+    --gx-sky-deep: var(--blue-500);
+    --gx-aqua: var(--pal-cyan);
+    --gx-mint: var(--pal-mint);
+    --gx-gold: var(--pal-gold);
+    --gx-gold-deep: var(--gold-deep);
+    --gx-rose: var(--pal-pink);
+    --gx-burgundy: var(--pal-burgundy);
+    --gx-parchment: var(--parchment);
+
+    /* ---------- รูปทรง (หัวใจของความเป็น Game UI) ---------- */
+    --gx-notch: 14px;
+    --gx-notch-sm: 8px;
+    --gx-bevel: 3px;
+    --gx-stroke: 2.5px;
+    --gx-stroke-gold: 1.5px;
+    --gx-glow: 0 0 24px rgba(9, 0, 112, .22);
+
+    /* มุมตัด 45° บนซ้าย+ล่างขวา — ใช้เป็นทรงมาตรฐานของแผง/ปุ่ม */
+    --gx-clip: polygon(var(--gx-notch) 0, 100% 0, 100% calc(100% - var(--gx-notch)), calc(100% - var(--gx-notch)) 100%, 0 100%, 0 var(--gx-notch));
+    --gx-clip-sm: polygon(var(--gx-notch-sm) 0, 100% 0, 100% calc(100% - var(--gx-notch-sm)), calc(100% - var(--gx-notch-sm)) 100%, 0 100%, 0 var(--gx-notch-sm));
+
+    /* ---------- จังหวะ ---------- */
+    --gx-t-hover: 140ms;
+    --gx-t-panel: 260ms;
+
+    /* ---------- รูปทรงสำเร็จ (ใช้เป็น mask) ---------- */
+    --gx-star4: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z'/%3E%3C/svg%3E");
+    /* TODO[ART] — ลายมุมชั่วคราว วาดเป็นทรงเรขาคณิต ของจริงควรเป็นลาย filigree ที่วาดมือ */
+    --gx-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M3 3h21v4.6H7.6V24H3z'/%3E%3Cpath d='M12 31a19 19 0 0 1 19-19v4.4A14.6 14.6 0 0 0 16.4 31z'/%3E%3Cpath d='M33.4 33.4l4.3-4.3 4.3 4.3-4.3 4.3z'/%3E%3Ccircle cx='9.6' cy='41' r='2.5'/%3E%3Ccircle cx='41' cy='9.6' r='2.5'/%3E%3Cpath d='M22 22l3.2-3.2L28.4 22l-3.2 3.2z'/%3E%3C/svg%3E");
+}
+
+.sr-only-svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+
+/* ====================== เวที ====================== */
+/* ระยะแนวตั้งทั้งหน้าผูกกับ vh — จอโน้ตบุ๊ก/จอกว้างแต่เตี้ย (~880px หลังหักแถบเบราว์เซอร์)
+   ต้องยุบลงเองให้จบใน 1 หน้าจอ ไม่ใช่ปล่อยให้ฟอร์มล้นลงไปข้างล่าง
+   จอสูง 1080+ จะได้ค่า max = เท่าเดิมทุกอย่าง */
+.sketch-hero {
+    min-height: 100vh;
+    padding: clamp(40px, 6vh, 72px) 44px clamp(32px, 5vh, 58px) 116px;
+    /* ธีมสว่างเหมือนเดิม — แค่ขยับเข้าตระกูลม่วงของพาเลตต์ใหม่
+       แล้วเติมแสงทอง (มุมขวาล่าง) กับแสงฟ้าอควา (มุมซ้ายล่าง) ให้บรรยากาศเป็นอวกาศมากขึ้น
+       ⚠ ห้ามลดความสว่างลง ไม่งั้นกระดาษฟอร์มสีขาวจะไม่ลอยออกมา */
+    background:
+        radial-gradient(90% 70% at 76% 10%, rgba(255, 255, 255, .72), rgba(255, 255, 255, 0) 60%),
+        radial-gradient(46% 42% at 88% 80%, rgba(216, 180, 90, .20), rgba(216, 180, 90, 0) 70%),
+        radial-gradient(42% 46% at 4% 84%, rgba(113, 234, 243, .24), rgba(113, 234, 243, 0) 70%),
+        linear-gradient(150deg, #E3ECFB 0%, #EFF6FF 30%, #DCE1F8 74%, #D3D4F3 100%);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sk-ink);
+}
+
+.hero-stage {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 1240px;
+    display: grid;
+    grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+    gap: 40px;
+    align-items: center;
+}
+
+
+/* ====================== ฉากหลัง ====================== */
+.sk-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+    color: var(--sk-ink);
+}
+
+/* --- วงแหวน (วงโคจร) พาดหลังกระดาษ + ดาวเคลื่อนตามเส้น --- */
+.sk-orbit {
+    position: absolute;
+    border: 2.6px solid currentColor;
+    border-radius: 50%;
+    opacity: .8;
+    /* rotate มาก่อนใน list = ทำทีหลัง : ยุบแกน Y ให้เป็นวงรีแล้วค่อยเอียง */
+    transform: rotate(var(--orot)) scaleY(var(--osq));
+}
+
+/* ดาวที่วิ่งรอบวง — คนละความเร็ว คนละจังหวะ ไม่พร้อมกัน */
+.orb-run {
+    position: absolute;
+    inset: 0;
+    animation: orb-spin var(--ospd, 26s) linear infinite var(--odelay, 0s);
+}
+
+@keyframes orb-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* จุดอ้างอิงบนเส้นวง — หมุนสวนทาง .orb-run ด้วยความเร็ว/ดีเลย์เดียวกัน
+   เพื่อล้างมุมหมุนออก ดาวข้างในจะได้ไม่ถูก scaleY ของวงยืดเป็นขีด */
+.orb-sat {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    width: 0;
+    height: 0;
+    animation: orb-spin var(--ospd, 26s) linear infinite var(--odelay, 0s) reverse;
+}
+
+.orb-sat b {
+    position: absolute;
+    left: -6.5px;
+    top: -6.5px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: currentColor;
+    /* หักล้าง scaleY ของวง — พอมุมหมุนถูกล้างไปแล้ว ตรงนี้จึงได้วงกลมจริง */
+    transform: scaleY(calc(1 / var(--osq)));
+}
+
+.orb-1 {
+    width: 1120px;
+    height: 1120px;
+    right: -14%;
+    top: -34%;
+    --orot: -19deg;
+    --osq: .355;
+    --ospd: 30s;
+}
+
+.orb-2 {
+    width: 880px;
+    height: 880px;
+    right: -6%;
+    top: -22%;
+    --orot: -12deg;
+    --osq: .3;
+    --ospd: 21s;
+    --odelay: -7s;
+}
+
+/* วงที่สามเอียงกลับทาง กวาดลงมาทางซ้ายล่าง */
+.orb-3 {
+    width: 980px;
+    height: 980px;
+    left: 6%;
+    bottom: -40%;
+    --orot: 14deg;
+    --osq: .26;
+    --ospd: 38s;
+    --odelay: -14s;
+    opacity: .55;
+    border-style: dashed;
+}
+
+/* --- ดาว 4 แฉก: มีทั้งแบบเต็มสีและแบบเส้น และ "ตั้งตรง" เสมอ ห้ามหมุน --- */
+.sk-spark,
+.comet-head {
+    color: var(--sk-ink);
+}
+
+.sk-spark path,
+.comet-head path {
+    fill: currentColor;
+}
+
+.sk-spark.is-line path,
+.comet-head.is-line path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.sk-spark {
+    position: absolute;
+    width: var(--ss, 26px);
+    height: var(--ss, 26px);
+    animation: sk-twinkle 4.2s ease-in-out infinite var(--sd, 0s);
+}
+
+/* ดาวลอยเดี่ยว 3 ดวง ตามตำแหน่งในเรฟ */
+.sp-1 {
+    left: 30%;
+    top: 20%;
+    --ss: 24px;
+}
+
+.sp-2 {
+    left: 50%;
+    top: 77%;
+    --ss: 30px;
+    --sd: -1.4s;
+}
+
+.sp-3 {
+    left: 95%;
+    top: 61%;
+    --ss: 32px;
+    --sd: -2.6s;
+}
+
+/* ย่อ-ขยาย + จาง เท่านั้น ไม่มี rotate */
+@keyframes sk-twinkle {
+
+    0%,
+    100% {
+        opacity: .6;
+        transform: scale(.86);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.06);
+    }
+}
+
+/* --- ดาวหาง: หัวดาวตั้งตรง + หางเป็นเส้นตรงบนแกนเดียวกัน พุ่งขึ้นขวา ---
+   สำคัญ: ทุกดวงใช้ "มุม / ความยาว / ระยะห่าง" ชุดเดียวกันหมด
+   เส้นหางต้องเอียงเท่ากันไปทางเดียวกันทั้งฉาก ห้ามตั้งค่าแยกรายดวง */
+.sk-comet {
+    position: absolute;
+    left: var(--cx);
+    top: var(--cy);
+    width: 0;
+    height: 0;
+    color: var(--sk-ink);
+    --ta: -48deg;
+    /* มุมเอียงร่วมของหางทุกดวง */
+    --tg: 26px;
+    /* ระยะห่างจากหัวดาวถึงต้นหาง */
+    --tl: 104px;
+    /* ความยาวหาง */
+    /* ตกลงซ้ายล่าง = ทิศตรงข้ามกับหางพอดี (-48deg + 180deg)
+       linear เท่านั้น — ดาวตกต้องวิ่งผ่านไปรวดเดียวความเร็วคงที่
+       ถ้าใส่เคิร์ฟ มันจะเร่ง-หน่วงทุกช่วงคีย์เฟรม กลายเป็นวิ่งๆ หยุดๆ */
+    animation: comet-fall var(--cdur, 11s) linear infinite var(--cdelay, 0s);
+}
+
+/* ซ่อนไว้ 80% ของรอบ = จังหวะเว้นวรรคระหว่างดวง แล้วค่อยวิ่งรวดเดียวจบ
+   ระยะทางต่อเวลาต้องเท่ากันทุกช่วง ไม่งั้นจะเห็นเป็นสะดุด
+     80.5→99.5% (19%)  = 900px  → 47.4 px ต่อ %
+     99.5→100%  (0.5%) = 25px   → 50.0 px ต่อ %
+   ทุกคีย์เฟรมอยู่บนแกน 132° เท่ากัน (x:y = -0.9 : 1) ทางวิ่งจึงไม่หักศอก */
+@keyframes comet-fall {
+
+    0%,
+    80% {
+        opacity: 0;
+        transform: translate(0, 0);
+    }
+
+    80.5% {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+
+    99.5% {
+        opacity: 1;
+        transform: translate(-603px, 670px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-620px, 689px);
+    }
+}
+
+.comet-head {
+    position: absolute;
+    left: calc(var(--hs, 26px) / -2);
+    top: calc(var(--hs, 26px) / -2);
+    width: var(--hs, 26px);
+    height: var(--hs, 26px);
+}
+
+/* หางออกจากจุดศูนย์กลางหัวดาว เว้นระยะ --tg แล้วลากยาว --tl ตามมุม --ta */
+.comet-tail {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--tl, 130px);
+    height: 5px;
+    margin-top: -2.5px;
+    border-radius: 3px;
+    background: currentColor;
+    transform-origin: 0 50%;
+    transform: rotate(var(--ta, -40deg)) translateX(var(--tg, 26px));
+}
+
+/* ต่างกันได้แค่จุดตั้งต้น / ขนาดหัวดาว / จังหวะตก — มุมหางเท่ากันหมด */
+.cm-1 {
+    --cx: 34%;
+    --cy: -6%;
+    --hs: 24px;
+    --cdur: 9s;
+    --cdelay: -2s;
+}
+
+.cm-2 {
+    --cx: 62%;
+    --cy: 2%;
+    --hs: 32px;
+    --cdur: 12s;
+    --cdelay: -7s;
+}
+
+.cm-3 {
+    --cx: 88%;
+    --cy: 14%;
+    --hs: 26px;
+    --cdur: 15s;
+    --cdelay: -12s;
+}
+
+
+/* ====================== วงกลม "ภาพงาน" ริมซ้าย ====================== */
+.sk-works {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: min(320px, 26vw);
+    z-index: 2;
+    pointer-events: none;
+    /* ตัวคูณย่อวง — จอแคบลงต้องย่อ ไม่งั้นวงไปทับคำว่า MOFYCH */
+    --wk: 1;
+    transition: opacity .45s ease, transform .5s cubic-bezier(.5, 0, .75, 0);
+}
+
+/* ดึงเชือกไปฉากเมนู — ตัวคอนเทนเนอร์ไม่ต้องจาง เพราะแต่ละวงดีดขึ้นเองทีละใบ (ดู flingWorksAway) */
+.sk-works.is-away {
+    pointer-events: none;
+}
+
+/* วงที่เกิดแบบ "เริ่มไปแล้ว" (animation-delay ติดลบ ตอนดึงเชือกกลับมาฉากแบรนด์)
+   ถ้าปล่อยเฉยๆ มันจะโผล่กลางอากาศทันทีเหมือนกระพริบ
+   เลยซ้อนอนิเมชันตัวที่สองคุม opacity/blur ให้ค่อยๆ ปรากฏ
+   ห้ามให้ sk-appear แตะ transform เด็ดขาด ไม่งั้นจะไปทับตำแหน่งของ sk-float-up */
+.sk-work.is-warp-in {
+    animation-name: sk-float-up, sk-appear;
+    animation-duration: var(--dur, 8s), .46s;
+    animation-timing-function: linear, cubic-bezier(.2, .85, .3, 1);
+    animation-fill-mode: forwards, backwards;
+    animation-delay: var(--pre, 0s), 0s;
+}
+
+@keyframes sk-appear {
+    from {
+        opacity: 0;
+        filter: blur(8px);
+    }
+
+    to {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+/* วงภาพงานลอยขึ้นแล้วเล็กหายไป (แบบอีโมจิไลฟ์) — JS เป็นคนปล่อยทีละวง */
+.sk-work {
+    position: absolute;
+    left: calc(var(--x, 0px) * var(--wk));
+    bottom: 0;
+    width: calc(var(--s, 160px) * var(--wk));
+    height: calc(var(--s, 160px) * var(--wk));
+    display: grid;
+    place-items: center;
+    color: var(--sk-ink);
+    /* ต้องเป็น linear — เคิร์ฟจะถูกใส่ทับทุกช่วงคีย์เฟรม ทำให้ช้า-เร็วเป็นห้วงๆ ไม่สมูท
+       ความรู้สึกของจังหวะไปคุมด้วยระยะห่างคีย์เฟรมแทน */
+    animation: sk-float-up var(--dur, 8s) linear forwards;
+    will-change: transform, opacity;
+}
+
+/* ระยะยกตัว (vh) กับเวลา (%) ไล่เป็นสัดส่วนกัน = ลอยขึ้นด้วยความเร็วคงที่ ไม่สะดุด
+   ส่วนที่เป็น "อิสระ" คือทางส่ายซ้ายขวา — JS สุ่ม --k1..--k5 กับ --rot ให้ทุกใบไม่ซ้ำกัน
+   (เมื่อก่อนทุกใบเดินทางเดียวกันเป๊ะ ต่างแค่ระยะ เลยดูแข็งเป็นหุ่นยนต์) */
+@keyframes sk-float-up {
+    0% {
+        opacity: 0;
+        transform: translate(0, 42%) scale(.3) rotate(calc(var(--rot, 6deg) * -1.2));
+        /* เด้งเข้าเฟรม */
+        animation-timing-function: cubic-bezier(.2, 1.5, .5, 1);
+    }
+
+    7% {
+        opacity: 1;
+        transform: translate(calc(var(--dx) * var(--k1, .2)), -8vh) scale(1.06) rotate(calc(var(--rot, 6deg) * .5));
+    }
+
+    13% {
+        transform: translate(calc(var(--dx) * var(--k2, .35)), -15vh) scale(1) rotate(calc(var(--rot, 6deg) * .2));
+    }
+
+    33% {
+        transform: translate(calc(var(--dx) * var(--k3, -.2)), -33vh) scale(.93) rotate(calc(var(--rot, 6deg) * -.8));
+    }
+
+    56% {
+        transform: translate(calc(var(--dx) * var(--k4, .55)), -55vh) scale(.84) rotate(calc(var(--rot, 6deg) * .9));
+    }
+
+    79% {
+        transform: translate(calc(var(--dx) * var(--k5, -.05)), -77vh) scale(.72) rotate(calc(var(--rot, 6deg) * -.4));
+    }
+
+    93% {
+        opacity: 1;
+        transform: translate(var(--dx), -90vh) scale(.6) rotate(0deg);
+        /* เฉพาะช่วงป๊อปก่อนแตกเท่านั้นที่ใส่เคิร์ฟเด้ง */
+        animation-timing-function: cubic-bezier(.3, 1.6, .6, 1);
+    }
+
+    97% {
+        opacity: 1;
+        /* ป๊อปแค่พอรู้สึก — .88 ของเดิมโป่งจนดูแปลก */
+        transform: translate(var(--dx), -93vh) scale(.72) rotate(calc(var(--rot, 6deg) * .3));
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(var(--dx), -95vh) scale(.14) rotate(calc(var(--rot, 6deg) * .8));
+    }
+}
+
+/* เงาทิ้งท้ายตอนลอยขึ้น — วงจางๆ เบลอๆ ค้างอยู่ด้านล่างสองชั้น
+   z-index ติดลบให้อยู่หลังวงจริง (.sk-work มี transform อยู่แล้ว = เป็น stacking context) */
+.sk-work::before,
+.sk-work::after {
+    content: '';
+    position: absolute;
+    inset: 7%;
+    z-index: -1;
+    border-radius: 50%;
+    border: 3px solid currentColor;
+    opacity: .18;
+    filter: blur(2.5px);
+    transform: translateY(24%) scale(.93);
+}
+
+.sk-work::after {
+    opacity: .09;
+    filter: blur(5px);
+    transform: translateY(50%) scale(.84);
+}
+
+/* เส้นวงกลมลายมือ */
+.sk-work-ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    filter: url(#pencil-fine);
+}
+
+.sk-work-ring path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 4.6;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+/* วงในของวงแหวนคู่ — เส้นเต็มวง ไม่ใช่ขีดสั้นๆ */
+.sk-work-ring .ring-inner {
+    stroke-width: 2.8;
+    opacity: .9;
+}
+
+/* พื้นวงในเวลายังไม่มีรูป */
+.sk-work-fill {
+    position: absolute;
+    inset: 5%;
+    border-radius: 50%;
+    background: var(--sk-fill-soft);
+}
+
+.sk-work img {
+    position: absolute;
+    inset: 5%;
+    width: 90%;
+    height: 90%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+.sk-work-label {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-th);
+    font-size: clamp(.72rem, .9vw, .88rem);
+    font-weight: 400;
+    color: var(--sk-muted);
+    letter-spacing: .02em;
+}
+
+
+
+/* ====================== เชือกดึงเปลี่ยนฉาก ====================== */
+.rope {
+    position: absolute;
+    top: 0;
+    left: 36%;
+    z-index: 7;
+    width: 74px;
+    padding: 0 0 12px;
+    border: 0;
+    background: none;
+    cursor: grab;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--sk-ink);
+    -webkit-tap-highlight-color: transparent;
+    transform: translateY(var(--pull, 0px));
+    transition: transform .5s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.rope:active {
+    cursor: grabbing;
+}
+
+/* เชือกแกว่งซ้ายขวา — ห้อยจากจุดบนสุด */
+.rope-swing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform-origin: 50% 0;
+    animation: rope-sway 4.6s ease-in-out infinite;
+}
+
+@keyframes rope-sway {
+
+    0%,
+    100% {
+        transform: rotate(-4deg);
+    }
+
+    50% {
+        transform: rotate(4deg);
+    }
+}
+
+/* เชือกถัก: รางสองข้าง + ขดเฉียง */
+.rope-line {
+    width: 14px;
+    height: clamp(66px, 10vh, 112px);
+    box-sizing: border-box;
+    border-left: 2.4px solid currentColor;
+    border-right: 2.4px solid currentColor;
+    background: repeating-linear-gradient(-56deg,
+            currentColor 0 2.2px,
+            transparent 2.2px 7.6px);
+}
+
+.rope-star {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 74px;
+    height: 86px;
+    margin-top: -5px;
+}
+
+.rope-glow {
+    position: absolute;
+    width: 210px;
+    height: 210px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(255, 255, 255, .95) 0%,
+            rgba(222, 235, 254, .6) 30%,
+            rgba(186, 215, 253, 0) 66%);
+    animation: sk-glow 3.6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* ไฟกระพริบชวนกด — วูบแรงเป็นจังหวะ ไม่ใช่หายใจเบาๆ */
+@keyframes sk-glow {
+
+    0%,
+    62%,
+    100% {
+        opacity: .55;
+        transform: scale(.9);
+    }
+
+    70% {
+        opacity: 1;
+        transform: scale(1.22);
+    }
+
+    78% {
+        opacity: .7;
+        transform: scale(1);
+    }
+
+    86% {
+        opacity: 1;
+        transform: scale(1.16);
+    }
+}
+
+.rope-star svg {
+    position: relative;
+    width: 57px;
+    height: 70px;
+    color: var(--sk-ink);
+    animation: sk-star-blink 3.6s ease-in-out infinite;
+}
+
+@keyframes sk-star-blink {
+
+    0%,
+    62%,
+    100% {
+        transform: scale(1);
+    }
+
+    70% {
+        transform: scale(1.14);
+    }
+
+    78% {
+        transform: scale(1.02);
+    }
+
+    86% {
+        transform: scale(1.1);
+    }
+}
+
+.rope-star-body {
+    fill: var(--sk-paper);
+    stroke: currentColor;
+    stroke-width: 3.4;
+    stroke-linejoin: round;
+}
+
+/* ชี้เมาส์แล้วให้ไฟรัวขึ้น (transform ปล่อยให้อนิเมชันกระพริบคุมไว้คนเดียว) */
+.rope:hover .rope-glow,
+.rope:hover .rope-star svg {
+    animation-duration: 1.2s;
+}
+
+.rope-hint {
+    margin-top: 8px;
+    font-family: var(--font-th);
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    white-space: nowrap;
+    color: var(--sk-ink);
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity .25s ease, transform .25s ease;
+}
+
+.rope:hover .rope-hint,
+.rope:focus-visible .rope-hint {
+    opacity: .8;
+    transform: none;
+}
+
+.rope.is-pulling {
+    --pull: 26px;
+    transition: transform .12s ease-out;
+}
+
+
+/* ====================== ซ้าย: หน้าต่างสลับฉาก ====================== */
+.scene-window {
+    position: relative;
+    min-height: clamp(300px, 46vh, 440px);
+    display: grid;
+}
+
+.scene-panel {
+    grid-area: 1 / 1;
+    align-self: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-130%);
+    pointer-events: none;
+}
+
+.scene-panel.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
+}
+
+/* base เป็น linear ทั้งคู่ แล้วใส่เคิร์ฟรายช่วงเอง
+   ถ้าใส่เคิร์ฟที่ตัว animation มันจะไปหน่วงทุกช่วงคีย์เฟรม = หนืด ไม่โฟลว */
+
+/* ฉากเก่า: ย่อเก็บแรงแป๊บเดียว แล้วดีดขึ้นทันที */
+.scene-panel.is-leaving {
+    animation: scene-up .34s linear forwards;
+}
+
+/* ฉากใหม่: ทิ้งตัวลงเร็ว → เลยจุดพักครั้งเดียว → กลับมานิ่ง จบ
+   (ไม่เด้งซ้ำหลายจังหวะ) */
+.scene-panel.is-entering {
+    animation: scene-down .52s linear both;
+}
+
+@keyframes scene-up {
+    0% {
+        opacity: 1;
+        transform: translateY(0) rotate(0) scale(1);
+        animation-timing-function: cubic-bezier(.3, 0, .5, 1);
+    }
+
+    26% {
+        opacity: 1;
+        /* เก็บแรง: ยุบลงนิดนึงก่อนดีด */
+        transform: translateY(24px) rotate(1.6deg) scale(.96);
+        /* ดีดออกแบบเร่งความเร็ว ไม่หน่วงตอนท้าย */
+        animation-timing-function: cubic-bezier(.5, 0, .85, .5);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-142%) rotate(-8deg) scale(1.06);
+    }
+}
+
+@keyframes scene-down {
+    0% {
+        opacity: 0;
+        transform: translateY(-142%) rotate(5deg) scale(1.05);
+        /* ทิ้งตัวลงเร็วรวดเดียว ไม่มีสโลว์นำ */
+        animation-timing-function: cubic-bezier(.4, .05, .5, 1);
+    }
+
+    54% {
+        opacity: 1;
+        /* เลยจุดพักลงไปทีเดียว */
+        transform: translateY(24px) rotate(-2.4deg) scale(.97);
+        animation-timing-function: cubic-bezier(.3, 0, .25, 1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+
+/* --- ฉาก 1 : แบรนด์ (จัดกลางตามภาพร่าง) --- */
+.scene-panel[data-scene="1"] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* จอเตี้ยให้ยึด vh เป็นตัวคุม ไม่งั้นโลโก้ใหญ่จนดันปุ่มตกขอบจอ */
+.brand-logo-wrap {
+    width: clamp(120px, min(17vw, 18vh), 250px);
+    margin-bottom: 4px;
+}
+
+.brand-logo {
+    width: 100%;
+    height: auto;
+    display: block;
+    /* กลิ่นธีมเดิม: เรืองฟ้าอ่อนๆ หลังโลโก้ */
+    filter: drop-shadow(0 0 30px rgba(100, 164, 247, .5));
+    animation: logo-float 7s ease-in-out infinite;
+}
+
+@keyframes logo-float {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(-1deg);
+    }
+
+    50% {
+        transform: translateY(-9px) rotate(1deg);
+    }
+}
+
+/* ตัวหนา MOFYCH = จุดที่โฮโลแกรมต้องเห็นชัดที่สุดของทั้งเว็บ
+   (คลาส .hologram / .holo-text-lg นิยามไว้ที่ style.css) */
+.brand-word {
+    font-family: var(--font-en);
+    /* ตัวใหญ่ขึ้นกว่าเดิมเพราะเป็นที่โชว์โฮโลแกรม — ตัวเล็กแล้วไล่สีจะจมหายไปกับพื้นขาว
+       ยังผูกกับ vh อยู่ ฟอร์มจึงไม่ล้นจอเตี้ย */
+    font-size: clamp(2.4rem, min(6.2vw, 8.6vh), 5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: .02em;
+    margin-bottom: clamp(6px, 1.4vh, 12px);
+}
+
+.brand-line {
+    font-family: var(--font-th);
+    line-height: 1.6;
+    max-width: 34ch;
+}
+
+.brand-line-1 {
+    font-size: clamp(1rem, 1.5vw, 1.25rem);
+    font-weight: 500;
+    color: var(--sk-ink);
+    margin-bottom: 6px;
+}
+
+.brand-line-2 {
+    font-size: clamp(.86rem, 1.15vw, 1rem);
+    font-weight: 400;
+    color: var(--sk-muted);
+    margin-bottom: clamp(12px, 2.8vh, 30px);
+}
+
+/* --- ปุ่มวงรีลายเส้น --- */
+.brand-actions {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.ink-btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: clamp(158px, 14vw, 192px);
+    height: clamp(54px, 8vh, 76px);
+    color: var(--sk-ink);
+    text-decoration: none;
+    transition: transform .22s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.ink-oval {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.ink-oval .oval-face {
+    fill: var(--sk-fill);
+    stroke: currentColor;
+    stroke-width: 3.4;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.ink-oval .oval-back {
+    fill: var(--sk-fill);
+    stroke: currentColor;
+    stroke-width: 3.2;
+    vector-effect: non-scaling-stroke;
+}
+
+.ink-oval .oval-tail {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 3.4;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.ink-oval .oval-hatch path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.ink-btn-label {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-th);
+    font-size: clamp(.98rem, 1.25vw, 1.14rem);
+    font-weight: 500;
+    color: var(--sk-ink);
+}
+
+/* ปุ่มขอบหนา — ดันตัวหนังสือขึ้นให้อยู่กลางหน้าเหรียญ */
+.ink-btn-coin {
+    height: clamp(60px, 8.8vh, 84px);
+}
+
+.ink-btn-coin .ink-btn-label {
+    transform: translateY(-5px);
+}
+
+.ink-btn-spark {
+    position: absolute;
+    left: 4px;
+    top: -4px;
+    width: 22px;
+    height: 22px;
+    color: var(--sk-ink);
+    z-index: 2;
+}
+
+.ink-btn:hover {
+    transform: translateY(-4px) rotate(-1deg);
+}
+
+.ink-btn:active {
+    transform: translateY(1px) rotate(0deg);
+}
+
+.ink-btn:focus-visible {
+    outline: 3px dashed var(--sk-ink);
+    outline-offset: 6px;
+    border-radius: 50%;
+}
+
+
+/* --- ฉาก 2 : เมฆเมนู (ยังไม่แตะตามที่สั่ง) --- */
+.cloud-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.cloud-btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 244px;
+    height: 92px;
+    text-decoration: none;
+    color: var(--sk-paper);
+    animation: cloud-bob 5s ease-in-out infinite;
+    transition: transform .22s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.cb-1 {
+    margin-left: 0;
+}
+
+.cb-2 {
+    margin-left: 52px;
+    animation-delay: -1.2s;
+}
+
+.cb-3 {
+    margin-left: 22px;
+    animation-delay: -2.4s;
+}
+
+.cb-4 {
+    margin-left: 74px;
+    animation-delay: -3.6s;
+}
+
+@keyframes cloud-bob {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-9px);
+    }
+}
+
+.cloud-shape {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 4px 0 rgba(14, 0, 168, .18)) drop-shadow(0 12px 20px rgba(14, 0, 168, .16));
+}
+
+.cloud-label {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-th);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--sk-ink);
+    padding-bottom: 4px;
+}
+
+.cloud-btn:hover {
+    transform: translateY(-6px) scale(1.04);
+}
+
+
+/* ====================== ขวา: กระดาษฟอร์ม ====================== */
+.paper-stage {
+    position: relative;
+    z-index: 3;
+    padding: clamp(14px, 2.2vh, 24px) 40px clamp(20px, 3.4vh, 38px) 44px;
+    /* เพอร์สเปคทีฟตามเรฟ (เหมือนเวอร์ชันเดิม) */
+    perspective: 1500px;
+    perspective-origin: 66% 50%;
+}
+
+/* กล่องเอียง — มุมซ้ายยุบเข้า มุมขวาดึงเข้าหาคนดู ขยับตามเมาส์ */
+.form-3d {
+    position: relative;
+    z-index: 2;
+    transform-style: preserve-3d;
+    transform: rotateY(var(--fy, -7deg)) rotateX(var(--fx, 1.5deg));
+    transition: transform .45s cubic-bezier(.22, 1, .36, 1);
+}
+
+.paper {
+    position: relative;
+}
+
+/* สันกระดาษด้านหลัง — เรฟมีเส้นซ้อนอีกชั้นโผล่ทางขวา/บน */
+.paper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 3px solid var(--sk-ink);
+    border-radius: 16px 12px 18px 13px;
+    transform: translate(11px, -7px) rotate(.6deg);
+    opacity: .55;
+    /* สำคัญ: ไม่งั้นมันคลุมทับทั้งใบแล้วคลิกช่องกรอกไม่โดน */
+    pointer-events: none;
+}
+
+/* กระดาษ */
+.sketch-hero .form-card {
+    position: relative;
+    background: var(--sk-paper);
+    border: 4px solid var(--sk-ink);
+    border-radius: 16px 12px 18px 13px;
+    padding: clamp(15px, 2.3vh, 26px) clamp(18px, 1.4vw, 26px) clamp(16px, 2.5vh, 28px);
+    box-shadow: 9px 11px 0 rgba(14, 0, 168, .1);
+}
+
+/* ---- บีบระยะในฟอร์มตามความสูงจอ ---- */
+.sketch-hero .form-group {
+    margin-bottom: clamp(8px, 1.3vh, 16px);
+}
+
+.sketch-hero .form-card-title {
+    margin-bottom: clamp(3px, .6vh, 8px);
+}
+
+.sketch-hero .form-card-desc {
+    margin-bottom: clamp(8px, 1.5vh, 16px);
+}
+
+.sketch-hero .form-label {
+    margin-bottom: clamp(2px, .45vh, 6px);
+}
+
+.sketch-hero .product-select-list {
+    gap: clamp(4px, .7vh, 8px);
+}
+
+.sketch-hero .product-select-thumb {
+    width: clamp(44px, 6.6vh, 72px);
+    height: clamp(44px, 6.6vh, 72px);
+}
+
+/* ติ๊กถูกวงกลม / กากบาท / เคอร์เซอร์ — ทับขอบกระดาษ */
+.sk-badge,
+.sk-cross,
+.sk-cursor {
+    position: absolute;
+    z-index: 4;
+    color: var(--sk-ink);
+    overflow: visible;
+    pointer-events: none;
+}
+
+/* ช่องรอภาพวาดจริง — ใส่ ART.* ใน hero-space.js แล้วจะกลายเป็น <img> */
+.sk-art svg,
+.sk-art img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+}
+
+.sk-art img {
+    object-fit: contain;
+}
+
+/* พอมีไฟล์ภาพวาดจริงแล้ว ลายที่โค้ดวาดไว้ต้องถอยให้หมด */
+.rope-line.has-art {
+    border: 0;
+    background: none;
+    width: 30px;
+}
+
+.rope-line.has-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+.brand-word.has-art img {
+    width: auto;
+    max-width: 100%;
+    height: clamp(52px, 6vw, 84px);
+    margin: 0 auto;
+}
+
+/* อยู่ใน .form-3d แล้ว → ระยะนับจากขอบกระดาษโดยตรง และเอียงตามกระดาษไปด้วย
+   translateZ ดันให้ลอยเหนือหน้ากระดาษ (ใน preserve-3d ใช้ z-index ไม่ได้) */
+.sk-badge {
+    left: -58px;
+    top: -36px;
+    width: clamp(64px, 5.6vw, 82px);
+    height: clamp(64px, 5.6vw, 82px);
+    filter: url(#pencil-fine);
+    transform: translateZ(2px);
+}
+
+/* กากบาทเส้นยาว ลากเลยมุมกระดาษออกไปเยอะตามเรฟ */
+.sk-cross {
+    filter: url(#pencil-fine);
+    width: clamp(150px, 13vw, 200px);
+    height: clamp(150px, 13vw, 200px);
+}
+
+.ck-tr {
+    right: -30px;
+    top: -34px;
+    transform: rotate(2deg);
+}
+
+.ck-bl {
+    left: -32px;
+    bottom: -14px;
+    transform: rotate(-2deg);
+}
+
+.sk-cursor {
+    right: -34px;
+    bottom: -32px;
+    width: 48px;
+    height: 68px;
+    transform: translateZ(2px) rotate(12deg);
+    animation: sk-cursor-nudge 5.5s ease-in-out infinite;
+}
+
+@keyframes sk-cursor-nudge {
+
+    0%,
+    100% {
+        transform: translateZ(2px) rotate(12deg) translate(0, 0);
+    }
+
+    50% {
+        transform: translateZ(2px) rotate(12deg) translate(-7px, -9px);
+    }
+}
+
+
+/* ====================== ฟอร์มในกระดาษ — ลายเส้นดำ ====================== */
+.sketch-hero .form-card-title {
+    font-size: clamp(1.25rem, 1.7vw, 1.5rem);
+    font-weight: 600;
+    color: var(--sk-ink);
+}
+
+.sketch-hero .form-card-desc {
+    color: var(--sk-muted);
+}
+
+.sketch-hero .form-label {
+    color: var(--sk-ink);
+    font-weight: 500;
+}
+
+.sketch-hero .req {
+    color: var(--sk-ink);
+}
+
+.sketch-hero .form-hint {
+    color: var(--sk-muted);
+}
+
+.sketch-hero .form-input {
+    background: transparent;
+    border: 3px solid var(--sk-ink);
+    border-radius: 13px 10px 14px 11px;
+    padding: clamp(7px, 1.1vh, 12px) 16px;
+    color: var(--sk-ink);
+}
+
+.sketch-hero .form-input::placeholder {
+    color: var(--sk-muted);
+}
+
+.sketch-hero .form-input:focus {
+    border-color: var(--blue-600);
+    box-shadow: 0 0 0 4px rgba(54, 135, 242, .18);
+}
+
+.sketch-hero .product-select-item {
+    background: transparent;
+    border: 3px solid var(--sk-ink);
+    border-radius: 13px 10px 14px 11px;
+    padding: clamp(6px, 1vh, 12px);
+    gap: clamp(8px, 1vw, 12px);
+}
+
+.sketch-hero .product-select-item:hover {
+    border-color: var(--sk-ink);
+    background: rgba(14, 0, 168, .04);
+}
+
+.sketch-hero .product-select-item.selected {
+    border-color: var(--sk-ink);
+    background: rgba(54, 135, 242, .1);
+}
+
+.sketch-hero .product-select-thumb {
+    border: 2.5px solid var(--sk-ink);
+    border-radius: 10px 8px 11px 9px;
+}
+
+.sketch-hero .product-select-name,
+.sketch-hero .product-select-artist {
+    color: var(--sk-ink);
+}
+
+.sketch-hero .product-select-artist {
+    color: var(--sk-muted);
+}
+
+.sketch-hero .confirm-label {
+    color: var(--sk-ink);
+}
+
+/* ปุ่มส่ง — แคปซูลขอบหมึกตามเรฟ แต่ไล่สีน้ำเงินแบบธีมเดิม */
+.sketch-hero .form-card .btn {
+    border-radius: 999px;
+    border: 3.4px solid var(--sk-ink);
+    background: linear-gradient(135deg, var(--blue-600), var(--blue-500));
+    color: var(--white);
+    font-weight: 600;
+    box-shadow: 0 4px 0 var(--sk-ink);
+    transition: filter .18s ease, transform .18s cubic-bezier(.34, 1.56, .64, 1), box-shadow .18s ease;
+}
+
+.sketch-hero .form-card .btn.btn-outline {
+    background: transparent;
+    color: var(--sk-ink);
+}
+
+.sketch-hero .form-card .btn:hover {
+    filter: brightness(1.06);
+    transform: translateY(-3px);
+    box-shadow: 0 7px 0 var(--sk-ink);
+}
+
+.sketch-hero .form-card .btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 var(--sk-ink);
+}
+
+.sketch-hero .form-card .btn .btn-icon-svg {
+    width: 15px;
+    height: 15px;
+}
+
+
+/* ====================== ช่องติ๊ก = วงกลมลายมือ ====================== */
+/* หมายเหตุ: style.css ตั้ง background แบบ shorthand ตอน .selected ซึ่งล้าง background-image ทิ้ง
+   จึงต้องเขียนทับที่สถานะติ๊กแล้วด้วย ไม่ใช่แค่ base */
+.sketch-hero {
+    --sk-circle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpath d='M60,6 C90,6 114,28 114,59 C114,90 91,114 60,114 C29,114 6,91 6,60 C6,30 28,7 57,6 C64,5.6 71,6.6 77,8.6' fill='none' stroke='%2312141c' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E");
+    --sk-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpath d='M26,58 C36,65 45,74 53,88 C66,60 86,34 103,20' fill='none' stroke='%2312141c' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.sketch-hero .product-checkbox,
+.sketch-hero .confirm-check {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    flex: none;
+    border: 0;
+    border-radius: 0;
+    margin-top: 0;
+    background-color: transparent;
+    background-image: var(--sk-circle);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    box-shadow: none;
+    color: transparent;
+    font-size: 0;
+    display: grid;
+    place-items: center;
+    transition: transform .2s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+/* svg เดิมใน confirm-check ไม่ใช้แล้ว */
+.sketch-hero .confirm-check svg {
+    display: none;
+}
+
+/* เครื่องหมายถูกลายมือ — ตอนติ๊กจะค่อยๆ เผยจากซ้ายไปขวา เหมือนกำลังลากเส้นเขียน */
+.sketch-hero .product-checkbox::before,
+.sketch-hero .confirm-check::before {
+    content: '';
+    position: absolute;
+    inset: -18%;
+    background: var(--sk-tick) no-repeat center / 100% 100%;
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+}
+
+@keyframes sk-draw-tick {
+    from {
+        clip-path: inset(0 100% 0 0);
+    }
+
+    to {
+        clip-path: inset(0 -6% 0 0);
+    }
+}
+
+/* สถานะติ๊กแล้ว — ต้องคืน background-image เพราะโดน shorthand ของ style.css ล้าง */
+.sketch-hero .product-select-item.selected .product-checkbox,
+.sketch-hero .product-select-item input:checked+.product-checkbox,
+.sketch-hero .confirm-label input:checked~.confirm-check {
+    background-color: transparent;
+    background-image: var(--sk-circle);
+    border: 0;
+    box-shadow: none;
+    transform: rotate(-3deg);
+}
+
+.sketch-hero .product-select-item.selected .product-checkbox::before,
+.sketch-hero .product-select-item input:checked+.product-checkbox::before,
+.sketch-hero .confirm-label input:checked~.confirm-check::before {
+    opacity: 1;
+    animation: sk-draw-tick .42s cubic-bezier(.55, 0, .38, 1) forwards;
+}
+
+
+/* ====================== อินโทร ====================== */
+.sketch-hero.armed .scene-window,
+.sketch-hero.armed .paper-stage,
+.sketch-hero.armed .rope,
+.sketch-hero.armed .sk-works,
+.sketch-hero.armed .sk-bg {
+    opacity: 0;
+}
+
+.sketch-hero.go .sk-bg {
+    animation: fade-in 1s ease-out .1s both;
+}
+
+.sketch-hero.go .paper-stage {
+    animation: drop-in .95s cubic-bezier(.34, 1.34, .64, 1) .18s both;
+}
+
+.sketch-hero.go .scene-window {
+    animation: drop-in .9s cubic-bezier(.34, 1.34, .64, 1) .38s both;
+}
+
+.sketch-hero.go .rope {
+    animation: rope-in .8s cubic-bezier(.34, 1.5, .64, 1) .6s both;
+}
+
+/* ต้องเป็น backwards ไม่ใช่ both —
+   both จะล็อก opacity:1 ค้างไว้ตลอด แล้ว .is-away สั่งให้จางหายไม่ได้
+   (อนิเมชันชนะ declaration ปกติเสมอ) */
+.sketch-hero.go .sk-works {
+    animation: fade-in .9s ease-out .75s backwards;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes drop-in {
+    from {
+        opacity: 0;
+        transform: translateY(-90px) rotate(-1.5deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes rope-in {
+    from {
+        opacity: 0;
+        transform: translateY(-70px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+
+/* ====================== SCROLL REVEAL ====================== */
+.reveal {
+    opacity: 0;
+    transform: translateY(46px);
+    transition: opacity .85s cubic-bezier(.44, 0, .56, 1), transform .85s cubic-bezier(.44, 0, .56, 1);
+    transition-delay: var(--r-delay, 0s);
+}
+
+.reveal.revealed {
+    opacity: 1;
+    transform: none;
+}
+
+/* ตัวคั่นคลื่นระหว่าง section */
+.section-wave {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 70px;
+    margin-top: -1px;
+    color: var(--bg-section-alt);
+    z-index: 5;
+}
+
+.section-wave svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+
+/* ============================================================
+   GAME UI — Celestial × Medieval × Futuristic
+   สูตร: ทรงนอก = Futuristic (มุมตัด/รอยบาก)
+         ขอบ+หัวมุม = Medieval (เส้นทองคู่ ลายมุม ตราประทับ)
+         สี+แสง+การเคลื่อนไหว = Celestial + อนิเมะ
+   กติกา: ของประดับหนักได้ 1 ชิ้นทั้งหน้าจอ (= แอสโทรเลบ)
+          ทองไม่เกิน 8% ของพื้นที่จอ
+          ของประดับทุกชิ้น pointer-events:none ไม่มีข้อยกเว้น
+   ============================================================ */
+
+/* ---------------- ชั้นของประดับลอย + parallax ---------------- */
+/* JS แตะแค่ transform ของ .gx-layer เท่านั้น ลูกข้างในจึงมี transform ของตัวเองได้อิสระ
+   (ถ้าให้ JS ไปแตะตัวลูกโดยตรงจะไปทับ transform ของอนิเมชัน = กับดักเดิมรอบ 11) */
+.gx-props {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.gx-layer {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+    transition: transform .55s cubic-bezier(.22, 1, .36, 1);
+}
+
+
+/* ---------------- แอสโทรเลบ (ของประดับหนัก 1 ชิ้นของหน้าจอ) ---------------- */
+/* วางที่มุมซ้ายล่าง — เป็นพื้นที่ว่างจริงของหน้านี้
+   (ถ้าวางฝั่งขวาจะโดนกระดาษฟอร์มบังเกือบทั้งวง เพราะกระดาษกินครึ่งจอขวา)
+   ตัวกล่องไม่หมุน ปล่อยให้ "วงข้างใน" หมุนคนละความเร็วแทน = ได้ฟีลแอสโทรเลบจริง
+   และทำให้ transform ของกล่องว่างไว้จัดตำแหน่งได้ */
+.gx-astro {
+    position: absolute;
+    left: 13%;
+    bottom: -29%;
+    width: clamp(300px, 32vw, 520px);
+    height: clamp(300px, 32vw, 520px);
+    color: var(--gx-gold-deep);
+    opacity: .2;
+}
+
+@keyframes gx-astro-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* วงซ้อน 4 ชั้น */
+.gx-astro i {
+    position: absolute;
+    inset: 0;
+    border: 1.6px solid currentColor;
+    border-radius: 50%;
+}
+
+.gx-astro i:nth-of-type(2) {
+    inset: 8%;
+    border-width: 3.4px;
+}
+
+.gx-astro i:nth-of-type(3) {
+    inset: 21%;
+    border-style: dashed;
+    animation: gx-astro-spin 88s linear infinite;
+}
+
+.gx-astro i:nth-of-type(4) {
+    inset: 33%;
+    border-width: 2.4px;
+}
+
+/* ขีดองศารอบวง — วาดด้วย conic แล้วเจาะกลางออกด้วย mask ให้เหลือแค่ริมขอบ */
+.gx-astro b {
+    position: absolute;
+    inset: 8.5%;
+    border-radius: 50%;
+    background: repeating-conic-gradient(currentColor 0 .55deg, transparent .55deg 6deg);
+    -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 15px), #000 calc(100% - 15px));
+    mask: radial-gradient(closest-side, transparent calc(100% - 15px), #000 calc(100% - 15px));
+    animation: gx-astro-spin 150s linear infinite reverse;
+}
+
+/* เข็มไขว้ */
+.gx-astro u,
+.gx-astro s {
+    position: absolute;
+    left: 50%;
+    top: 11%;
+    width: 2px;
+    height: 78%;
+    background: currentColor;
+    transform: translateX(-50%);
+    opacity: .8;
+}
+
+.gx-astro s {
+    transform: translateX(-50%) rotate(90deg);
+}
+
+/* TODO[ART] — วงในควรเป็นสัญลักษณ์นักษัตร 12 ตัว ตอนนี้เป็นขีดสั้นแทนไปก่อน */
+
+
+/* ---------------- ชั้นดาวเพิ่มความลึก ---------------- */
+.gx-stars {
+    position: absolute;
+    inset: -12%;
+}
+
+/* ทั้งสามชั้นเป็นสีนำสีเดียว ต่างกันแค่ขนาด/ความหนาแน่น/ความจาง
+   (เคยแจกคนละสี = ลูกกวาด — celestial ของจริงเป็นเกือบโมโนโครม) */
+.gx-stars.gs-1 {
+    background-image:
+        radial-gradient(circle, rgba(43, 30, 92, .3) 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(43, 30, 92, .22) 1px, transparent 1.5px);
+    background-size: 176px 152px, 244px 208px;
+    background-position: 0 0, 74px 96px;
+    opacity: .5;
+}
+
+.gx-stars.gs-2 {
+    background-image:
+        radial-gradient(circle, rgba(43, 30, 92, .26) 1.4px, transparent 2px),
+        radial-gradient(circle, rgba(43, 30, 92, .18) 1.2px, transparent 1.8px);
+    background-size: 300px 260px, 390px 330px;
+    background-position: 40px 20px, 190px 150px;
+    opacity: .6;
+}
+
+.gx-stars.gs-3 {
+    background-image:
+        radial-gradient(circle, rgba(43, 30, 92, .3) 2px, transparent 2.8px),
+        radial-gradient(circle, rgba(43, 30, 92, .2) 1.6px, transparent 2.4px);
+    background-size: 470px 400px, 620px 520px;
+    background-position: 120px 60px, 330px 260px;
+    animation: gx-stars-breathe 9s ease-in-out infinite;
+}
+
+@keyframes gx-stars-breathe {
+
+    0%,
+    100% {
+        opacity: .42;
+    }
+
+    50% {
+        opacity: .78;
+    }
+}
+
+
+/* ---------------- เส้นกลุ่มดาว ---------------- */
+.gx-constel {
+    position: absolute;
+    left: 4%;
+    top: 12%;
+    width: clamp(180px, 20vw, 320px);
+    height: auto;
+    color: var(--gx-primary);
+    opacity: .42;
+}
+
+.gx-constel polyline {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-dasharray: 5 9;
+    animation: gx-constel-run 14s linear infinite;
+}
+
+.gx-constel circle {
+    fill: currentColor;
+}
+
+@keyframes gx-constel-run {
+    to {
+        stroke-dashoffset: -140;
+    }
+}
+
+
+/* ---------------- พระจันทร์เสี้ยว + ดาวเคราะห์มีวงแหวน ---------------- */
+.gx-moon {
+    position: absolute;
+    right: 7%;
+    top: 6%;
+    width: clamp(34px, 3.4vw, 52px);
+    height: clamp(34px, 3.4vw, 52px);
+    border-radius: 50%;
+    background: linear-gradient(150deg, var(--gx-gold), #C19933);
+    -webkit-mask: radial-gradient(circle at 76% 36%, transparent 60%, #000 60.5%);
+    mask: radial-gradient(circle at 76% 36%, transparent 60%, #000 60.5%);
+    opacity: .8;
+    animation: gx-moon-drift 16s ease-in-out infinite;
+}
+
+@keyframes gx-moon-drift {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(-8deg);
+    }
+
+    50% {
+        transform: translateY(-12px) rotate(4deg);
+    }
+}
+
+.gx-planet {
+    position: absolute;
+    left: 8%;
+    bottom: 12%;
+    width: clamp(26px, 2.6vw, 40px);
+    height: clamp(26px, 2.6vw, 40px);
+    border-radius: 50%;
+    background: linear-gradient(150deg, var(--gx-primary-soft), var(--gx-primary));
+    opacity: .55;
+    animation: gx-moon-drift 21s ease-in-out infinite reverse;
+}
+
+.gx-planet::after {
+    content: '';
+    position: absolute;
+    left: -46%;
+    top: 32%;
+    width: 192%;
+    height: 38%;
+    border: 2px solid var(--gx-sky);
+    border-radius: 50%;
+    transform: rotate(-18deg);
+    opacity: .75;
+}
+
+
+/* ---------------- เศษคริสตัลลอย ---------------- */
+.gx-shard {
+    position: absolute;
+    width: 18px;
+    height: 26px;
+    clip-path: polygon(50% 0, 100% 34%, 74% 100%, 26% 100%, 0 34%);
+    background: linear-gradient(160deg, rgba(113, 234, 243, .9), rgba(200, 166, 247, .55));
+    filter: drop-shadow(0 0 7px rgba(9, 0, 112, .35));
+    animation: gx-shard-float var(--sd, 15s) linear infinite var(--sdl, 0s);
+}
+
+.gx-shard.sh-1 {
+    left: 14%;
+    --sd: 15s;
+    --sdl: 0s;
+}
+
+.gx-shard.sh-2 {
+    left: 31%;
+    --sd: 19s;
+    --sdl: -6s;
+    width: 12px;
+    height: 18px;
+}
+
+.gx-shard.sh-3 {
+    left: 62%;
+    --sd: 17s;
+    --sdl: -11s;
+}
+
+.gx-shard.sh-4 {
+    left: 81%;
+    --sd: 22s;
+    --sdl: -3s;
+    width: 14px;
+    height: 21px;
+}
+
+.gx-shard.sh-5 {
+    left: 47%;
+    --sd: 25s;
+    --sdl: -16s;
+    width: 10px;
+    height: 15px;
+}
+
+/* base linear แล้วใส่เคิร์ฟรายคีย์เฟรม (กฎเดิมรอบ 10) */
+@keyframes gx-shard-float {
+    0% {
+        transform: translateY(105vh) rotate(0deg);
+        opacity: 0;
+    }
+
+    9% {
+        opacity: .85;
+    }
+
+    88% {
+        opacity: .85;
+    }
+
+    100% {
+        transform: translateY(-14vh) rotate(220deg);
+        opacity: 0;
+    }
+}
+
+
+/* ---------------- วงเล็บ HUD (ครอบหน้าต่างสลับฉาก) ---------------- */
+.gx-bracket {
+    position: absolute;
+    inset: -16px -10px;
+    pointer-events: none;
+    color: var(--sk-ink);
+    z-index: 0;
+}
+
+.gx-bracket i {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border: 2px solid currentColor;
+    opacity: .55;
+    transition: transform var(--gx-t-hover) ease, opacity var(--gx-t-hover) ease;
+}
+
+.gx-bracket i:nth-child(1) {
+    left: 0;
+    top: 0;
+    border-right: 0;
+    border-bottom: 0;
+}
+
+.gx-bracket i:nth-child(2) {
+    right: 0;
+    top: 0;
+    border-left: 0;
+    border-bottom: 0;
+}
+
+.gx-bracket i:nth-child(3) {
+    right: 0;
+    bottom: 0;
+    border-left: 0;
+    border-top: 0;
+}
+
+.gx-bracket i:nth-child(4) {
+    left: 0;
+    bottom: 0;
+    border-right: 0;
+    border-top: 0;
+}
+
+/* ขีดทองที่ปลายวงเล็บ */
+.gx-bracket i::after {
+    content: '';
+    position: absolute;
+    width: 9px;
+    height: 3px;
+    background: var(--gx-gold-deep);
+}
+
+.gx-bracket i:nth-child(1)::after {
+    left: -2px;
+    top: -2px;
+}
+
+.gx-bracket i:nth-child(2)::after {
+    right: -2px;
+    top: -2px;
+}
+
+.gx-bracket i:nth-child(3)::after {
+    right: -2px;
+    bottom: -2px;
+}
+
+.gx-bracket i:nth-child(4)::after {
+    left: -2px;
+    bottom: -2px;
+}
+
+/* ตอนสลับฉาก วงเล็บหุบเข้าแล้วกางออก — ต่อท้ายจังหวะเดิม ไม่แตะ scene-up/scene-down */
+.scene-window.is-swapping .gx-bracket i {
+    transform: translate(var(--bx, 0), var(--by, 0));
+    opacity: .95;
+}
+
+.scene-window.is-swapping .gx-bracket i:nth-child(1) {
+    --bx: 10px;
+    --by: 8px;
+}
+
+.scene-window.is-swapping .gx-bracket i:nth-child(2) {
+    --bx: -10px;
+    --by: 8px;
+}
+
+.scene-window.is-swapping .gx-bracket i:nth-child(3) {
+    --bx: -10px;
+    --by: -8px;
+}
+
+.scene-window.is-swapping .gx-bracket i:nth-child(4) {
+    --bx: 10px;
+    --by: -8px;
+}
+
+/* ป้ายโค้ดฉากแบบ HUD */
+.gx-code {
+    position: absolute;
+    left: 2px;
+    bottom: -30px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-en);
+    font-size: .6rem;
+    font-weight: 600;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: var(--sk-ink);
+    opacity: .5;
+    pointer-events: none;
+}
+
+.gx-code::before {
+    content: '';
+    width: 30px;
+    height: 5px;
+    background: repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 5px);
+}
+
+
+/* ---------------- แหวนรูนรอบโลโก้ ---------------- */
+.brand-logo-wrap {
+    position: relative;
+}
+
+.gx-rune-ring {
+    position: absolute;
+    inset: -21%;
+    width: 142%;
+    height: 142%;
+    color: var(--gx-gold-deep);
+    opacity: .6;
+    pointer-events: none;
+    animation: gx-astro-spin 64s linear infinite;
+}
+
+.gx-rune-ring circle {
+    fill: none;
+    stroke: currentColor;
+}
+
+.gx-rune-ring .rr-out {
+    stroke-width: 1.4;
+}
+
+.gx-rune-ring .rr-in {
+    stroke-width: 1;
+    stroke-dasharray: 3 7;
+}
+
+.gx-rune-ring text {
+    font-family: var(--font-en);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .32em;
+    fill: currentColor;
+}
+
+
+/* ---------------- เส้นคู่ทอง + ข้าวหลามตัด ---------------- */
+.gx-rule {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: min(320px, 82%);
+    margin: 0 auto clamp(8px, 1.6vh, 14px);
+    color: var(--gx-gold-deep);
+    pointer-events: none;
+}
+
+.gx-rule i {
+    flex: 1;
+    height: 5px;
+    border-top: 1.4px solid currentColor;
+    border-bottom: 1.4px solid currentColor;
+    opacity: .8;
+}
+
+.gx-rule b {
+    width: 9px;
+    height: 9px;
+    background: currentColor;
+    transform: rotate(45deg);
+}
+
+.gx-rule u {
+    width: 5px;
+    height: 5px;
+    background: currentColor;
+    transform: rotate(45deg);
+    opacity: .7;
+}
+
+
+/* ---------------- ปุ่ม: ประกาย + เหรียญ ---------------- */
+/* ปุ่ม "ตรวจสอบ" คงลายเส้นเดิม เพิ่มแค่ดาววาบตอน hover + เงาแข็ง */
+.ink-btn::after {
+    content: '';
+    position: absolute;
+    right: 8px;
+    top: 2px;
+    width: 16px;
+    height: 16px;
+    background: var(--gx-gold-deep);
+    -webkit-mask: var(--gx-star4) center / contain no-repeat;
+    mask: var(--gx-star4) center / contain no-repeat;
+    opacity: 0;
+    transform: scale(.4) rotate(-40deg);
+    transition: opacity var(--gx-t-hover) ease, transform .3s cubic-bezier(.34, 1.56, .64, 1);
+    pointer-events: none;
+}
+
+.ink-btn:hover::after,
+.ink-btn:focus-visible::after {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+.ink-oval {
+    filter: drop-shadow(0 var(--gx-bevel) 0 rgba(14, 0, 168, .28));
+    transition: filter var(--gx-t-hover) ease;
+}
+
+.ink-btn:active .ink-oval {
+    filter: drop-shadow(0 1px 0 rgba(14, 0, 168, .28));
+}
+
+/* ปุ่ม "ดูงาน" → เหรียญ: แผ่นหลังเป็นทอง หน้าเหรียญขาว ขีดเฉียงเป็นทองเข้ม */
+.ink-btn-coin .ink-oval .oval-back {
+    fill: var(--gx-gold);
+    stroke: var(--sk-ink);
+}
+
+.ink-btn-coin .ink-oval .oval-hatch path {
+    stroke: var(--gx-gold-deep);
+    stroke-width: 2.4;
+}
+
+.ink-btn-coin .ink-btn-label {
+    letter-spacing: .06em;
+    font-weight: 600;
+}
+
+.ink-btn-coin .ink-btn-spark {
+    color: var(--gx-gold-deep);
+}
+
+.ink-btn:focus-visible {
+    outline: 3px solid var(--gx-gold);
+    outline-offset: 5px;
+}
+
+
+/* ---------------- ตราประทับปลายเชือก ---------------- */
+.rope-star::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 46px;
+    height: 46px;
+    margin: -23px 0 0 -23px;
+    /* ขอบเบี้ยวแบบขี้ผึ้ง ไม่ใช่วงกลมเป๊ะ */
+    border-radius: 52% 46% 54% 48% / 48% 54% 46% 52%;
+    background: radial-gradient(circle at 34% 30%, var(--gx-gold), #C19933 68%, #8D6D1B);
+    box-shadow: inset 0 -4px 8px rgba(141, 109, 27, .45), 0 3px 0 rgba(14, 0, 168, .22);
+    z-index: -1;
+}
+
+.rope-star {
+    isolation: isolate;
+}
+
+
+/* ---------------- ฉาก 2 : เมนูเมฆ → แผ่นป้ายลอย ---------------- */
+/* ทรงเมฆเดิมเก็บไว้ในมาร์กอัป แค่ซ่อน — ถ้าอยากกลับไปใช้ ลบ display:none บรรทัดเดียว */
+.cloud-shape {
+    display: none;
+}
+
+.cloud-btn {
+    width: 252px;
+    height: 74px;
+    isolation: isolate;
+}
+
+/* ขอบหมึก — มุมบนซ้ายเป็นทอง (Medieval แทรกใน Futuristic) */
+.cloud-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: linear-gradient(135deg, var(--gx-gold-deep) 0 30px, var(--sk-ink) 30px);
+    clip-path: var(--gx-clip);
+}
+
+/* พื้นแผ่น */
+.cloud-btn::after {
+    content: '';
+    position: absolute;
+    inset: 2.6px;
+    z-index: -1;
+    background:
+        radial-gradient(120% 90% at 18% 0%, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0) 62%),
+        linear-gradient(150deg, #fff 0%, var(--gx-tint) 100%);
+    clip-path: var(--gx-clip);
+    transition: background var(--gx-t-hover) ease;
+}
+
+.cloud-btn:hover::after {
+    background:
+        radial-gradient(120% 90% at 18% 0%, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0) 62%),
+        linear-gradient(150deg, #fff 0%, #DFCBFB 100%);
+}
+
+.cloud-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 0;
+    letter-spacing: .01em;
+}
+
+/* TODO[ART] — ตรงนี้ควรเป็นไอคอนประจำเมนู 4 ตัว ตอนนี้ใช้ดาว 4 แฉกแทนทุกปุ่ม */
+.cloud-label::before {
+    content: '';
+    width: 15px;
+    height: 15px;
+    flex: none;
+    background: var(--gx-gold-deep);
+    -webkit-mask: var(--gx-star4) center / contain no-repeat;
+    mask: var(--gx-star4) center / contain no-repeat;
+    transition: transform var(--gx-t-hover) ease;
+}
+
+.cloud-btn:hover .cloud-label::before {
+    transform: rotate(90deg) scale(1.15);
+}
+
+.cloud-btn:focus-visible {
+    outline: 3px solid var(--gx-gold);
+    outline-offset: 4px;
+}
+
+
+/* ---------------- กระดาษฟอร์ม = แผงคัมภีร์ ---------------- */
+.sketch-hero .form-card {
+    box-shadow:
+        9px 11px 0 rgba(14, 0, 168, .12),
+        0 0 28px rgba(9, 0, 112, .16);
+}
+
+/* กรอบทองชั้นใน + ลายมุม 4 มุม (ทั้งก้อนเป็น pointer-events:none) */
+.gx-corners {
+    position: absolute;
+    inset: 9px;
+    border: var(--gx-stroke-gold) solid rgba(178, 138, 36, .5);
+    border-radius: 12px 9px 14px 10px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.gx-corners i {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    background: var(--gx-gold-deep);
+    -webkit-mask: var(--gx-corner) center / contain no-repeat;
+    mask: var(--gx-corner) center / contain no-repeat;
+}
+
+.gx-corners i:nth-child(1) {
+    left: -4px;
+    top: -4px;
+}
+
+.gx-corners i:nth-child(2) {
+    right: -4px;
+    top: -4px;
+    transform: scaleX(-1);
+}
+
+.gx-corners i:nth-child(3) {
+    right: -4px;
+    bottom: -4px;
+    transform: scale(-1);
+}
+
+.gx-corners i:nth-child(4) {
+    left: -4px;
+    bottom: -4px;
+    transform: scaleY(-1);
+}
+
+/* ป้ายหัวคัมภีร์ — ทรงตัดมุม พื้นกระดาษเก่า ขอบหมึก */
+.sketch-hero .form-card-title {
+    position: relative;
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+    /* ผูกกับ vh ตามธรรมเนียมของไฟล์นี้ — จอเตี้ยให้ยุบเองก่อนไปดันฟอร์มตกขอบ */
+    padding: clamp(2px, .45vh, 5px) 26px clamp(3px, .5vh, 6px);
+    isolation: isolate;
+    text-align: center;
+}
+
+.sketch-hero .form-card-title::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: var(--sk-ink);
+    clip-path: var(--gx-clip-sm);
+}
+
+.sketch-hero .form-card-title::after {
+    content: '';
+    position: absolute;
+    inset: 2.4px;
+    z-index: -1;
+    background: linear-gradient(180deg, var(--gx-parchment), #EFE4C8);
+    clip-path: var(--gx-clip-sm);
+}
+
+.sketch-hero .form-card-desc {
+    text-align: center;
+}
+
+
+/* ---------------- ฟอร์ม: อินพุต / การ์ดไอเทม / ปุ่มคริสตัล ---------------- */
+/* มุมตัดใช้ radius เอียงข้างแทน clip-path — เพราะ clip-path จะกินขอบ 3px ทิ้ง */
+.sketch-hero .form-input {
+    background: rgba(232, 217, 252, .22);
+    border-width: 2.6px;
+    border-radius: 12px 4px 12px 4px;
+    transition: border-color var(--gx-t-hover) ease, box-shadow var(--gx-t-hover) ease, background var(--gx-t-hover) ease;
+}
+
+.sketch-hero .form-input:focus {
+    border-color: var(--gx-primary);
+    background: #fff;
+    box-shadow:
+        0 0 0 3px rgba(9, 0, 112, .16),
+        inset 0 0 0 1px rgba(113, 234, 243, .55);
+}
+
+/* รายการสินค้า → การ์ดไอเทมแบบเกม */
+.sketch-hero .product-select-item {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .92), rgba(232, 217, 252, .3));
+    border-width: 2.6px;
+    border-radius: 13px 5px 13px 5px;
+    box-shadow: 3px 3px 0 rgba(14, 0, 168, .12);
+    transition:
+        transform var(--gx-t-hover) cubic-bezier(.34, 1.56, .64, 1),
+        box-shadow var(--gx-t-hover) ease,
+        border-color var(--gx-t-hover) ease,
+        background var(--gx-t-hover) ease;
+}
+
+/* แถบระดับด้านซ้าย — ⚠ ต้อง pointer-events:none ไม่งั้นกินคลิก (บทเรียนรอบ 5) */
+.sketch-hero .product-select-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: linear-gradient(180deg, var(--gx-primary-soft), var(--gx-sky));
+    pointer-events: none;
+}
+
+.sketch-hero .product-select-item:hover {
+    background: linear-gradient(180deg, #fff, rgba(232, 217, 252, .5));
+    transform: translate(-1px, -2px);
+    box-shadow: 5px 6px 0 rgba(14, 0, 168, .14);
+}
+
+.sketch-hero .product-select-item.selected {
+    border-color: var(--gx-gold-deep);
+    background: linear-gradient(180deg, #fff, rgba(216, 180, 90, .18));
+    box-shadow:
+        3px 3px 0 rgba(14, 0, 168, .12),
+        0 0 0 3px rgba(216, 180, 90, .3);
+}
+
+.sketch-hero .product-select-item.selected::before {
+    background: linear-gradient(180deg, var(--gx-gold), var(--gx-gold-deep));
+}
+
+.sketch-hero .product-select-thumb {
+    border-radius: 9px 3px 9px 3px;
+}
+
+/* ปุ่มส่ง → ปุ่มคริสตัล: ไล่สีม่วง + ไฮไลต์ขอบบน + เงาแข็ง + ริ้วแสงวิ่งตอน hover */
+.sketch-hero .form-card .btn {
+    border-width: 3px;
+    background: linear-gradient(135deg, var(--gx-primary) 0%, #1C1C4B 52%, var(--sk-ink-2) 100%);
+    box-shadow:
+        0 var(--gx-bevel) 0 var(--sk-ink),
+        inset 0 2px 0 rgba(255, 255, 255, .4),
+        inset 0 -7px 14px rgba(14, 0, 168, .3);
+}
+
+/* .btn ของเดิมมี overflow:hidden อยู่แล้ว ริ้วแสงจึงถูกตัดพอดีขอบปุ่ม */
+.sketch-hero .form-card .btn::before {
+    content: '';
+    position: absolute;
+    inset: -40% -60%;
+    background: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, .55) 50%, transparent 58%);
+    transform: translateX(-120%);
+    transition: transform .55s ease;
+    pointer-events: none;
+}
+
+.sketch-hero .form-card .btn:hover::before {
+    transform: translateX(120%);
+}
+
+.sketch-hero .form-card .btn:hover {
+    filter: brightness(1.08);
+    box-shadow:
+        0 7px 0 var(--sk-ink),
+        inset 0 2px 0 rgba(255, 255, 255, .4),
+        inset 0 -7px 14px rgba(14, 0, 168, .3);
+}
+
+.sketch-hero .form-card .btn:active {
+    box-shadow:
+        0 1px 0 var(--sk-ink),
+        inset 0 2px 0 rgba(255, 255, 255, .3),
+        inset 0 -7px 14px rgba(14, 0, 168, .34);
+}
+
+.sketch-hero .form-card .btn.btn-outline {
+    background: var(--sk-paper);
+    box-shadow: 0 var(--gx-bevel) 0 var(--sk-ink);
+}
+
+.sketch-hero .form-card .btn:focus-visible {
+    outline: 3px solid var(--gx-gold);
+    outline-offset: 3px;
+}
+
+
+/* ---------------- ตัวนับความครบของฟอร์มแบบ HUD ---------------- */
+/* วางลอยที่หัวแถว "เลือกสินค้า" — ไม่กินความสูงในโฟลว์
+   (hero ถูกจูนให้พอดี 1 หน้าจอเป๊ะ อะไรที่เพิ่มความสูงจะดันฟอร์มตกขอบจอเตี้ย)
+   เกาะแถวนี้เพราะฝั่งขวาของ label ว่างเสมอ ต่างจากหัวคัมภีร์ที่จัดกลาง = ชนกันตอนกระดาษแคบ */
+.gx-has-count {
+    position: relative;
+}
+
+/* สูงพอๆ กับแถว label — ห้ามสูงเกิน ไม่งั้นล้นลงไปทับการ์ดสินค้าใบแรก */
+.gx-count {
+    position: absolute;
+    top: -3px;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0;
+    padding: 2px 10px 3px;
+    width: fit-content;
+    background: rgba(232, 217, 252, .38);
+    border: 1.6px solid rgba(14, 0, 168, .32);
+    border-radius: 8px 2px 8px 2px;
+    font-family: var(--font-en);
+    font-size: .58rem;
+    line-height: 1.3;
+    font-weight: 700;
+    letter-spacing: .14em;
+    color: var(--sk-ink);
+    pointer-events: none;
+}
+
+.gx-count i {
+    width: 11px;
+    height: 4px;
+    background: rgba(14, 0, 168, .2);
+    border-radius: 1px;
+    transition: background var(--gx-t-hover) ease;
+}
+
+.gx-count i.on {
+    background: linear-gradient(90deg, var(--gx-gold), var(--gx-gold-deep));
+}
+
+.gx-count b {
+    margin-left: 2px;
+    font-variant-numeric: tabular-nums;
+}
+
+.gx-count.is-full {
+    border-color: var(--gx-gold-deep);
+    background: rgba(216, 180, 90, .22);
+}
+
+
+/* ---------------- ติ๊กยืนยัน = ตราประทับขี้ผึ้ง ---------------- */
+/* TODO[ART] — ของจริงควรเป็นรูปตราขี้ผึ้งที่วาดมา ตอนนี้ปั้นด้วย border-radius เบี้ยว + ไล่แสง */
+.sketch-hero .confirm-label input:checked~.confirm-check {
+    background-image: none;
+    background-color: transparent;
+    animation: gx-stamp .4s linear;
+}
+
+.sketch-hero .confirm-label input:checked~.confirm-check::after {
+    content: '';
+    position: absolute;
+    inset: -6%;
+    z-index: -1;
+    border-radius: 52% 46% 54% 48% / 48% 54% 46% 52%;
+    background: radial-gradient(circle at 34% 30%, var(--gx-gold), #C19933 66%, #8D6D1B);
+    box-shadow: inset 0 -3px 7px rgba(141, 109, 27, .5);
+}
+
+.sketch-hero .confirm-check {
+    isolation: isolate;
+}
+
+/* จบอนิเมชันแล้วต้องคืนค่าให้ CSS คุม — ห้ามใช้ forwards/both (บทเรียนรอบ 8) */
+@keyframes gx-stamp {
+    0% {
+        transform: rotate(-16deg) scale(1.75);
+        opacity: .2;
+        animation-timing-function: cubic-bezier(.5, 0, .75, .4);
+    }
+
+    52% {
+        transform: rotate(-1deg) scale(.88);
+        opacity: 1;
+        animation-timing-function: cubic-bezier(.3, 0, .2, 1);
+    }
+
+    76% {
+        transform: rotate(-5deg) scale(1.07);
+    }
+
+    100% {
+        transform: rotate(-3deg) scale(1);
+    }
+}
+
+/* สินค้าที่เลือกแล้ว — ยังเป็นวงลายมือเหมือนเดิม แค่เติมแสงทอง */
+.sketch-hero .product-select-item.selected .product-checkbox,
+.sketch-hero .product-select-item input:checked+.product-checkbox {
+    filter: drop-shadow(0 0 6px rgba(216, 180, 90, .75));
+}
+
+
+/* ============================================================
+   COLOR PASS — ธีม โฮโลแกรม × อวกาศ × medieval × celestial
+
+   พาเลตแบ่งเป็น 4 หน้าที่ ห้ามข้ามหน้าที่กัน (นี่คือสิ่งที่กันไม่ให้สีมั่ว)
+   ชิ้นไหนอยู่กลุ่มไหน ดูที่ "มันเป็นอะไร" ไม่ใช่ "อยากให้สีอะไร"
+
+   1. โครงสร้าง / หมึก → #0E00A8 สีนำ ตัวเดียว
+      เส้นวาดทุกเส้น · ตัวหนังสือ · ขอบฟอร์ม · ปุ่มหลัก · แถบการ์ด
+      ของที่ "เป็นโครง" ใช้สีนี้อย่างเดียวเสมอ ห้ามแตะสีอื่น
+
+   2. โลหะยุคกลาง → #D8B45A ทอง (+ #7C2D45 เบอร์กันดี เป็นขั้นเข้ม/ข้อความผิดพลาด)
+      เฉพาะของที่เป็นเครื่องโลหะจริงในฉาก: กรอบคัมภีร์ · ตราปลายเชือก ·
+      เหรียญ · จันทร์เสี้ยว · แอสโทรเลบ · ดาวบนวงโคจร
+
+   3. ท้องฟ้าที่อยู่ไกล → #2B1E5C ม่วงอวกาศ + #95C1FB ฟ้าคราม
+      วงโคจร · เส้นกลุ่มดาว · ดาวเคราะห์ · ดาวเล็ก
+      **ต้องจางเสมอ** เพราะอยู่ไกล ถ้าสดขึ้นมาจะแย่งสายตากับฟอร์ม
+
+   4. โฮโลแกรม = ของที่ "เปล่งแสง" เท่านั้น
+      #71EAF3 ฟ้าโฮโล → #9DF3C9 มิ้นต์ → #C8A6F7 ลาเวนเดอร์ → #F8A9D6 ชมพู
+      ตัวอักษร MOFYCH · เศษคริสตัล · ประกาย · ดาวตก
+      4 สีนี้เดินเป็นชุดตามลำดับสเปกตรัมเสมอ ห้ามหยิบไปทาเดี่ยวๆ ที่อื่น
+
+   กลาง: #EFF6FF ขาวฟ้า (พื้น) · #B7BBC4 เทาเงิน (ข้อความรอง/เส้นจาง)
+
+   กฎรูปทรงเดิมยังอยู่: ชิ้นส่วน UI แบนหมด ขอบคม เงาแข็งทึบ
+   ไล่สีอนุญาตเฉพาะพื้นหลังฉากกับของกลุ่ม 4 เท่านั้น
+   ============================================================ */
+
+/* ---------- พื้นหลังฉาก: ที่เดียวที่ไล่สีได้ ----------
+   เกือบขาว มีสีแค่จางมาก — ความหรูมาจาก "ค่าความสว่างสูง + ความอิ่มสีต่ำ + ที่ว่างเยอะ"
+   ⚠ พื้นอิ่มสีเมื่อไหร่จะทึบและดูถูกลงทันที ห้ามดันเกินนี้ */
+.sketch-hero {
+    --sk-muted: var(--gray-500);
+    background:
+        radial-gradient(72% 52% at 74% 0%, #FFFFFF 0%, rgba(255, 255, 255, 0) 62%),
+        linear-gradient(158deg, #FBFCFF 0%, #F1F5FE 46%, #E7E4F8 100%);
+}
+
+
+/* ---------- กลุ่ม 3: ท้องฟ้าที่อยู่ไกล — ม่วงอวกาศ + ฟ้าคราม จางเสมอ ---------- */
+.sk-bg {
+    color: var(--pal-violet);
+}
+
+/* วงโคจร: วงในม่วงอวกาศ วงนอกฟ้าคราม — ไล่ตาม "ระยะ" ไม่ใช่สลับสีเล่น */
+.sk-orbit {
+    border-width: 2.4px;
+    border-color: var(--pal-violet);
+    opacity: .3;
+}
+
+.orb-2 {
+    border-color: var(--pal-blue);
+    opacity: .55;
+}
+
+.orb-3 {
+    border-color: var(--pal-blue);
+    opacity: .4;
+}
+
+/* ทองแตะได้จุดเดียวในฉากหลัง = ดาวบนเส้นวงโคจร (จุดสายตา ไม่ใช่การตกแต่ง) */
+.orb-sat b {
+    background: var(--gx-gold);
+    box-shadow: 0 0 0 2px var(--sk-ink);
+}
+
+.gx-astro {
+    /* แอสโทรเลบ = เครื่องโลหะยุคกลาง ไม่ใช่ท้องฟ้า → กลุ่ม 2 */
+    color: var(--gx-gold-deep);
+    opacity: .18;
+}
+
+.gx-constel {
+    color: var(--pal-blue);
+    opacity: .5;
+}
+
+/* จันทร์เสี้ยว = ชิ้นโลหะ → ทองแบน ไม่ไล่สี */
+.gx-moon {
+    background: var(--gx-gold);
+    opacity: 1;
+}
+
+.gx-planet {
+    background: var(--pal-violet);
+    opacity: .26;
+}
+
+.gx-planet::after {
+    border-color: var(--pal-blue);
+    opacity: .7;
+}
+
+
+/* ---------- กลุ่ม 4: ของที่เปล่งแสง — ไล่โฮโลตามลำดับสเปกตรัม ----------
+   ฟ้าโฮโล → มิ้นต์ → ลาเวนเดอร์ → ชมพู แล้ววนกลับ
+   เรียงตามตำแหน่งซ้าย→ขวาของชิ้น ไม่ได้สุ่ม */
+.gx-shard {
+    opacity: .8;
+    filter: drop-shadow(0 0 8px rgba(113, 234, 243, .5));
+}
+
+.gx-shard.sh-1 {
+    background: linear-gradient(160deg, var(--pal-cyan), var(--pal-mint));
+}
+
+.gx-shard.sh-2 {
+    background: linear-gradient(160deg, var(--pal-mint), var(--pal-cyan));
+}
+
+.gx-shard.sh-5 {
+    background: linear-gradient(160deg, var(--pal-cyan), var(--pal-lavender));
+}
+
+.gx-shard.sh-3 {
+    background: linear-gradient(160deg, var(--pal-lavender), var(--pal-pink));
+}
+
+.gx-shard.sh-4 {
+    background: linear-gradient(160deg, var(--pal-pink), var(--pal-lavender));
+    filter: drop-shadow(0 0 8px rgba(248, 169, 214, .5));
+}
+
+/* ประกาย + ดาวตก = แสง → เดินตามลำดับสเปกตรัมของชุด
+   ดาว 3 ดวง: ฟ้าโฮโล → มิ้นต์ → ลาเวนเดอร์
+   ดาวตก 3 ดวง: ฟ้าโฮโล → มิ้นต์ → ชมพู
+   (ของชนิดเดียวกันไล่สีเป็นชุด = ไม่ใช่การแจกสีมั่ว) */
+.sk-spark,
+.comet-head {
+    color: var(--pal-cyan);
+}
+
+.sk-spark {
+    opacity: .9;
+}
+
+.sk-spark.sp-2 {
+    color: var(--pal-mint);
+}
+
+.sk-spark.sp-3 {
+    color: var(--pal-lavender);
+}
+
+.cm-2 .comet-head {
+    color: var(--pal-mint);
+}
+
+.cm-3 .comet-head {
+    color: var(--pal-pink);
+}
+
+.comet-tail {
+    background: linear-gradient(90deg, currentColor, transparent);
+    color: var(--pal-cyan);
+    opacity: .7;
+}
+
+.cm-2 .comet-tail {
+    color: var(--pal-mint);
+}
+
+.cm-3 .comet-tail {
+    color: var(--pal-pink);
+}
+
+
+/* ---------- กลุ่ม 1: วง "ภาพงาน" เป็นโครง → สีนำอย่างเดียว ---------- */
+.sk-work {
+    color: var(--gx-primary);
+}
+
+.sk-work-fill {
+    background: #fff;
+}
+
+.sk-work-label {
+    color: var(--gray-500);
+}
+
+/* โลโก้ — ตัดแสงเรืองฟ้าของธีมเก่าออก (เบลอ + สีนอกพาเลตต์) */
+.brand-logo {
+    filter: none;
+}
+
+
+/* ---------- เส้นโลหะ: ทองแบน + ขอบหมึกเสมอ ---------- */
+.rope-line {
+    color: var(--gx-gold-deep);
+}
+
+.rope-star svg {
+    color: var(--gx-gold);
+}
+
+.rope-star-body {
+    stroke: var(--sk-ink);
+    stroke-width: 2.4;
+    paint-order: stroke;
+}
+
+/* ตราปลายเชือก: ทองแบน ขอบหมึก ไม่มีไล่แสงให้ดูนูน */
+.rope-star::before {
+    background: var(--gx-gold);
+    box-shadow: 0 0 0 2.4px var(--sk-ink);
+}
+
+/* แสงกลมหลังตรา — เดิมเป็นไล่สีฟุ้ง เปลี่ยนเป็นวงขาวโปร่งแบน */
+.rope-glow {
+    background: rgba(255, 255, 255, .5);
+    opacity: .5;
+}
+
+/* หน้าสำเร็จ — ไอคอนเดิมไล่สีเขียว (นอกพาเลตต์) เปลี่ยนเป็นตราทองแบนขอบหมึก ให้เป็นภาษาเดียวกับติ๊กยืนยัน */
+.sketch-hero .success-icon {
+    background: var(--gx-gold);
+    box-shadow: 0 0 0 2.4px var(--sk-ink);
+}
+
+.sketch-hero .success-icon svg {
+    stroke: var(--sk-ink);
+}
+
+.sketch-hero .form-success h3 {
+    color: var(--gx-primary);
+}
+
+.rope-hint {
+    color: var(--gx-primary);
+}
+
+
+/* ---------- ปุ่ม: สีแบน ขอบคม เงาแข็ง ---------- */
+.ink-btn .ink-oval .oval-face {
+    fill: #fff;
+}
+
+.ink-btn:hover .ink-oval .oval-face {
+    fill: var(--gx-tint);
+}
+
+/* ปุ่มเหรียญ = ชิ้นโลหะชิ้นเดียวของบล็อกนี้ */
+.ink-btn-coin .ink-oval .oval-face {
+    fill: var(--gx-gold);
+}
+
+.ink-btn-coin:hover .ink-oval .oval-face {
+    fill: var(--gold-lit);
+}
+
+
+/* ---------- แผ่นป้ายเมนู: พื้นขาวแบน ขอบหมึก ---------- */
+.cloud-btn::after {
+    background: #fff;
+}
+
+.cloud-btn:hover::after {
+    background: var(--gx-tint);
+}
+
+
+/* ---------- กระดาษฟอร์ม ---------- */
+/* เงาแข็งทึบอย่างเดียว ตัดแสงเรืองเบลอทิ้ง */
+.sketch-hero .form-card {
+    box-shadow: 10px 12px 0 rgba(14, 0, 168, .14);
+}
+
+.paper::before {
+    border-color: var(--gx-primary);
+    opacity: .26;
+}
+
+/* ป้ายหัวคัมภีร์ — พื้นกระดาษเก่าแบน */
+.sketch-hero .form-card-title::after {
+    background: var(--gx-parchment);
+}
+
+
+/* ---------- ฟอร์ม ---------- */
+.sketch-hero .form-label {
+    color: var(--gx-primary);
+    font-weight: 600;
+}
+
+/* เครื่องหมายจำเป็น = ชมพูโฮโล / ข้อความผิดพลาด = เบอร์กันดี (สีแดงของธีมนี้) */
+.sketch-hero .req {
+    color: var(--gx-rose);
+}
+
+.sketch-hero .form-error {
+    color: var(--pal-burgundy);
+}
+
+.sketch-hero .form-input {
+    background: #fff;
+}
+
+.sketch-hero .form-input:focus {
+    border-color: var(--gx-primary);
+    box-shadow: 0 0 0 3px rgba(9, 0, 112, .16);
+}
+
+/* การ์ดสินค้า — พื้นขาวแบน แถบสีนำด้านซ้าย เลือกแล้วเป็นทอง */
+.sketch-hero .product-select-item {
+    background: #fff;
+    box-shadow: 3px 3px 0 rgba(14, 0, 168, .14);
+}
+
+.sketch-hero .product-select-item::before {
+    background: var(--gx-primary);
+}
+
+.sketch-hero .product-select-item:hover {
+    background: var(--gx-tint);
+    box-shadow: 5px 6px 0 rgba(14, 0, 168, .16);
+}
+
+.sketch-hero .product-select-item.selected {
+    background: #fff;
+    border-color: var(--gx-gold-deep);
+    box-shadow: 3px 3px 0 rgba(14, 0, 168, .14);
+}
+
+.sketch-hero .product-select-item.selected::before {
+    background: var(--gx-gold);
+}
+
+.sketch-hero .product-select-name {
+    color: var(--sk-ink);
+    font-weight: 600;
+}
+
+/* ปุ่มส่ง — สีนำแบนล้วน + ขอบหมึก + เงาแข็ง ไม่มีไล่สี ไม่มีขอบนูน ไม่มีริ้วแสงวิ่ง */
+.sketch-hero .form-card .btn {
+    background: var(--gx-primary);
+    box-shadow: 0 var(--gx-bevel) 0 var(--sk-ink);
+}
+
+.sketch-hero .form-card .btn::before {
+    display: none;
+}
+
+.sketch-hero .form-card .btn:hover {
+    filter: none;
+    background: var(--gx-primary-lit);
+    box-shadow: 0 7px 0 var(--sk-ink);
+}
+
+.sketch-hero .form-card .btn:active {
+    box-shadow: 0 1px 0 var(--sk-ink);
+}
+
+/* ตัวนับ HUD */
+.gx-count i.on {
+    background: var(--gx-gold);
+}
+
+/* ตราประทับยืนยัน — ทองแบน ขอบหมึก (ของเดิมไล่แสงให้ดูนูนเหมือนขี้ผึ้ง = ตัดทิ้ง) */
+.sketch-hero .confirm-label input:checked~.confirm-check::after {
+    background: var(--gx-gold);
+    box-shadow: 0 0 0 2.4px var(--sk-ink);
+}
+
+/* วงติ๊กสินค้า — ตัดแสงเรืองทองทิ้ง */
+.sketch-hero .product-select-item.selected .product-checkbox,
+.sketch-hero .product-select-item input:checked+.product-checkbox {
+    filter: none;
+}
+
+
+/* ====================== RESPONSIVE ====================== */
+@media (max-width: 1340px) {
+    .sketch-hero {
+        padding: 72px 36px 58px 96px;
+    }
+
+    .sk-works {
+        width: min(240px, 22vw);
+        --wk: .8;
+    }
+}
+
+@media (max-width: 1080px) {
+    .sketch-hero {
+        padding: 88px 24px 64px;
+    }
+
+    .hero-stage {
+        grid-template-columns: 1fr;
+        gap: 44px;
+        max-width: 660px;
+    }
+
+    /* วงกลมภาพงานเบียดเนื้อหาบนจอแคบ — ซ่อนไว้ก่อน */
+    .sk-works {
+        display: none;
+    }
+
+    .paper-stage {
+        padding: 26px 26px 40px 30px;
+    }
+
+    .scene-window {
+        min-height: 420px;
+    }
+
+    .sk-orbit {
+        opacity: .5;
+    }
+
+    .orb-1 {
+        width: 820px;
+        height: 820px;
+        right: -30%;
+        top: 26%;
+    }
+
+    .orb-2 {
+        width: 620px;
+        height: 620px;
+        right: -22%;
+        top: 34%;
+    }
+
+    .orb-3 {
+        display: none;
+    }
+
+    /* จอแคบไม่มีเพอร์สเปคทีฟ ให้กระดาษตรงๆ อ่านง่ายกว่า */
+    .form-3d {
+        transform: none !important;
+    }
+
+    .paper::before {
+        display: none;
+    }
+
+    .cm-1 {
+        --cx: 70%;
+        --cy: -4%;
+    }
+
+    .cm-2 {
+        --cx: 92%;
+        --cy: 6%;
+    }
+
+    /* ของประดับ Game UI บนจอแคบ — เบาลง ไม่ให้แย่งความสนใจกับฟอร์ม */
+    .gx-astro {
+        left: -18%;
+        bottom: -36%;
+        opacity: .12;
+    }
+
+    .gx-constel,
+    .gx-planet {
+        display: none;
+    }
+
+    .gx-bracket {
+        inset: -12px -6px;
+    }
+
+    .gx-code {
+        bottom: -26px;
+    }
+}
+
+@media (max-width: 720px) {
+    .sketch-hero {
+        padding: 80px 16px 56px;
+    }
+
+    .rope {
+        left: auto;
+        right: 12px;
+        /* ต้องคง translateY ไว้ ไม่งั้นตอนดึงเชือกจะไม่ขยับ */
+        transform: translateY(var(--pull, 0px)) scale(.82);
+        transform-origin: top right;
+    }
+
+    .paper-stage {
+        padding: 22px 14px 34px 18px;
+    }
+
+    .sketch-hero .form-card {
+        padding: 24px 20px 26px;
+    }
+
+    .sk-cross {
+        width: 108px;
+        height: 108px;
+    }
+
+    .ck-tr {
+        right: -30px;
+        top: -30px;
+    }
+
+    .ck-bl {
+        left: -32px;
+        bottom: -10px;
+    }
+
+    .sk-badge {
+        left: -34px;
+        top: -26px;
+    }
+
+    .sk-cursor {
+        width: 38px;
+        height: 54px;
+        right: -22px;
+        bottom: -24px;
+    }
+
+    .cloud-btn {
+        width: 210px;
+        height: 66px;
+    }
+
+    .cb-2 {
+        margin-left: 30px;
+    }
+
+    .cb-3 {
+        margin-left: 12px;
+    }
+
+    .cb-4 {
+        margin-left: 44px;
+    }
+
+    .sp-3,
+    .cm-3 {
+        display: none;
+    }
+
+    /* จอแคบ = หน้าเลื่อนได้ ไม่ต้องประหยัดความสูงแล้ว → ตัวนับกลับเข้าโฟลว์
+       (ถ้าปล่อยลอยไว้จะไปทับป้ายหัวคัมภีร์เพราะกระดาษแคบลง) */
+    .gx-count {
+        position: static;
+        margin: 0 auto clamp(6px, 1vh, 10px);
+    }
+
+    .gx-corners {
+        inset: 7px;
+    }
+
+    .gx-corners i {
+        width: 20px;
+        height: 20px;
+    }
+
+    .gx-shard.sh-2,
+    .gx-shard.sh-5 {
+        display: none;
+    }
+
+    .gx-code {
+        display: none;
+    }
+
+    .gx-moon {
+        right: 5%;
+        top: 3%;
+    }
+}
+
+
+/* ====================== ลดการเคลื่อนไหว ====================== */
+@media (prefers-reduced-motion: reduce) {
+
+    .sketch-hero.armed .scene-window,
+    .sketch-hero.armed .paper-stage,
+    .sketch-hero.armed .rope,
+    .sketch-hero.armed .sk-works,
+    .sketch-hero.armed .sk-bg {
+        opacity: 1;
+    }
+
+    .sketch-hero *,
+    .sketch-hero *::before,
+    .sketch-hero *::after {
+        animation: none !important;
+    }
+
+    .form-3d {
+        transform: rotateY(-6deg) !important;
+        transition: none;
+    }
+
+    .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    /* ปิด parallax + ริ้วแสงวิ่ง เหลือแค่ hover/focus */
+    .gx-layer {
+        transition: none;
+        transform: none !important;
+    }
+
+    .sketch-hero .form-card .btn::before {
+        display: none;
+    }
+}

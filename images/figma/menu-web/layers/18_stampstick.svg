@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="3111" viewBox="0 0 1920 3111" fill="none"><defs><linearGradient id="paint93_linear_0_1" x1="1887.67" y1="722" x2="1887.67" y2="875.34" gradientUnits="userSpaceOnUse">
+<stop stop-color="#938787" />
+<stop offset="1" stop-color="#382222" />
+</linearGradient>
+<linearGradient id="paint94_linear_0_1" x1="1892.93" y1="736.221" x2="1892.93" y2="864.21" gradientUnits="userSpaceOnUse">
+<stop offset="0.350962" stop-color="#886B3E" />
+<stop offset="0.418269" stop-color="#D8B45A" />
+<stop offset="0.495192" stop-color="#A18247" />
+<stop offset="0.870192" stop-color="#382222" />
+</linearGradient>
+<linearGradient id="paint95_linear_0_1" x1="1894.47" y1="768.373" x2="1894.47" y2="830.203" gradientUnits="userSpaceOnUse">
+<stop offset="0.350962" stop-color="#886B3E" />
+<stop offset="0.418269" stop-color="#D8B45A" />
+<stop offset="0.495192" stop-color="#A18247" />
+<stop offset="0.870192" stop-color="#382222" />
+</linearGradient>
+<linearGradient id="paint96_linear_0_1" x1="1949.5" y1="759.717" x2="1970.21" y2="848.752" gradientUnits="userSpaceOnUse">
+<stop offset="0.0144231" stop-color="#D8B45A" />
+<stop offset="0.158654" stop-color="white" />
+<stop offset="0.307692" stop-color="#999999" />
+<stop offset="0.442308" stop-color="#D8B45A" />
+</linearGradient>
+<linearGradient id="paint97_linear_0_1" x1="1954.14" y1="759.717" x2="1954.14" y2="841.951" gradientUnits="userSpaceOnUse">
+<stop offset="0.350962" stop-color="#886B3E" />
+<stop offset="0.418269" stop-color="#D8B45A" />
+<stop offset="0.495192" stop-color="#A18247" />
+<stop offset="0.870192" stop-color="#382222" />
+</linearGradient>
+</defs><g id="stampstick">
+<circle id="Ellipse 14" cx="1887.67" cy="798.67" r="77.5973" fill="#6D5555" stroke="url(#paint93_linear_0_1)" stroke-width="1.85491" />
+<circle id="Ellipse 15" cx="1893.23" cy="800.524" r="66.7769" fill="#D8B45A" />
+<circle id="Ellipse 23" cx="1892.93" cy="800.215" r="63.0671" stroke="url(#paint94_linear_0_1)" stroke-width="1.85491" />
+<circle id="Ellipse 16" cx="1891.69" cy="797.742" r="35.5525" fill="#6D5555" />
+<circle id="Ellipse 17" cx="1894.47" cy="799.288" r="30.2969" fill="#D8B45A" stroke="url(#paint95_linear_0_1)" stroke-width="1.23661" />
+<circle id="Ellipse 19" cx="1894.47" cy="800.525" r="18.5491" fill="#382222" />
+<g id="Group 15">
+<circle id="Ellipse 18" cx="1895.4" cy="800.834" r="17.6217" fill="#453737" />
+<path id="Rectangle 19" d="M1888.91 784.449L1938.99 762.499V839.169L1888.91 817.219V784.449Z" fill="#453737" />
+</g>
+<circle id="Ellipse 21" cx="1954.14" cy="800.834" r="39.8807" fill="#D8B45A" stroke="url(#paint96_linear_0_1)" stroke-width="2.47322" />
+<circle id="Ellipse 24" cx="1954.14" cy="800.834" r="39.8807" fill="#D8B45A" stroke="url(#paint97_linear_0_1)" stroke-width="2.47322" />
+<circle id="Ellipse 20" cx="1953.83" cy="800.834" r="37.4074" fill="#6D5555" />
+<circle id="Ellipse 22" cx="1953.83" cy="801.143" r="34.3159" stroke="#D8B45A" stroke-width="0.618305" />
+</g>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1920" height="2879" viewBox="0 0 1920 2879" fill="none"><defs><image id="image2_0_1" data-name="bg_removal [Background removed].png" width="3456" height="3456" preserveAspectRatio="none" xlink:href="../../img/4af3d32df9cf.webp" />
+<pattern id="pattern2_0_1" patternContentUnits="objectBoundingBox" x="-0.02" y="-0.02" width="1.04" height="1.04">
+<use xlink:href="#image2_0_1" transform="translate(0.02 0.02) scale(0.000289352)" />
+</pattern>
+</defs><rect id="IMG_20260610_181948 1" x="969" y="1239" width="669" height="669" fill="url(#pattern2_0_1)" />
+</svg>

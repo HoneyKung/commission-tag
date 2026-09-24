@@ -1,0 +1,312 @@
+/* ============================================================
+   ตำแหน่งข้อความ — สร้างด้วย figma-text.py ห้ามแก้ด้วยมือ
+   ทุกค่ามาจาก attribute ของ <text> ในไฟล์ที่ Figma export ไม่มีการกะเอง
+
+     กล่องนอก (.tx)        = translate() ของ <text>  + rotate()
+     ตัวอักษร (.tx > span) = tspan x, y  โดย y เป็น baseline
+                             → top = y - (font-size x 1.12) ระยะ baseline ของ Kanit
+
+   แก้ข้อความ/เพิ่มบรรทัด ให้ไปแก้ที่ index.template.html แล้วรัน figma-page.py
+   ============================================================ */
+
+.tx {
+    position: absolute;
+    transform-origin: 0 0;
+    white-space: pre;
+    line-height: normal;
+    pointer-events: none;
+}
+
+.tx>span {
+    position: absolute;
+    display: block;
+    /* nowrap ไม่ใช่ pre — ขึ้นบรรทัดใหม่ในไฟล์ HTML ต้องไม่กลายเป็นการตัดบรรทัดจริง
+       ดีไซน์ที่มีหลายบรรทัดจะแยกเป็นหลาย tspan (= หลาย span) อยู่แล้ว */
+    white-space: nowrap;
+}
+
+
+/* 12_ฝากแทคงาน-Commission.svg — «ฝากแทคงาน Commission» */
+[data-t="ฝากแทคงาน-Commission-main"] { --ax:439.26px; --ay:513.996px; left:439.26px; top:513.996px; font-family:'Kanit',sans-serif; font-size:28.3219px; color:black; font-weight:500; }
+[data-t="ฝากแทคงาน-Commission-main"]>span { left:0px; top:-31.721px; }
+
+/* 13_แจ้งเตือนผ่าน-Email-อัตโนมัติเมื่อเปิดรอบใหม่.svg — «แจ้งเตือนผ่าน Email» */
+[data-t="แจ้งเตือนผ่าน-Email-อัตโนมัติเมื่อเปิดรอบใหม่-main"] { --ax:493.339px; --ay:544.596px; left:493.339px; top:544.596px; font-family:'Kanit',sans-serif; font-size:24.7322px; color:black; font-weight:300; }
+[data-t="แจ้งเตือนผ่าน-Email-อัตโนมัติเมื่อเปิดรอบใหม่-main"]>span:nth-child(1) { left:0px; top:-27.7px; }
+[data-t="แจ้งเตือนผ่าน-Email-อัตโนมัติเมื่อเปิดรอบใหม่-main"]>span:nth-child(2) { left:-17.317px; top:2.597px; }
+
+/* 14_button_2.svg — «สำรวจชิ้นงาน» */
+[data-t="สำรวจชิ้นงาน_2-main"] { --ax:502.794px; --ay:654.757px; left:502.794px; top:654.757px; font-family:'Kanit',sans-serif; font-size:32.337px; color:black; font-weight:300; }
+[data-t="สำรวจชิ้นงาน_2-main"]>span { left:0px; top:-36.217px; }
+
+/* 29_Group-74.svg — «ฝาคแทคแล้ว xx คน» */
+[data-t="ฝาคแทคแล้ว-xx-คน-main"] { --ax:475px; --ay:1800px; left:475px; top:1800px; font-family:'Kanit',sans-serif; font-size:31.729px; color:#FF5689; }
+[data-t="ฝาคแทคแล้ว-xx-คน-main"]>span { left:2.52847px; top:-0.852px; }
+
+/* 30_Group-75.svg — «ฝาคแทคแล้ว xx คน» */
+[data-t="ฝาคแทคแล้ว-xx-คน_2-main"] { --ax:1078px; --ay:1800px; left:1078px; top:1800px; font-family:'Kanit',sans-serif; font-size:31.729px; color:#FF5689; }
+[data-t="ฝาคแทคแล้ว-xx-คน_2-main"]>span { left:0px; top:-0.852px; }
+
+/* Group-55.svg — «ชื่อหรือนามแฝงที่ต้องการให้เราเรียก» */
+[data-t="t-form"] { --ax:1164.45px; --ay:205.923px; left:1164.45px; top:205.923px; font-family:'Kanit',sans-serif; font-size:18px; color:#777A80; transform:rotate(-3deg); text-decoration:underline; }
+[data-t="t-form"]>span { left:32.3438px; top:-0.315px; }
+
+/* Group-55.svg — «ชื่อ :» */
+[data-t="t-form2"] { --ax:1164.45px; --ay:205.923px; left:1164.45px; top:205.923px; font-family:'Kanit',sans-serif; font-size:18px; color:black; transform:rotate(-3deg); }
+[data-t="t-form2"]>span { left:0px; top:-0.315px; }
+
+/* Group-57_2.svg — «ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ + ตรวจสอบ» */
+[data-t="ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ-+-ตรวจสอบฝากแทค-form"] { --ax:1168.84px; --ay:289.671px; left:1168.84px; top:289.671px; font-family:'Kanit',sans-serif; font-size:15px; color:#777A80; transform:rotate(-3deg); }
+[data-t="ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ-+-ตรวจสอบฝากแทค-form"]>span { left:0px; top:-0.512px; }
+
+/* Group-57_2.svg — «example@email.com» */
+[data-t="t-form3"] { --ax:1166.97px; --ay:253.857px; left:1166.97px; top:253.857px; font-family:'Kanit',sans-serif; font-size:18px; color:#777A80; transform:rotate(-3deg); text-decoration:underline; }
+[data-t="t-form3"]>span { left:48.9727px; top:-0.315px; }
+
+/* Group-57_2.svg — «อีเมล :» */
+[data-t="t-form4"] { --ax:1166.97px; --ay:253.857px; left:1166.97px; top:253.857px; font-family:'Kanit',sans-serif; font-size:18px; color:black; transform:rotate(-3deg); }
+[data-t="t-form4"]>span { left:0px; top:-0.315px; }
+
+/* Group-63.svg — «ลงชื่อฝากแทค» */
+[data-t="ลงชื่อฝากแทค_2-form"] { --ax:1337px; --ay:670.392px; left:1337px; top:670.392px; font-family:'Kanit',sans-serif; font-size:23.7967px; color:black; transform:rotate(-3deg); }
+[data-t="ลงชื่อฝากแทค_2-form"]>span { left:0.282242px; top:-0.264px; }
+
+/* Group-64.svg — «ยืนยันว่า Email ถูกต้องและได้ตรวจสอบแล้ว» */
+[data-t="ยืนยันว่า-Email-ถูกต้องและได้ตรวจสอบแล้ว-form"] { --ax:1229.47px; --ay:624.958px; left:1229.47px; top:624.958px; font-family:'Kanit',sans-serif; font-size:15px; color:black; transform:rotate(-3deg); }
+[data-t="ยืนยันว่า-Email-ถูกต้องและได้ตรวจสอบแล้ว-form"]>span { left:0px; top:-0.512px; }
+
+/* 16_form-card-3degreerotate.svg — «ลงชื่อฝากแทค» */
+[data-t="ลงชื่อฝากแทค-form"] { --ax:1228.17px; --ay:122.337px; left:1228.17px; top:122.337px; font-family:'Kanit',sans-serif; font-size:31.729px; color:black; transform:rotate(-3deg); }
+[data-t="ลงชื่อฝากแทค-form"]>span { left:59.4196px; top:-0.852px; }
+
+/* 16_form-card-3degreerotate.svg — «กรอกข้อมูลด้านล่างเพื่อฝากแทค» */
+[data-t="กรอกข้อมูลด้านล่างเพื่อฝากแทค-form"] { --ax:1271.15px; --ay:159.138px; left:1271.15px; top:159.138px; font-family:'Kanit',sans-serif; font-size:15.8645px; color:black; transform:rotate(-3deg); }
+[data-t="กรอกข้อมูลด้านล่างเพื่อฝากแทค-form"]>span { left:4.75681px; top:-0.176px; }
+
+/* 16_form-card-3degreerotate.svg — «ลงชื่อฝากแทค» */
+[data-t="ลงชื่อฝากแทค_2-form2"] { --ax:1337px; --ay:670.392px; left:1337px; top:670.392px; font-family:'Kanit',sans-serif; font-size:23.7967px; color:black; transform:rotate(-3deg); }
+[data-t="ลงชื่อฝากแทค_2-form2"]>span { left:0.282242px; top:-0.264px; }
+
+/* 16_form-card-3degreerotate.svg — «ยืนยันว่า Email ถูกต้องและได้ตรวจสอบแล้ว» */
+[data-t="ยืนยันว่า-Email-ถูกต้องและได้ตรวจสอบแล้ว-form2"] { --ax:1229.47px; --ay:624.958px; left:1229.47px; top:624.958px; font-family:'Kanit',sans-serif; font-size:15px; color:black; transform:rotate(-3deg); }
+[data-t="ยืนยันว่า-Email-ถูกต้องและได้ตรวจสอบแล้ว-form2"]>span { left:0px; top:-0.512px; }
+
+/* 16_form-card-3degreerotate.svg — «ชื่อหรือนามแฝงที่ต้องการให้เราเรียก» */
+[data-t="t-form5"] { --ax:1164.45px; --ay:205.923px; left:1164.45px; top:205.923px; font-family:'Kanit',sans-serif; font-size:18px; color:#777A80; transform:rotate(-3deg); text-decoration:underline; }
+[data-t="t-form5"]>span { left:32.3438px; top:-0.315px; }
+
+/* 16_form-card-3degreerotate.svg — «ชื่อ :» */
+[data-t="t-form6"] { --ax:1164.45px; --ay:205.923px; left:1164.45px; top:205.923px; font-family:'Kanit',sans-serif; font-size:18px; color:black; transform:rotate(-3deg); }
+[data-t="t-form6"]>span { left:0px; top:-0.315px; }
+
+/* 16_form-card-3degreerotate.svg — «ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ + ตรวจสอบ» */
+[data-t="ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ-+-ตรวจสอบฝากแทค-form2"] { --ax:1168.84px; --ay:289.671px; left:1168.84px; top:289.671px; font-family:'Kanit',sans-serif; font-size:15px; color:#777A80; transform:rotate(-3deg); }
+[data-t="ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ-+-ตรวจสอบฝากแทค-form2"]>span { left:0px; top:-0.512px; }
+
+/* 16_form-card-3degreerotate.svg — «example@email.com» */
+[data-t="t-form7"] { --ax:1166.97px; --ay:253.857px; left:1166.97px; top:253.857px; font-family:'Kanit',sans-serif; font-size:18px; color:#777A80; transform:rotate(-3deg); text-decoration:underline; }
+[data-t="t-form7"]>span { left:48.9727px; top:-0.315px; }
+
+/* 16_form-card-3degreerotate.svg — «อีเมล :» */
+[data-t="t-form8"] { --ax:1166.97px; --ay:253.857px; left:1166.97px; top:253.857px; font-family:'Kanit',sans-serif; font-size:18px; color:black; transform:rotate(-3deg); }
+[data-t="t-form8"]>span { left:0px; top:-0.315px; }
+
+/* 16_form-card-3degreerotate.svg — «เลือกสินค้าที่ต้องการฝากแทค» */
+[data-t="เลือกสินค้าที่ต้องการฝากแทค-form"] { --ax:1153.8px; --ay:327.51px; left:1153.8px; top:327.51px; font-family:'Kanit',sans-serif; font-size:20px; color:black; transform:rotate(-3deg); }
+[data-t="เลือกสินค้าที่ต้องการฝากแทค-form"]>span { left:0px; top:-0.35px; }
+
+/* Group-72.svg — «ค้นหา» */
+[data-t="ค้นหา-lookup"] { --ax:922.988px; --ay:2373.19px; left:922.988px; top:2373.19px; font-family:'Kanit',sans-serif; font-size:25.0715px; color:black; font-weight:300; }
+[data-t="ค้นหา-lookup"]>span { left:0px; top:-28.08px; }
+
+/* Group-72.svg — «ตรวจสอบ / แก้ไขฝากแทค» */
+[data-t="ตรวจสอบ-แก้ไขฝากแทค-lookup"] { --ax:734px; --ay:2161px; left:734px; top:2161px; font-family:'Kanit',sans-serif; font-size:31.729px; color:black; }
+[data-t="ตรวจสอบ-แก้ไขฝากแทค-lookup"]>span { left:60.3326px; top:-0.852px; }
+
+/* Group-72.svg — «ใส่ Email ที่ลงชื่อไว้เพื่อดูหรือแก้ไขรา» */
+[data-t="ใส่-Email-ที่ลงชื่อไว้เพื่อดูหรือแก้ไขรายการฝากแทค-lookup"] { --ax:795.211px; --ay:2200px; left:795.211px; top:2200px; font-family:'Kanit',sans-serif; font-size:15.8645px; color:black; }
+[data-t="ใส่-Email-ที่ลงชื่อไว้เพื่อดูหรือแก้ไขรายการฝากแทค-lookup"]>span { left:1.6795px; top:-0.176px; }
+
+/* Group-72.svg — «จำ Email ไม่ได้ ?» */
+[data-t="จำ-Email-ไม่ได้--lookup"] { --ax:743px; --ay:2302px; left:743px; top:2302px; font-family:'Kanit',sans-serif; font-size:15px; color:#777A80; }
+[data-t="จำ-Email-ไม่ได้--lookup"]>span { left:0px; top:-0.512px; }
+
+/* Group-72.svg — «example@email.com» */
+[data-t="t-lookup"] { --ax:743px; --ay:2258px; left:743px; top:2258px; font-family:'Kanit',sans-serif; font-size:18px; color:#777A80; text-decoration:underline; }
+[data-t="t-lookup"]>span { left:48.9727px; top:-0.315px; }
+
+/* Group-72.svg — «อีเมล :» */
+[data-t="t-lookup2"] { --ax:743px; --ay:2258px; left:743px; top:2258px; font-family:'Kanit',sans-serif; font-size:18px; color:black; }
+[data-t="t-lookup2"]>span { left:0px; top:-0.315px; }
+
+/* 29_Group-73.svg — «ตรวจสอบ / แก้ไขฝากแทค» */
+[data-t="ตรวจสอบ-แก้ไขฝากแทค-lookupfull"] { --ax:734px; --ay:2393px; left:734px; top:2393px; font-family:'Kanit',sans-serif; font-size:31.729px; color:black; }
+[data-t="ตรวจสอบ-แก้ไขฝากแทค-lookupfull"]>span { left:60.3326px; top:-0.852px; }
+
+/* 29_Group-73.svg — «ใส่ Email ที่ลงชื่อไว้เพื่อดูหรือแก้ไขรา» */
+[data-t="ใส่-Email-ที่ลงชื่อไว้เพื่อดูหรือแก้ไขรายการฝากแทค-lookupfull"] { --ax:795.211px; --ay:2432px; left:795.211px; top:2432px; font-family:'Kanit',sans-serif; font-size:15.8645px; color:black; }
+[data-t="ใส่-Email-ที่ลงชื่อไว้เพื่อดูหรือแก้ไขรายการฝากแทค-lookupfull"]>span { left:1.6795px; top:-0.176px; }
+
+/* 29_Group-73.svg — «จำ Email ไม่ได้ ?» */
+[data-t="จำ-Email-ไม่ได้--lookupfull"] { --ax:743px; --ay:2534px; left:743px; top:2534px; font-family:'Kanit',sans-serif; font-size:15px; color:#777A80; }
+[data-t="จำ-Email-ไม่ได้--lookupfull"]>span { left:0px; top:-0.512px; }
+
+/* 29_Group-73.svg — «ระบบจะแสดงข้อมูลบางส่วนของ Email ที่ลงไว» */
+[data-t="ระบบจะแสดงข้อมูลบางส่วนของ-Email-ที่ลงไว้-เช่น-tgmail.com-lookupfull"] { --ax:743px; --ay:2612px; left:743px; top:2612px; font-family:'Kanit',sans-serif; font-size:15px; color:#777A80; }
+[data-t="ระบบจะแสดงข้อมูลบางส่วนของ-Email-ที่ลงไว้-เช่น-tgmail.com-lookupfull"]>span { left:0px; top:-0.512px; }
+
+/* 29_Group-73.svg — «example@email.com» */
+[data-t="t-lookupfull"] { --ax:743px; --ay:2490px; left:743px; top:2490px; font-family:'Kanit',sans-serif; font-size:18px; color:#777A80; text-decoration:underline; }
+[data-t="t-lookupfull"]>span { left:48.9727px; top:-0.315px; }
+
+/* 29_Group-73.svg — «อีเมล :» */
+[data-t="t-lookupfull2"] { --ax:743px; --ay:2490px; left:743px; top:2490px; font-family:'Kanit',sans-serif; font-size:18px; color:black; }
+[data-t="t-lookupfull2"]>span { left:0px; top:-0.315px; }
+
+/* 29_Group-73.svg — «ค้นหาด้วยชื่อ» */
+[data-t="t-lookupfull3"] { --ax:743px; --ay:2568px; left:743px; top:2568px; font-family:'Kanit',sans-serif; font-size:18px; color:black; }
+[data-t="t-lookupfull3"]>span { left:0px; top:-0.315px; }
+
+/* 29_Group-73.svg — «ชื่อ/นามแฝงที่ลงทะเบรียนไว้» */
+[data-t="t-lookupfull4"] { --ax:743px; --ay:2568px; left:743px; top:2568px; font-family:'Kanit',sans-serif; font-size:18px; color:#777A80; text-decoration:underline; }
+[data-t="t-lookupfull4"]>span { left:104.361px; top:-0.315px; }
+
+/* 29_Group-73.svg — «:» */
+[data-t="t-lookupfull5"] { --ax:743px; --ay:2568px; left:743px; top:2568px; font-family:'Kanit',sans-serif; font-size:18px; color:black; }
+[data-t="t-lookupfull5"]>span { left:92.8477px; top:-0.315px; }
+
+/* 29_Group-73.svg — «Cotton Doll ตุ๊กตาไอดอล» */
+[data-t="t-lookupfull6"] { --ax:743px; --ay:2685px; left:743px; top:2685px; font-family:'Kanit',sans-serif; font-size:18px; color:black; }
+[data-t="t-lookupfull6"]>span { left:0px; top:-0.315px; }
+
+/* 29_Group-73.svg — «13 พ.ค. 2569» */
+[data-t="t-lookupfull7"] { --ax:743px; --ay:2685px; left:743px; top:2685px; font-family:'Kanit',sans-serif; font-size:18px; color:#777A80; }
+[data-t="t-lookupfull7"]>span { left:189.791px; top:-0.315px; }
+
+/* 29_Group-73.svg — «ลบ» */
+[data-t="ลบ-lookupfull"] { --ax:1157px; --ay:2685px; left:1157px; top:2685px; font-family:'Kanit',sans-serif; font-size:18px; color:black; text-decoration:underline; }
+[data-t="ลบ-lookupfull"]>span { left:3.13281px; top:-0.315px; }
+
+/* 29_Group-73.svg — «Cookie 3D Print» */
+[data-t="t-lookupfull8"] { --ax:743px; --ay:2734px; left:743px; top:2734px; font-family:'Kanit',sans-serif; font-size:18px; color:black; }
+[data-t="t-lookupfull8"]>span { left:0px; top:-0.315px; }
+
+/* 29_Group-73.svg — «13 พ.ค. 2569» */
+[data-t="t-lookupfull9"] { --ax:743px; --ay:2734px; left:743px; top:2734px; font-family:'Kanit',sans-serif; font-size:18px; color:#777A80; }
+[data-t="t-lookupfull9"]>span { left:127.652px; top:-0.315px; }
+
+/* 29_Group-73.svg — «ลบ» */
+[data-t="ลบ_2-lookupfull"] { --ax:1157px; --ay:2734px; left:1157px; top:2734px; font-family:'Kanit',sans-serif; font-size:18px; color:black; text-decoration:underline; }
+[data-t="ลบ_2-lookupfull"]>span { left:3.13281px; top:-0.315px; }
+
+/* 29_Group-73.svg — «รายการฝากแทค» */
+[data-t="รายการฝากแทค-lookupfull"] { --ax:726px; --ay:2648px; left:726px; top:2648px; font-family:'Kanit',sans-serif; font-size:15.8645px; color:black; }
+[data-t="รายการฝากแทค-lookupfull"]>span { left:0px; top:-0.176px; }
+
+/* 29_Group-73.svg — «example@gmail.com» */
+[data-t="examplegmail.com-lookupfull"] { --ax:962px; --ay:2648px; left:962px; top:2648px; font-family:'Kanit',sans-serif; font-size:15.8645px; color:#0E00A8; }
+[data-t="examplegmail.com-lookupfull"]>span { left:88.2209px; top:-0.176px; }
+
+/* 29_Group-73.svg — «เพิ่มฝากแทค» */
+[data-t="เพิ่มฝากแทค-lookupfull"] { --ax:878.005px; --ay:2850.76px; left:878.005px; top:2850.76px; font-family:'Kanit',sans-serif; font-size:32.337px; color:black; font-weight:300; }
+[data-t="เพิ่มฝากแทค-lookupfull"]>span { left:0px; top:-36.217px; }
+
+/* 25_Group-40.svg — «แก้ไขฝากแทค» */
+[data-t="แก้ไขฝากแทค-menu"] { --ax:494.733px; --ay:437.678px; left:494.733px; top:437.678px; font-family:'Kanit',sans-serif; font-size:28.7107px; color:#EFF6FF; font-weight:500; }
+[data-t="แก้ไขฝากแทค-menu"]>span { left:0px; top:-32.156px; }
+
+/* 26_Group-41.svg — «ตรวจสอบสี» */
+[data-t="ตรวจสอบสี-menu"] { --ax:662.501px; --ay:674.457px; left:662.501px; top:674.457px; font-family:'Kanit',sans-serif; font-size:28.7107px; color:#EFF6FF; font-weight:500; }
+[data-t="ตรวจสอบสี-menu"]>span { left:0px; top:-32.156px; }
+
+/* 27_Group-42.svg — «ตรวจสอบคิว» */
+[data-t="ตรวจสอบคิว-menu"] { --ax:550.657px; --ay:556.067px; left:550.657px; top:556.067px; font-family:'Kanit',sans-serif; font-size:28.7107px; color:#EFF6FF; font-weight:500; }
+[data-t="ตรวจสอบคิว-menu"]>span { left:0px; top:-32.156px; }
+
+/* 28_Group-43.svg — «สำรวจชิ้นงาน» */
+[data-t="สำรวจชิ้นงาน-menu"] { --ax:547.283px; --ay:319.288px; left:547.283px; top:319.288px; font-family:'Kanit',sans-serif; font-size:28.7107px; color:#EFF6FF; font-weight:500; }
+[data-t="สำรวจชิ้นงาน-menu"]>span { left:0px; top:-32.156px; }
+
+/* Group-40.svg — «แก้ไขฝากแทค» */
+[data-t="แก้ไขฝากแทค-dock"] { --ax:62.7896px; --ay:2265.62px; left:62.7896px; top:2265.62px; font-family:'Kanit',sans-serif; font-size:20.7543px; color:#EFF6FF; font-weight:500; }
+[data-t="แก้ไขฝากแทค-dock"]>span { left:0px; top:-23.245px; }
+
+/* Group-41.svg — «ตรวจสอบสี» */
+[data-t="ตรวจสอบสี-dock"] { --ax:42.6952px; --ay:2407.38px; left:42.6952px; top:2407.38px; font-family:'Kanit',sans-serif; font-size:20.7543px; color:#EFF6FF; font-weight:500; }
+[data-t="ตรวจสอบสี-dock"]>span { left:0px; top:-23.245px; }
+
+/* Group-42.svg — «ตรวจสอบคิว» */
+[data-t="ตรวจสอบคิว-dock"] { --ax:37.5366px; --ay:2336.45px; left:37.5366px; top:2336.45px; font-family:'Kanit',sans-serif; font-size:20.7543px; color:#EFF6FF; font-weight:500; }
+[data-t="ตรวจสอบคิว-dock"]>span { left:0px; top:-23.245px; }
+
+/* Group-43.svg — «สำรวจชิ้นงาน» */
+[data-t="สำรวจชิ้นงาน-dock"] { --ax:34.7806px; --ay:2194.6px; left:34.7806px; top:2194.6px; font-family:'Kanit',sans-serif; font-size:20.7543px; color:#EFF6FF; font-weight:500; }
+[data-t="สำรวจชิ้นงาน-dock"]>span { left:0px; top:-23.245px; }
+
+/* Group-55.svg — «ชื่อหรือนามแฝงที่ต้องการให้เราเรียก» */
+[data-t="t-formmenu"] { --ax:1317.8px; --ay:165.823px; left:1317.8px; top:165.823px; font-family:'Kanit',sans-serif; font-size:18px; color:#777A80; transform:rotate(8deg); text-decoration:underline; }
+[data-t="t-formmenu"]>span { left:32.3438px; top:-0.315px; }
+
+/* Group-55.svg — «ชื่อ :» */
+[data-t="t-formmenu2"] { --ax:1317.8px; --ay:165.823px; left:1317.8px; top:165.823px; font-family:'Kanit',sans-serif; font-size:18px; color:black; transform:rotate(8deg); }
+[data-t="t-formmenu2"]>span { left:0px; top:-0.315px; }
+
+/* Group-57.svg — «ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ + ตรวจสอบ» */
+[data-t="ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ-+-ตรวจสอบฝากแทค-formmenu"] { --ax:1306.12px; --ay:248.87px; left:1306.12px; top:248.87px; font-family:'Kanit',sans-serif; font-size:15px; color:#777A80; transform:rotate(8deg); }
+[data-t="ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ-+-ตรวจสอบฝากแทค-formmenu"]>span { left:0px; top:-0.512px; }
+
+/* Group-57.svg — «example@email.com» */
+[data-t="t-formmenu3"] { --ax:1311.12px; --ay:213.355px; left:1311.12px; top:213.355px; font-family:'Kanit',sans-serif; font-size:18px; color:#777A80; transform:rotate(8deg); text-decoration:underline; }
+[data-t="t-formmenu3"]>span { left:48.9727px; top:-0.315px; }
+
+/* Group-57.svg — «อีเมล :» */
+[data-t="t-formmenu4"] { --ax:1311.12px; --ay:213.355px; left:1311.12px; top:213.355px; font-family:'Kanit',sans-serif; font-size:18px; color:black; transform:rotate(8deg); }
+[data-t="t-formmenu4"]>span { left:0px; top:-0.315px; }
+
+/* Group-63.svg — «ลงชื่อฝากแทค» */
+[data-t="ลงชื่อฝากแทค_2-formmenu"] { --ax:1398.55px; --ay:654.682px; left:1398.55px; top:654.682px; font-family:'Kanit',sans-serif; font-size:23.7967px; color:black; transform:rotate(8deg); }
+[data-t="ลงชื่อฝากแทค_2-formmenu"]>span { left:0.282242px; top:-0.264px; }
+
+/* Group-64.svg — «ยืนยันว่า Email ถูกต้องและได้ตรวจสอบแล้ว» */
+[data-t="ยืนยันว่า-Email-ถูกต้องและได้ตรวจสอบแล้ว-formmenu"] { --ax:1301.67px; --ay:589.565px; left:1301.67px; top:589.565px; font-family:'Kanit',sans-serif; font-size:15px; color:black; transform:rotate(8deg); }
+[data-t="ยืนยันว่า-Email-ถูกต้องและได้ตรวจสอบแล้ว-formmenu"]>span { left:0px; top:-0.512px; }
+
+/* 13_form-card-3degreerotate.svg — «ลงชื่อฝากแทค» */
+[data-t="ลงชื่อฝากแทค-formmenu"] { --ax:1396.29px; --ay:95.9294px; left:1396.29px; top:95.9294px; font-family:'Kanit',sans-serif; font-size:31.729px; color:black; transform:rotate(8deg); }
+[data-t="ลงชื่อฝากแทค-formmenu"]>span { left:59.4196px; top:-0.852px; }
+
+/* 13_form-card-3degreerotate.svg — «กรอกข้อมูลด้านล่างเพื่อฝากแทค» */
+[data-t="กรอกข้อมูลด้านล่างเพื่อฝากแทค-formmenu"] { --ax:1431.46px; --ay:140.256px; left:1431.46px; top:140.256px; font-family:'Kanit',sans-serif; font-size:15.8645px; color:black; transform:rotate(8deg); }
+[data-t="กรอกข้อมูลด้านล่างเพื่อฝากแทค-formmenu"]>span { left:4.75681px; top:-0.176px; }
+
+/* 13_form-card-3degreerotate.svg — «ลงชื่อฝากแทค» */
+[data-t="ลงชื่อฝากแทค_2-formmenu2"] { --ax:1398.55px; --ay:654.682px; left:1398.55px; top:654.682px; font-family:'Kanit',sans-serif; font-size:23.7967px; color:black; transform:rotate(8deg); }
+[data-t="ลงชื่อฝากแทค_2-formmenu2"]>span { left:0.282242px; top:-0.264px; }
+
+/* 13_form-card-3degreerotate.svg — «ยืนยันว่า Email ถูกต้องและได้ตรวจสอบแล้ว» */
+[data-t="ยืนยันว่า-Email-ถูกต้องและได้ตรวจสอบแล้ว-formmenu2"] { --ax:1301.67px; --ay:589.565px; left:1301.67px; top:589.565px; font-family:'Kanit',sans-serif; font-size:15px; color:black; transform:rotate(8deg); }
+[data-t="ยืนยันว่า-Email-ถูกต้องและได้ตรวจสอบแล้ว-formmenu2"]>span { left:0px; top:-0.512px; }
+
+/* 13_form-card-3degreerotate.svg — «ชื่อหรือนามแฝงที่ต้องการให้เราเรียก» */
+[data-t="t-formmenu5"] { --ax:1317.8px; --ay:165.823px; left:1317.8px; top:165.823px; font-family:'Kanit',sans-serif; font-size:18px; color:#777A80; transform:rotate(8deg); text-decoration:underline; }
+[data-t="t-formmenu5"]>span { left:32.3438px; top:-0.315px; }
+
+/* 13_form-card-3degreerotate.svg — «ชื่อ :» */
+[data-t="t-formmenu6"] { --ax:1317.8px; --ay:165.823px; left:1317.8px; top:165.823px; font-family:'Kanit',sans-serif; font-size:18px; color:black; transform:rotate(8deg); }
+[data-t="t-formmenu6"]>span { left:0px; top:-0.315px; }
+
+/* 13_form-card-3degreerotate.svg — «ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ + ตรวจสอบ» */
+[data-t="ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ-+-ตรวจสอบฝากแทค-formmenu2"] { --ax:1306.12px; --ay:248.87px; left:1306.12px; top:248.87px; font-family:'Kanit',sans-serif; font-size:15px; color:#777A80; transform:rotate(8deg); }
+[data-t="ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ-+-ตรวจสอบฝากแทค-formmenu2"]>span { left:0px; top:-0.512px; }
+
+/* 13_form-card-3degreerotate.svg — «example@email.com» */
+[data-t="t-formmenu7"] { --ax:1311.12px; --ay:213.355px; left:1311.12px; top:213.355px; font-family:'Kanit',sans-serif; font-size:18px; color:#777A80; transform:rotate(8deg); text-decoration:underline; }
+[data-t="t-formmenu7"]>span { left:48.9727px; top:-0.315px; }
+
+/* 13_form-card-3degreerotate.svg — «อีเมล :» */
+[data-t="t-formmenu8"] { --ax:1311.12px; --ay:213.355px; left:1311.12px; top:213.355px; font-family:'Kanit',sans-serif; font-size:18px; color:black; transform:rotate(8deg); }
+[data-t="t-formmenu8"]>span { left:0px; top:-0.315px; }
+
+/* 13_form-card-3degreerotate.svg — «เลือกสินค้าที่ต้องการฝากแทค» */
+[data-t="เลือกสินค้าที่ต้องการฝากแทค-formmenu"] { --ax:1284.14px; --ay:283.144px; left:1284.14px; top:283.144px; font-family:'Kanit',sans-serif; font-size:20px; color:black; transform:rotate(8deg); }
+[data-t="เลือกสินค้าที่ต้องการฝากแทค-formmenu"]>span { left:0px; top:-0.35px; }

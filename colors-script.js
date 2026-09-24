@@ -206,7 +206,7 @@ function showColorDetail(color) {
     `;
 }
 
-// ============ Color Finder (Delta E) ============
+// ============ Color Finder (CIEDE2000) ============
 function findClosestColors() {
     const hex = document.getElementById('hexInput').value.trim();
     if (!/^#[0-9A-Fa-f]{6}$/.test(hex)) {
@@ -231,9 +231,10 @@ function findClosestColors() {
 
     container.innerHTML = results.map((r, i) => {
         let badgeClass = 'far';
-        let label = `ΔE ${r.deltaE.toFixed(1)}`;
-        if (r.deltaE < 3) { badgeClass = 'exact'; label = '✓ ตรง!'; }
-        else if (r.deltaE < 10) { badgeClass = 'close'; }
+        let label = `ΔE00 ${r.deltaE.toFixed(1)}`;
+        if (r.deltaE < 0.1) { badgeClass = 'exact'; label = '✓ ตรงกัน'; }
+        else if (r.deltaE < 2) { badgeClass = 'exact'; label = `ใกล้มาก · ΔE00 ${r.deltaE.toFixed(1)}`; }
+        else if (r.deltaE < 5) { badgeClass = 'close'; }
 
         return `
         <div class="match-card ${i === 0 ? 'best' : ''}" onclick="selectSwatch('${r.c}')">
@@ -292,11 +293,75 @@ function hexToLab(hex) {
 }
 
 function deltaE(lab1, lab2) {
-    // CIE76
+    // CIEDE2000 (kL = kC = kH = 1)
+    const degToRad = deg => deg * Math.PI / 180;
+    const radToDeg = rad => rad * 180 / Math.PI;
+    const pow7 = value => Math.pow(value, 7);
+
+    const L1 = lab1.L, a1 = lab1.a, b1 = lab1.b;
+    const L2 = lab2.L, a2 = lab2.a, b2 = lab2.b;
+    const C1 = Math.sqrt(a1 * a1 + b1 * b1);
+    const C2 = Math.sqrt(a2 * a2 + b2 * b2);
+    const meanC = (C1 + C2) / 2;
+    const G = 0.5 * (1 - Math.sqrt(pow7(meanC) / (pow7(meanC) + pow7(25))));
+
+    const a1Prime = (1 + G) * a1;
+    const a2Prime = (1 + G) * a2;
+    const C1Prime = Math.sqrt(a1Prime * a1Prime + b1 * b1);
+    const C2Prime = Math.sqrt(a2Prime * a2Prime + b2 * b2);
+
+    function huePrime(b, aPrime) {
+        if (aPrime === 0 && b === 0) return 0;
+        const hue = radToDeg(Math.atan2(b, aPrime));
+        return hue >= 0 ? hue : hue + 360;
+    }
+
+    const h1Prime = huePrime(b1, a1Prime);
+    const h2Prime = huePrime(b2, a2Prime);
+    const deltaLPrime = L2 - L1;
+    const deltaCPrime = C2Prime - C1Prime;
+
+    let deltaHuePrime = 0;
+    if (C1Prime * C2Prime !== 0) {
+        const hueDiff = h2Prime - h1Prime;
+        if (Math.abs(hueDiff) <= 180) deltaHuePrime = hueDiff;
+        else if (hueDiff > 180) deltaHuePrime = hueDiff - 360;
+        else deltaHuePrime = hueDiff + 360;
+    }
+    const deltaHPrime = 2 * Math.sqrt(C1Prime * C2Prime)
+        * Math.sin(degToRad(deltaHuePrime / 2));
+
+    const meanLPrime = (L1 + L2) / 2;
+    const meanCPrime = (C1Prime + C2Prime) / 2;
+    let meanHuePrime;
+    if (C1Prime * C2Prime === 0) {
+        meanHuePrime = h1Prime + h2Prime;
+    } else if (Math.abs(h1Prime - h2Prime) <= 180) {
+        meanHuePrime = (h1Prime + h2Prime) / 2;
+    } else if (h1Prime + h2Prime < 360) {
+        meanHuePrime = (h1Prime + h2Prime + 360) / 2;
+    } else {
+        meanHuePrime = (h1Prime + h2Prime - 360) / 2;
+    }
+
+    const T = 1
+        - 0.17 * Math.cos(degToRad(meanHuePrime - 30))
+        + 0.24 * Math.cos(degToRad(2 * meanHuePrime))
+        + 0.32 * Math.cos(degToRad(3 * meanHuePrime + 6))
+        - 0.20 * Math.cos(degToRad(4 * meanHuePrime - 63));
+    const deltaTheta = 30 * Math.exp(-Math.pow((meanHuePrime - 275) / 25, 2));
+    const RC = 2 * Math.sqrt(pow7(meanCPrime) / (pow7(meanCPrime) + pow7(25)));
+    const SL = 1 + (0.015 * Math.pow(meanLPrime - 50, 2))
+        / Math.sqrt(20 + Math.pow(meanLPrime - 50, 2));
+    const SC = 1 + 0.045 * meanCPrime;
+    const SH = 1 + 0.015 * meanCPrime * T;
+    const RT = -Math.sin(degToRad(2 * deltaTheta)) * RC;
+
+    const lTerm = deltaLPrime / SL;
+    const cTerm = deltaCPrime / SC;
+    const hTerm = deltaHPrime / SH;
     return Math.sqrt(
-        Math.pow(lab1.L - lab2.L, 2) +
-        Math.pow(lab1.a - lab2.a, 2) +
-        Math.pow(lab1.b - lab2.b, 2)
+        lTerm * lTerm + cTerm * cTerm + hTerm * hTerm + RT * cTerm * hTerm
     );
 }
 
@@ -341,20 +406,42 @@ function getNonPrimaryPaints() {
     return VALLEJO_ALL.filter(c => !PRIMARY_CODES.includes(c.c));
 }
 
-// Mix two colors at a given ratio (subtractive approximation in RGB)
+// Mix two opaque paints with a single-constant Kubelka-Munk approximation.
+// ค่า Hex ไม่มีข้อมูล pigment จริง ผลลัพธ์จึงยังเป็นแนวทางและควรทดสอบสีจริง
 function mixColors(hex1, hex2, ratio) {
     // ratio = 0..1 where 0 = all hex1, 1 = all hex2
     const c1 = hexToRgb(hex1);
     const c2 = hexToRgb(hex2);
-    // Subtractive mixing approximation: multiply in linear space
-    const toLinear = v => Math.pow(v / 255, 2.2);
-    const toSrgb = v => Math.round(Math.pow(v, 1 / 2.2) * 255);
 
-    const r = toSrgb(toLinear(c1.r) * (1 - ratio) + toLinear(c2.r) * ratio);
-    const g = toSrgb(toLinear(c1.g) * (1 - ratio) + toLinear(c2.g) * ratio);
-    const b = toSrgb(toLinear(c1.b) * (1 - ratio) + toLinear(c2.b) * ratio);
+    const toLinear = v => {
+        const channel = v / 255;
+        return channel <= 0.04045
+            ? channel / 12.92
+            : Math.pow((channel + 0.055) / 1.055, 2.4);
+    };
+    const toSrgb = reflectance => {
+        const channel = reflectance <= 0.0031308
+            ? 12.92 * reflectance
+            : 1.055 * Math.pow(reflectance, 1 / 2.4) - 0.055;
+        return Math.round(Math.min(1, Math.max(0, channel)) * 255);
+    };
+    const toKS = reflectance => {
+        /* ค่า 0 ใน Hex ไม่ได้แปลว่า pigment สะท้อนแสงเป็นศูนย์จริง
+           กำหนด floor 1% เพื่อไม่ให้สีอิ่มสองสีผสมกันกลายเป็นดำสนิท */
+        const safe = Math.max(0.01, reflectance);
+        return Math.pow(1 - safe, 2) / (2 * safe);
+    };
+    const fromKS = ks => 1 + ks - Math.sqrt(ks * ks + 2 * ks);
+    const mixChannel = (v1, v2) => {
+        const ks = toKS(toLinear(v1)) * (1 - ratio) + toKS(toLinear(v2)) * ratio;
+        return toSrgb(fromKS(ks));
+    };
 
-    return { r: Math.min(255, Math.max(0, r)), g: Math.min(255, Math.max(0, g)), b: Math.min(255, Math.max(0, b)) };
+    return {
+        r: mixChannel(c1.r, c2.r),
+        g: mixChannel(c1.g, c2.g),
+        b: mixChannel(c1.b, c2.b)
+    };
 }
 
 function rgbToHex(r, g, b) {
@@ -365,8 +452,8 @@ function rgbToHex(r, g, b) {
 function findBestRatio(targetLab, hex1, hex2) {
     let bestDelta = Infinity;
     let bestRatio = 0.5;
-    // Test ratios from 0.1 to 0.9 in steps of 0.05
-    for (let r = 0.05; r <= 0.95; r += 0.05) {
+    // สูตรใช้งานจริงตวงง่ายกว่าเมื่อแบ่งทีละ 10%
+    for (let r = 0.1; r <= 0.9; r += 0.1) {
         const mixed = mixColors(hex1, hex2, r);
         const mixedLab = rgbToLab(mixed.r, mixed.g, mixed.b);
         const d = deltaE(targetLab, mixedLab);
@@ -382,16 +469,27 @@ function findBestRatio(targetLab, hex1, hex2) {
 function findMixRecipes(targetHex, paintPool, maxResults) {
     const targetLab = hexToLab(targetHex);
     const recipes = [];
-    const len = paintPool.length;
+    let candidates = paintPool;
+
+    /* CIEDE2000 แพงกว่า CIE76 มาก จำกัดชุดค้นหาไว้ที่สีเดี่ยวที่ใกล้ที่สุด
+       และเติมแม่สีกลับเข้ามา เพื่อยังหาแนวทางผสมขาว/ดำ/แม่สีได้ */
+    if (paintPool.length > 100) {
+        const nearest = [...paintPool]
+            .sort((a, b) => deltaE(targetLab, hexToLab(a.h)) - deltaE(targetLab, hexToLab(b.h)))
+            .slice(0, 40);
+        const primaries = paintPool.filter(p => PRIMARY_CODES.includes(p.c));
+        candidates = [...new Map([...nearest, ...primaries].map(p => [p.c, p])).values()];
+    }
+    const len = candidates.length;
 
     // Try all pairs
     for (let i = 0; i < len; i++) {
         for (let j = i + 1; j < len; j++) {
-            const result = findBestRatio(targetLab, paintPool[i].h, paintPool[j].h);
-            if (result.deltaE < 40) { // only reasonable matches
-                const mixed = mixColors(paintPool[i].h, paintPool[j].h, result.ratio);
+            const result = findBestRatio(targetLab, candidates[i].h, candidates[j].h);
+            if (result.deltaE < 25) { // ตัดสูตรที่ห่างจนไม่มีประโยชน์
+                const mixed = mixColors(candidates[i].h, candidates[j].h, result.ratio);
                 recipes.push({
-                    paints: [paintPool[i], paintPool[j]],
+                    paints: [candidates[i], candidates[j]],
                     ratios: [Math.round((1 - result.ratio) * 100), Math.round(result.ratio * 100)],
                     deltaE: result.deltaE,
                     mixedHex: rgbToHex(mixed.r, mixed.g, mixed.b)
@@ -454,8 +552,8 @@ function renderRecipes(recipes, targetHex) {
         const line2 = r.paints[1].line || r.paints[1].set || (r.paints[1].c.startsWith('72.') ? 'Game' : r.paints[1].c.startsWith('WP') ? 'Fanatic' : 'Model');
 
         let deltaClass = 'far';
-        if (r.deltaE < 5) deltaClass = 'exact';
-        else if (r.deltaE < 15) deltaClass = 'close';
+        if (r.deltaE < 2) deltaClass = 'exact';
+        else if (r.deltaE < 5) deltaClass = 'close';
 
         return `
         <div class="mix-card">
@@ -465,7 +563,7 @@ function renderRecipes(recipes, targetHex) {
                     <div class="mix-arrow">→</div>
                     <div class="mix-swatch" style="background:${r.mixedHex};" title="สีผสม"></div>
                 </div>
-                <div class="match-delta ${deltaClass}">ΔE ${r.deltaE.toFixed(1)}</div>
+                <div class="match-delta ${deltaClass}">ΔE00 ${r.deltaE.toFixed(1)}</div>
             </div>
             <div class="mix-recipe">
                 <div class="mix-paint">

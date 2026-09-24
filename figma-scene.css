@@ -1,0 +1,89 @@
+/* ============================================================
+   ซีนเมนู — ชิ้นเดิมเคลื่อนและหมุนไปที่ใหม่
+   สร้างด้วย figma-scene.py ห้ามแก้ด้วยมือ
+
+   **ไม่ใช่การสลับไปหน้าอื่น** ทุกชิ้นเป็นชิ้นเดียวกันกับซีนปกติ
+   พอดึงเชือกก็หมุน+เคลื่อนไปจุดที่ดีไซน์กำหนดไว้ (เฟส 3 ค่อยเติม transition)
+
+   แกนหมุน = จุดกึ่งกลางของชิ้นในซีนปกติ · องศา = ผลต่างของสองซีน
+   ============================================================ */
+
+
+/* clound1 */
+.stage[data-scene='menu'] #pcCloud1 {
+    transform: translate(67px, 155px);
+}
+
+/* bg2 */
+.stage[data-scene='menu'] #pcBg2 {
+    transform: translate(127px, 0px);
+}
+
+/* bg1 */
+.stage[data-scene='menu'] #pcBg1 {
+    transform: translate(191px, 12px);
+}
+
+/* bg-spin */
+.stage[data-scene='menu'] #pcSpin {
+    transform: translate(35.07px, 0px);
+}
+
+/* Rectangle 34 */
+.stage[data-scene='menu'] #pcDotRing {
+    transform: translate(718px, 253px);
+}
+
+/* animate star drop */
+.stage[data-scene='menu'] #pcStarDrop {
+    transform: translate(171.77px, 0px);
+}
+
+/* form card  หมุน 11 องศา รอบ 1395.37,421.22 */
+.stage[data-scene='menu'] #pcForm {
+    transform-origin: 1395.37px 421.22px;
+    transform: translate(108.02px, 0px) rotate(11deg);
+}
+
+/* image3 C  หมุน 26.03 องศา รอบ 1806.86,415.5 */
+.stage[data-scene='menu'] #pcCardC {
+    transform-origin: 131.26px 142.7px;
+    transform: translate(88.94px, 0px) rotate(26.03deg);
+}
+
+/* image3 D  หมุน 13.06 องศา รอบ 1942.15,509.3 */
+.stage[data-scene='menu'] #pcCardD {
+    transform-origin: 121.55px 135.3px;
+    transform: translate(29.68px, 41.84px) rotate(13.06deg);
+}
+
+/* stampink */
+.stage[data-scene='menu'] #pcStampInk {
+    transform: translate(56px, 0px);
+}
+
+/* stampstick */
+.stage[data-scene='menu'] #pcStampStick {
+    transform: translate(56px, 0px);
+}
+
+/* pen  หมุน 60.35 องศา รอบ 1593.59,434.87 (พิกัดเฟรม)
+   กล่องถูกครอปไปที่ 1362,-240 แล้ว จุดหมุนจึงต้องลบมุมกล่องออก */
+.stage[data-scene='menu'] #pcPen {
+    transform-origin: 231.59px 674.87px;
+    transform: translate(-112.43px, -24.47px) rotate(60.35deg);
+}
+
+/* admin */
+.stage[data-scene='menu'] #pcAdmin {
+    transform: translate(56px, 0px);
+}
+
+/* Group 23  หมุน 11 องศา รอบ 1395.37,421.22 (พิกัดเฟรม)
+   กล่องถูกครอปไปที่ 1484.1,584.5 แล้ว จุดหมุนจึงต้องลบมุมกล่องออก */
+.stage[data-scene='menu'] #pcSeal {
+    transform-origin: -88.73px -163.28px;
+    transform: translate(108.02px, 0px) rotate(11deg);
+}
+
+/* อยู่นิ่งทั้งสองซีน ไม่ต้องมีกฎ: clound2 · bg star line · background Star · rope */

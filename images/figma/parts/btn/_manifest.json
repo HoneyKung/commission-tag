@@ -1,0 +1,30 @@
+{
+  "picks": [
+    {
+      "id": "Union_11",
+      "file": "Union_11.svg",
+      "bytes": 2013
+    },
+    {
+      "id": "Union_12",
+      "file": "Union_12.svg",
+      "bytes": 12018
+    },
+    {
+      "id": "Group 13_2",
+      "file": "Group-13_2.svg",
+      "bytes": 1116
+    },
+    {
+      "id": "Star 4_5",
+      "file": "Star-4_5.svg",
+      "bytes": 599
+    },
+    {
+      "id": "Star 5_4",
+      "file": "Star-5_4.svg",
+      "bytes": 599
+    }
+  ],
+  "viewBox": "0 0 1920 2879"
+}

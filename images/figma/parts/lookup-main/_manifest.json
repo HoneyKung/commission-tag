@@ -1,0 +1,15 @@
+{
+  "picks": [
+    {
+      "id": "Subtract",
+      "file": "Subtract.svg",
+      "bytes": 3665
+    },
+    {
+      "id": "button",
+      "file": "button.svg",
+      "bytes": 17692
+    }
+  ],
+  "viewBox": "0 0 1920 2879"
+}

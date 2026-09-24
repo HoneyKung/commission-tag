@@ -1,0 +1,60 @@
+{
+  "picks": [
+    {
+      "id": "Rectangle 30",
+      "file": "Rectangle-30.svg",
+      "bytes": 523
+    },
+    {
+      "id": "background Star",
+      "file": "background-Star.svg",
+      "bytes": 2559
+    },
+    {
+      "id": "background Star_2",
+      "file": "background-Star_2.svg",
+      "bytes": 3002
+    },
+    {
+      "id": "Cookie",
+      "file": "Cookie.svg",
+      "bytes": 409
+    },
+    {
+      "id": "Cotton Doll",
+      "file": "Cotton-Doll.svg",
+      "bytes": 419
+    },
+    {
+      "id": "3D Print",
+      "file": "3D-Print.svg",
+      "bytes": 355
+    },
+    {
+      "id": "IMG_20260610_181948 1",
+      "file": "IMG_20260610_181948-1.svg",
+      "bytes": 607
+    },
+    {
+      "id": "IMG_20250810_194129 1",
+      "file": "IMG_20250810_194129-1.svg",
+      "bytes": 647
+    },
+    {
+      "id": "IMG_20260715_182013 1",
+      "file": "IMG_20260715_182013-1.svg",
+      "bytes": 643
+    },
+    {
+      "id": "Rectangle 35",
+      "file": "Rectangle-35.svg",
+      "bytes": 219
+    },
+    {
+      "id": "Star 11",
+      "file": "Star-11.svg",
+      "bytes": 532
+    }
+  ],
+  "viewBox": "0 0 1920 2879"
+}

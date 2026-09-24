@@ -15,9 +15,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Poppins:wght@400;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=23">
     <link rel="stylesheet" href="admin-style.css">
-    <link rel="stylesheet" href="colors-style.css">
+    <link rel="stylesheet" href="colors-style.css?v=2">
 </head>
 
 <body class="colors-body">
@@ -134,11 +134,11 @@
                     <div class="color-input-row">
                         <div class="color-preview-box" id="previewBox"
                             onclick="document.getElementById('colorWheel').click()">
-                            <div class="color-preview-fill" id="previewFill" style="background:#3b82f6;"></div>
+                            <div class="color-preview-fill" id="previewFill" style="background:#3687F2;"></div>
                         </div>
-                        <input type="text" class="hex-input" id="hexInput" value="#3B82F6" placeholder="#RRGGBB"
+                        <input type="text" class="hex-input" id="hexInput" value="#3687F2" placeholder="#RRGGBB"
                             maxlength="7">
-                        <input type="color" class="color-wheel" id="colorWheel" value="#3b82f6">
+                        <input type="color" class="color-wheel" id="colorWheel" value="#3687F2">
                     </div>
                     <button class="btn-find" id="btnFind" onclick="findClosestColors()">🔍 ค้นหาสีใกล้เคียง</button>
                 </div>
@@ -153,6 +153,7 @@
             <!-- Mixing Recipes -->
             <div class="tools-section" id="mixSection" style="display:none;">
                 <h3>🧪 แนะนำผสมสี</h3>
+                <p class="mix-note">ประมาณจากค่า Hex ด้วยแบบจำลองสีทึบ ผลจริงขึ้นกับ pigment และควรทดลองผสมทีละน้อย</p>
                 <div class="mix-label">สูตรแม่สี (ขาว ดำ แดง เหลือง น้ำเงิน)</div>
                 <div class="mix-results" id="mixPrimaryResults"></div>
                 <div class="mix-label" style="margin-top:16px;">สูตรสีอื่น</div>
@@ -173,14 +174,14 @@
                 </svg>
                 <p>กรอก Hex หรือเลือกสีจากวงล้อ<br>เพื่อค้นหาสีที่ใกล้เคียงจากทุกแบรนด์</p>
                 <p style="font-size:0.78rem;margin-top:8px;color:var(--gray-300);">
-                    หรือคลิกที่แถบสีฝั่งซ้ายเพื่อดูรายละเอียด</p>
+                    ประเมินความใกล้ด้วย CIEDE2000 · หรือคลิกแถบสีฝั่งซ้ายเพื่อดูรายละเอียด</p>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=35"></script>
     <script src="colors-data.js"></script>
-    <script src="colors-script.js"></script>
+    <script src="colors-script.js?v=2"></script>
 </body>
 
 </html>

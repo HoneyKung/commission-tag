@@ -27,7 +27,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Poppins:wght@400;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=23">
+    <!-- มาสคอต A/B — ย้ายออกมาจาก style.css เพื่อให้หน้าแรก (ธีม Figma) ใช้ได้ด้วย -->
+    <link rel="stylesheet" href="mascot.css?v=7">
     <link rel="stylesheet" href="queue-style.css">
 </head>
 
@@ -35,39 +37,29 @@
     <!-- Sparkle particles -->
     <div class="sparkle-container" id="sparkleContainer"></div>
 
-    <!-- Wandering Character 1 -->
-    <div class="wanderer" id="wanderer1">
-        <div class="wanderer-inner">
-            <img src="images/charA.png" alt="Mascot 1" class="wanderer-img" id="imgWanderer1">
+    <!-- มาสคอต A — แมวหยิ่ง (โครง 4 ชั้นเหมือนหน้าแรก ห้ามยุบชั้น) -->
+    <div class="wanderer" id="wanderer1" data-mascot="a">
+        <div class="wanderer-flip">
+            <div class="wanderer-hop">
+                <div class="wanderer-inner">
+                    <img src="images/charA.png" alt="Mascot 1" class="wanderer-img" id="imgWanderer1">
+                </div>
+            </div>
         </div>
         <div class="wanderer-tooltip">Drag Me!</div>
     </div>
 
-    <!-- Wandering Character 2 -->
-    <div class="wanderer" id="wanderer2">
-        <div class="wanderer-inner">
-            <img src="images/charB.png" alt="Mascot 2" class="wanderer-img" id="imgWanderer2">
+    <!-- มาสคอต B — หมาเด็ก -->
+    <div class="wanderer" id="wanderer2" data-mascot="b">
+        <div class="wanderer-flip">
+            <div class="wanderer-hop">
+                <div class="wanderer-inner">
+                    <img src="images/charB.png" alt="Mascot 2" class="wanderer-img" id="imgWanderer2">
+                </div>
+            </div>
         </div>
         <div class="wanderer-tooltip">Drag Me!</div>
     </div>
-
-    <!-- Theme Toggle -->
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-        <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="5" />
-            <line x1="12" y1="1" x2="12" y2="3" />
-            <line x1="12" y1="21" x2="12" y2="23" />
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-            <line x1="1" y1="12" x2="3" y2="12" />
-            <line x1="21" y1="12" x2="23" y2="12" />
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-        </svg>
-        <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-        </svg>
-    </button>
 
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
@@ -211,7 +203,7 @@
     </footer>
 
     <div class="toast-container" id="toastContainer"></div>
-    <script src="script.js"></script>
+    <script src="script.js?v=35"></script>
     <script src="queue-script.js"></script>
 </body>
 

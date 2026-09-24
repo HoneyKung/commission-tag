@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MOFYCH — ประเมินราคาตุ๊กตา</title>
+    <meta name="description" content="ลองเลือกทรงผมและรายละเอียดเพื่อดูช่วงราคาคอมมิชชั่น Cotton Doll ของ MOFYCH">
+    <link rel="icon" href="logo/Logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- ฟอนต์ชุดเดียวกับหน้า hero — Kanit เป็นตัวหลักทั้งหน้า
+         IBM Plex Serif โหลดไว้ให้คำว่า MOFYCH ท้ายหน้า (เป็น <text> ในงานอาร์ตของ Figma)
+         Montserrat + Piazzolla ใช้เฉพาะบนการ์ดประเมินราคาที่วาดลง canvas ตาม Figma `Frame 3`
+         ทั้งสองตัวไม่มีอักษรไทย ตัวไทยจึงตกไปใช้ Kanit จึงต้องมี Kanit ถึงน้ำหนัก 900 ด้วย
+         (วัดแล้ว Kanit คือฟอนต์สำรองตัวเดียวกับที่ Figma ใช้: 'รายละเอียดประเมินผม' กว้าง 323.96 เทียบ Figma 324)
+
+         Piazzolla ต้องระบุ opsz,wght@30,800 ห้ามเขียนแค่ wght@800
+         มันเป็นฟอนต์แปรผันที่มีแกน optical size 8–30 ถ้าไม่ระบุ Google จะส่ง opsz 14 (ทรงเนื้อความ ก้านผอม)
+         แต่ Figma ใช้ opsz 30 (ทรงพาดหัว ก้านหนา) — วัด '100' ที่ 48px: opsz 30 ได้ 77.47 · opsz 14 ได้ 80.93
+         ส่วน Figma บอก 77.54 → opsz 30 คือตัวที่ถูก และ canvas ตั้ง optical size เองไม่ได้ ต้องปักมาจาก URL -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@700&family=Kanit:wght@200;300;400;500;600;700;800;900&family=Montserrat:wght@400;500;600;800;900&family=Piazzolla:opsz,wght@30,800&display=swap">
+    <link rel="stylesheet" href="estimate-style.css?v=10">
+</head>
+
+<body class="est">
+    <!-- ท้องฟ้าของทั้งหน้า: แสงม่วงจางบนพื้นขาว + ดาวจริงจากคลัง hero -->
+    <div class="est-sky" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+
+    <!-- ============================================================
+         แถบหัวหน้า — พื้นหลัง hero ตัวจริง
+         ทุกไฟล์ viewBox 1920x2879 เท่ากัน วางซ้อนที่ (0,0) แล้วตรงกับ Figma เป๊ะ
+         เรียงตามเลขหน้าไฟล์เหมือนเดิม (04 ล่างสุด)
+         ============================================================ -->
+    <header class="est-band">
+        <div class="est-band__art" aria-hidden="true">
+            <img src="images/figma/main-web/layers/04_Rectangle-12.svg" alt="">
+            <img src="images/figma/main-web/layers/05_Rectangle-34.svg" alt="">
+            <img src="images/figma/main-web/layers/06_bg-star-line.svg" alt="">
+            <img src="images/figma/main-web/layers/07_bg2.svg" alt="">
+            <img src="images/figma/main-web/layers/08_bg1.svg" alt="">
+            <img src="images/figma/main-web/layers/09_bg-spin.svg" alt="">
+            <img src="images/figma/main-web/layers/10_clound2_2.svg" alt="">
+            <img src="images/figma/main-web/layers/11_background-Star_3.svg" alt="">
+        </div>
+
+        <div class="est-band__inner">
+            <nav class="est-nav">
+                <a class="est-brand" href="index.html" aria-label="กลับหน้า MOFYCH">
+                    <img src="logo/Logo.png" alt="">
+                    <span>MOFYCH</span>
+                </a>
+                <!-- ป้ายสองใบซ้อนกันแบบเดียวกับปุ่มเมนูใน hero: น้ำเงิน = ปกติ · ม่วง = เมาส์วาง
+                     ทั้งคู่เป็นไฟล์ export จาก Figma ไม่ได้เขียนค่าสีเอง -->
+                <a class="est-back" href="index.html">
+                    <span class="est-back__art" aria-hidden="true"></span>
+                    <span class="est-back__art est-back__art--on" aria-hidden="true"></span>
+                    <span class="est-back__tx">กลับหน้าฝากแทค</span>
+                </a>
+            </nav>
+
+            <div class="est-head">
+                <p class="est-eyebrow">Cotton Doll · Long Body 20 cm</p>
+                <h1>ลองประกอบ<em>ราคาตุ๊กตา</em></h1>
+                <p>เลือกทรงผมและรายละเอียดที่ใกล้เคียงกับตัวละคร เพื่อดูช่วงราคาและสรุปแบบเบื้องต้น</p>
+
+                <div class="est-base tk">
+                    <div class="tk__in">
+                        <span>LONG BODY · 20 CM</span>
+                        <strong>เริ่มต้น 1,800.-</strong>
+                        <small>ตัวเปล่า · ปักรายละเอียดบนใบหน้า · ไม่มีหน้าม้า</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="est-main">
+        <div class="est-layout">
+            <form class="est-form" id="customerEstimator">
+                <fieldset class="est-card">
+                    <legend><b>01</b> เลือกหน้าม้า</legend>
+                    <p class="est-help">เลือกแบบที่ใกล้เคียงที่สุดก่อน รายละเอียดจริงจะดูจากภาพอ้างอิงอีกครั้ง</p>
+                    <div class="pick-grid pick-grid--lg" id="frontHairChoices"></div>
+                </fieldset>
+
+                <fieldset class="est-card">
+                    <legend><b>02</b> เพิ่มมิติของทรงผม</legend>
+                    <p class="est-help">สามรายการแรกคิดราคาเหมารวม: 1 อย่าง +100 บาท · 2 อย่าง +180 บาท · ครบ 3 อย่าง +250 บาท ส่วนเปีย/มวย/ลอน/มัด กรอกราคาที่ตกลงกันได้เลย</p>
+                    <div class="pick-grid" id="hairDetailChoices"></div>
+                </fieldset>
+
+                <fieldset class="est-card">
+                    <legend><b>03</b> ผมด้านหลัง</legend>
+                    <div class="row-grid" id="backHairChoices"></div>
+                </fieldset>
+
+                <fieldset class="est-card">
+                    <legend><b>04</b> สีผิวและงานต่อลาย</legend>
+                    <div class="field-grid">
+                        <label class="field">
+                            <span>จำนวนสีผิวที่เพิ่ม</span>
+                            <small>สีแรกที่ใช้กับตัวรวมในราคาแล้ว</small>
+                            <input type="number" id="extraSkinColors" min="0" max="6" value="0">
+                            <em>+50 บาท / สี</em>
+                        </label>
+                        <div class="field">
+                            <span>การต่อผ้าให้เกิดลวดลาย</span>
+                            <small>เช่น แบ่งผ้าหลายชิ้นมาเย็บเป็นลายหูวัว</small>
+                            <div class="stack-grid" id="patchworkChoices"></div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="est-card">
+                    <legend><b>05</b> ของเสริม</legend>
+                    <div class="addon-grid">
+                        <label class="addon"><input type="checkbox" data-extra="skeleton"><span>เพิ่มกระดูก<em>+100</em></span></label>
+                        <label class="addon"><input type="checkbox" data-extra="extraHairColor"><span>สีผมมากกว่า 1 สี<em>+100</em></span></label>
+                        <!-- ปักนอกใบหน้าไม่มีราคาตายตัว — ติ๊กแล้วช่องราคาถึงจะโผล่ ขั้นต่ำ 50
+                             checkbox กับช่องราคาต้องอยู่คนละ <label> ไม่งั้นคลิกช่องราคาแล้วติ๊กหลุด -->
+                        <div class="addon addon--price">
+                            <label class="addon__pick"><input type="checkbox" data-extra="externalEmbroidery"><span>ปักเพิ่มนอกใบหน้า<em>ขั้นต่ำ +50</em></span></label>
+                            <label class="addon__price">
+                                <span>ราคาที่ตกลง</span>
+                                <input type="number" data-price-for="extra-externalEmbroidery" min="50" step="10" value="50" aria-label="ราคางานปักเพิ่มนอกใบหน้า">
+                            </label>
+                        </div>
+                        <label class="addon"><input type="checkbox" data-extra="hardEarsLegs"><span>หู/เขาแบบผ้า<em>+160</em></span></label>
+                        <label class="addon"><input type="checkbox" data-extra="magneticEarsLegs"><span>หู/เขาแม่เหล็ก<em>+200</em></span></label>
+                        <label class="addon"><input type="checkbox" data-extra="hardTail"><span>หางแบบผ้า<em>+80</em></span></label>
+                        <label class="addon"><input type="checkbox" data-extra="magneticTail"><span>หางแม่เหล็ก<em>+100</em></span></label>
+                        <label class="addon addon--num">
+                            <span>แม่เหล็กเพิ่มเติม<em>+20 / จุด</em></span>
+                            <input type="number" id="magnetPoints" min="0" max="20" value="0" aria-label="จำนวนจุดแม่เหล็กเพิ่มเติม">
+                        </label>
+                    </div>
+                </fieldset>
+            </form>
+
+            <!-- คอลัมน์ขวา = กรอบใส่สไปรท์ ใบเดียวกับที่อยู่บนการ์ดประเมินราคา
+                 (dollframe + dollframe2 จาก Frame 3 · แยกเป็นสองชั้นให้สไปรท์แทรกกลางได้)
+                 ยังไม่มีไฟล์สไปรท์จริง เฟสนี้จึงเป็นกรอบเปล่ารอไว้ก่อน -->
+            <aside class="est-doll-wrap">
+                <!-- วงแหวนทองของ hero (bg-spin) ครอปมาวางหลังกรอบ — เส้นทองอย่างเดียว ไม่ถมพื้น -->
+                <div class="rings" aria-hidden="true">
+                    <img src="images/figma/main-web/layers/09_bg-spin.svg" alt="">
+                </div>
+
+                <div class="est-doll">
+                    <div class="est-doll__sprites" id="dollSprites" aria-hidden="true"></div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- ============================================================
+         ท้ายหน้า — แผ่นพื้นกับคำว่า MOFYCH ของเซกชันล่างใน hero (y 2009..2879)
+         MOFYCH เป็น <text> ฝัง SVG ลงหน้า ฟอนต์ IBM Plex Serif ถึงจะทำงาน
+         (ถ้าใช้ <img> เบราว์เซอร์จะไม่โหลดฟอนต์ของหน้าให้)
+         ============================================================ -->
+    <footer class="est-foot">
+        <div class="est-foot__art" aria-hidden="true">
+            <img src="images/figma/parts/main/Rectangle-36.svg" alt="">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 2879" fill="none">
+                <defs>
+                    <linearGradient id="estMofych" x1="615.07" y1="2724.57" x2="1512.87" y2="3014.7"
+                        gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#0E00A8" />
+                        <stop offset="0.75" stop-color="#C8A6F7" />
+                        <stop offset="1" stop-color="#F8A9D6" />
+                    </linearGradient>
+                </defs>
+                <text opacity="0.42" fill="url(#estMofych)" style="white-space: pre" xml:space="preserve"
+                    font-family="IBM Plex Serif" font-size="255.403" font-weight="bold" letter-spacing="0em">
+                    <tspan x="382" y="2933.78">MOFYCH</tspan>
+                </text>
+            </svg>
+        </div>
+
+        <div class="est-foot__inner">
+            <span>MOFYCH · HANDMADE COMMISSION</span>
+            <p>ทุกชิ้นวาดแพตเทิร์น ปัก และประกอบด้วยมือให้เหมาะกับดีไซน์ของตัวละครแต่ละตัว</p>
+        </div>
+    </footer>
+
+    <div class="card-pop" id="cardPreview" hidden>
+        <div class="card-pop__box" role="dialog" aria-modal="true" aria-labelledby="cardPreviewTitle">
+            <div class="card-pop__head">
+                <div><small>PRICE CARD</small>
+                    <h2 id="cardPreviewTitle">การ์ดราคา</h2>
+                </div>
+                <button type="button" id="closeCardPreview" aria-label="ปิดตัวอย่างการ์ด">×</button>
+            </div>
+            <img id="cardPreviewImage" alt="ตัวอย่างการ์ดประเมินราคา MOFYCH">
+            <a class="est-btn est-btn--primary" id="cardDownloadLink" download="mofych-price-estimate.png">ดาวน์โหลด PNG</a>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         แถบราคาลอยติดขอบล่างจอ — ขึ้นทุกขนาดจอ
+         ราคาขยับตามที่เลือกทันที ไม่ต้องเลื่อนหา และปุ่มที่ต้องใช้อยู่ติดมือตลอด
+         ปุ่มใช้ id เดิม (downloadEstimate / resetEstimate) สคริปต์จึงผูกได้เหมือนเดิม
+         ============================================================ -->
+    <div class="est-bar">
+        <div class="est-bar__in">
+            <p class="est-bar__label">ราคาประเมินเบื้องต้น</p>
+            <p class="est-bar__price" id="resultPrice">1,800 บาท</p>
+            <div class="est-bar__act">
+                <button type="button" class="est-btn est-btn--primary" id="downloadEstimate">สร้างการ์ดภาพ</button>
+                <button type="button" class="est-bar__clear" id="resetEstimate"
+                    aria-label="ล้างตัวเลือกทั้งหมด" title="ล้างตัวเลือกทั้งหมด">×</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="pricing-data.js?v=9"></script>
+    <script src="estimate-script.js?v=21"></script>
+</body>
+
+</html>

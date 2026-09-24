@@ -1,6 +1,6 @@
 /* ========================================
    MOFYCH Commission — Art Iconic Theme
-   Deep navy / blue / purple celestial
+   พาเลตหลัก 11 สี (ดู :root ด้านล่าง) — สีนำคือน้ำเงินโลโก้ #0D1A3A
    Light & Dark mode
    ======================================== */
 *,
@@ -12,38 +12,102 @@
 }
 
 :root {
-    /* Brand palette */
-    --navy: #0d1a3a;
-    --navy-deep: #060e24;
-    --royal: #1a2f6b;
-    --blue-700: #1e4d8a;
-    --blue-600: #2563b0;
-    --blue-500: #3b82f6;
-    --blue-400: #60a5fa;
-    --blue-300: #93c5fd;
-    --blue-200: #bfdbfe;
-    --blue-100: #dbeafe;
-    --blue-50: #eff6ff;
-    --purple: #6c3ec7;
-    --purple-soft: #a78bfa;
-    --pink-soft: #f0abfc;
-    --cyan: #67e8f9;
-    --mint: #a7f3d0;
+    /* ============================================================
+       PALETTE — 11 สีของเว็บ (แหล่งเดียวของความจริง)
+       ห้ามคิดสีใหม่นอกลิสต์นี้ สีอื่นในไฟล์ทั้งหมดเป็นแค่
+       "ขั้นอ่อน/ขั้นเข้ม" ของ 11 สีนี้ (ล็อก hue ไว้ตรงกัน)
+       สีหลักของแบรนด์ = --pal-navy (น้ำเงินในโลโก้)
+       ============================================================ */
+    --pal-primary: #0E00A8;
+    /* น้ำเงินหลัก — สีนำของเว็บ (สดกว่าน้ำเงินโลโก้ ไม่จมเป็นดำ) */
+    --pal-navy: #0D1A3A;
+    /* น้ำเงินโลโก้ — ใช้เป็นหมึกเข้มสุด/พื้น footer เท่านั้น */
+    --pal-cyan: #71EAF3;
+    /* ฟ้าโฮโล */
+    --pal-blue: #95C1FB;
+    /* ฟ้าคราม */
+    --pal-lavender: #C8A6F7;
+    /* ม่วงลาเวนเดอร์ */
+    --pal-pink: #F8A9D6;
+    /* ชมพูโฮโล */
+    --pal-mint: #9DF3C9;
+    /* มิ้นต์โฮโล */
+    --pal-gold: #D8B45A;
+    /* ทองยุคกลาง */
+    --pal-burgundy: #7C2D45;
+    /* เบอร์กันดี */
+    --pal-violet: #2B1E5C;
+    /* ม่วงอวกาศ */
+    --pal-paper: #EFF6FF;
+    /* ขาวฟ้า */
+    --pal-silver: #B7BBC4;
+    /* เทาเงิน */
+
+    /* ---- ไล่ขั้นจากสีนำ #0E00A8 (hue 245) — หมึก/ปุ่ม/หัวเรื่อง ---- */
+    --primary: var(--pal-primary);
+    --primary-lit: #1300E6;
+    --primary-deep: #090070;
+    --primary-soft: #7C70FF;
+    --primary-tint: #DAD6FF;
+    /* หมึกเนื้อความ: สีนำที่ลดความอิ่มลง อ่านสบายแต่ยังเป็นน้ำเงิน ไม่ใช่เทาดำ */
+    --ink-body: #3A3857;
+
+    /* ---- น้ำเงินโลโก้ + ม่วงอวกาศ (พื้นเข้ม) ---- */
+    --navy: var(--pal-navy);
+    --navy-deep: #060D1F;
+    /* เงาเข้มของ --pal-navy */
+    --royal: var(--pal-violet);
+    --blue-900: var(--pal-primary);
+
+    /* ---- ไล่ขั้นจาก "ฟ้าคราม" #95C1FB (hue 214) ---- */
+    --blue-700: #1A539E;
+    --blue-600: #1A69D1;
+    --blue-500: #3687F2;
+    --blue-400: #64A4F7;
+    --blue-300: var(--pal-blue);
+    --blue-200: #BAD7FD;
+    --blue-100: #D8E8FE;
+    --blue-50: var(--pal-paper);
+
+    /* ---- ม่วง/ชมพู/ฟ้าโฮโล/มิ้นต์ ---- */
+    --purple: #7839D0;
+    /* ขั้นเข้มของลาเวนเดอร์ */
+    --purple-deep: #5D2E9E;
+    --purple-soft: var(--pal-lavender);
+    --purple-tint: #E8D9FC;
+    --pink-soft: var(--pal-pink);
+    --cyan: var(--pal-cyan);
+    --cyan-deep: #157379;
+    --cyan-tint: #D2F6F9;
+    --mint: var(--pal-mint);
+
+    /* ---- ทองยุคกลาง ---- */
+    --gold: var(--pal-gold);
+    --gold-lit: #F1D07E;
+    --gold-deep: #B28A24;
+    --parchment: #F6EEDA;
+
+    /* ---- กลาง: ไล่ขั้นจาก "เทาเงิน" #B7BBC4 (hue 222) ---- */
     --white: #ffffff;
-    --gray-50: #f8f9fc;
-    --gray-100: #f0f2f5;
-    --gray-200: #e2e5ea;
-    --gray-300: #c4c9d2;
-    --gray-400: #9199a5;
-    --gray-500: #6b7280;
-    --gray-600: #4b5563;
-    --gray-700: #374151;
-    --gray-800: #1f2937;
-    --red: #ef4444;
-    --red-heart: #e74c6f;
-    --green: #34d399;
-    --green-light: #d1fae5;
-    --red-light: #fee2e2;
+    --paper: var(--pal-paper);
+    --gray-50: #F6F8FB;
+    --gray-100: #EDEFF2;
+    --gray-200: #DCDFE5;
+    --gray-300: var(--pal-silver);
+    --gray-400: #8E95A4;
+    --gray-500: #677083;
+    --gray-600: #4B5263;
+    --gray-700: #363E4E;
+    --gray-800: #212736;
+
+    /* ---- สถานะ: แดง = เบอร์กันดี, เขียว = มิ้นต์ ---- */
+    --red: var(--pal-burgundy);
+    --red-heart: #D34570;
+    --red-light: #FAE1E8;
+    --green: #2CBA75;
+    --green-deep: #1F985E;
+    --green-light: #DCF9EB;
+
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
@@ -54,50 +118,28 @@
     --transition: 0.3s ease;
 }
 
-/* ====== LIGHT THEME (default) ====== */
-[data-theme="light"] {
+/* ====== SURFACE TOKENS — โหมดสว่างอย่างเดียว (เว็บนี้ไม่มีดาร์กโหมด) ====== */
+:root {
     --bg-body: var(--white);
     --bg-section-alt: var(--blue-50);
     --bg-card: var(--white);
     --bg-input: var(--gray-50);
     --border: var(--gray-200);
     --border-input: var(--gray-200);
-    --text-primary: var(--navy);
-    --text-secondary: var(--gray-700);
+    --text-primary: var(--pal-primary);
+    --text-secondary: var(--ink-body);
     --text-muted: var(--gray-500);
     --shadow-sm: 0 1px 3px rgba(13, 26, 58, 0.06);
     --shadow-md: 0 4px 16px rgba(13, 26, 58, 0.08);
     --shadow-lg: 0 8px 32px rgba(13, 26, 58, 0.12);
-    --shadow-blue: 0 4px 20px rgba(59, 130, 246, 0.25);
+    --shadow-xl: 0 16px 48px rgba(13, 26, 58, 0.16);
+    --shadow-blue: 0 4px 20px rgba(54, 135, 242, 0.25);
     --nav-bg: rgba(255, 255, 255, 0.92);
     --hero-gradient: linear-gradient(180deg, var(--blue-50) 0%, var(--white) 80%);
     --footer-bg: var(--navy);
     --footer-text: rgba(255, 255, 255, 0.7);
     --card-hover-border: var(--blue-300);
     --wanderer-filter: none;
-}
-
-/* ====== DARK THEME ====== */
-[data-theme="dark"] {
-    --bg-body: var(--navy-deep);
-    --bg-section-alt: var(--navy);
-    --bg-card: rgba(26, 47, 107, 0.3);
-    --bg-input: rgba(13, 26, 58, 0.5);
-    --border: rgba(96, 165, 250, 0.15);
-    --border-input: rgba(96, 165, 250, 0.2);
-    --text-primary: var(--white);
-    --text-secondary: var(--blue-200);
-    --text-muted: var(--blue-300);
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
-    --shadow-blue: 0 4px 20px rgba(59, 130, 246, 0.3);
-    --nav-bg: rgba(6, 14, 36, 0.92);
-    --hero-gradient: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 80%);
-    --footer-bg: var(--navy-deep);
-    --footer-text: rgba(147, 197, 253, 0.7);
-    --card-hover-border: rgba(96, 165, 250, 0.4);
-    --wanderer-filter: invert(1);
 }
 
 html {
@@ -114,17 +156,32 @@ body {
     transition: background 0.4s ease, color 0.4s ease;
 }
 
-/* ====== HOLOGRAM (Pastel Mint → Cyan → Lavender → Pink) ====== */
-.hologram {
-    background: linear-gradient(135deg,
-            #a7f3d0 0%, #67e8f9 20%, #a5b4fc 40%,
-            #c4b5fd 55%, #f0abfc 70%, #fda4af 85%,
-            #a7f3d0 100%);
+/* ====== HOLOGRAM ======
+   ไล่สีโฮโลเต็มสเปกตรัมของพาเลต: มิ้นต์ → ฟ้าโฮโล → ฟ้าคราม → สีนำ
+   → ลาเวนเดอร์ → ชมพูโฮโล แล้ววนกลับ
+   ⚠ แถบสีนำ (--primary-soft) คือตัวที่ทำให้ไม่ซีดจนจมพื้นขาว ห้ามถอดออก */
+.hologram,
+.holo-text {
+    background: linear-gradient(115deg,
+            var(--pal-mint) 0%,
+            var(--pal-cyan) 15%,
+            var(--pal-blue) 29%,
+            var(--primary-soft) 44%,
+            var(--pal-lavender) 59%,
+            var(--pal-pink) 74%,
+            var(--pal-cyan) 88%,
+            var(--pal-mint) 100%);
     background-size: 300% 300%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: holo 5s ease infinite;
+}
+
+/* ตัวอักษรโฮโลขนาดใหญ่ — เติมเงาสีนำใต้ตัวอักษรให้ขอบคมบนพื้นขาว */
+.holo-text-lg {
+    filter:
+        drop-shadow(0 2px 0 rgba(14, 0, 168, .16)) drop-shadow(0 0 18px rgba(113, 234, 243, .45));
 }
 
 @keyframes holo {
@@ -139,51 +196,6 @@ body {
     }
 }
 
-
-
-
-/* ====== THEME TOGGLE ====== */
-.theme-toggle {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    z-index: 1100;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--bg-card);
-    border: 2px solid var(--border);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: var(--shadow-md);
-    transition: var(--transition);
-}
-
-.theme-toggle:hover {
-    transform: scale(1.1);
-    box-shadow: var(--shadow-lg);
-}
-
-.theme-icon {
-    width: 20px;
-    height: 20px;
-    color: var(--text-secondary);
-    transition: var(--transition);
-}
-
-[data-theme="light"] .moon {
-    display: none;
-}
-
-[data-theme="dark"] .sun {
-    display: none;
-}
-
-[data-theme="dark"] .moon {
-    color: var(--cyan);
-}
 
 /* ====== SPARKLE ====== */
 .sparkle-container {
@@ -254,11 +266,6 @@ body {
     background: transparent;
 }
 
-[data-theme="dark"] .wave {
-    opacity: 0.4;
-    border-color: var(--purple-soft);
-}
-
 .wave-1 {
     width: 800px;
     height: 300px;
@@ -316,11 +323,6 @@ body {
     animation: twinkle 3s ease-in-out infinite;
 }
 
-[data-theme="dark"] .star-4pt {
-    opacity: 0.7;
-    color: var(--white);
-}
-
 .star-1 {
     width: 24px;
     top: 12%;
@@ -370,10 +372,6 @@ body {
     }
 }
 
-[data-theme="dark"] .star-4pt {
-    animation-name: twinkle-dark;
-}
-
 @keyframes twinkle-dark {
 
     0%,
@@ -395,11 +393,6 @@ body {
     background: linear-gradient(90deg, transparent, var(--blue-400), transparent);
     opacity: 0.4;
     transform: rotate(-25deg);
-}
-
-[data-theme="dark"] .shooting-line {
-    opacity: 0.5;
-    background: linear-gradient(90deg, transparent, var(--white), transparent);
 }
 
 .sl-1 {
@@ -452,11 +445,6 @@ body {
     background: var(--blue-400);
     opacity: 0.5;
     animation: float-dot 10s ease-in-out infinite;
-}
-
-[data-theme="dark"] .dot-particle {
-    opacity: 0.7;
-    background: var(--purple-soft);
 }
 
 .dot-1 {
@@ -515,84 +503,7 @@ body {
     }
 }
 
-/* ====== WANDERER (GPU-accelerated with transform) ====== */
-.wanderer {
-    position: fixed;
-    z-index: 900;
-    cursor: grab;
-    user-select: none;
-    touch-action: none;
-    left: 0;
-    top: 0;
-    will-change: transform;
-}
-
-.wanderer.walking {
-    transition: transform 3s linear;
-}
-
-.wanderer.dragging {
-    cursor: grabbing;
-    transition: none !important;
-}
-
-.wanderer.dragging .wanderer-inner {
-    transform: scale(1.15);
-    animation: none;
-}
-
-.wanderer-inner {
-    width: 65px;
-    height: 65px;
-    transition: transform 0.2s ease;
-    animation: char-idle 2.5s ease-in-out infinite;
-    position: relative;
-}
-
-.wanderer-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    filter: var(--wanderer-filter);
-    transition: filter 0.3s;
-}
-
-.wanderer-tooltip {
-    position: absolute;
-    bottom: -26px;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-}
-
-.wanderer:hover .wanderer-tooltip {
-    opacity: 1;
-}
-
-@keyframes char-idle {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-6px);
-    }
-}
-
-.wanderer.flipped .wanderer-inner {
-    transform: scaleX(-1);
-}
-
-.wanderer.flipped.dragging .wanderer-inner {
-    transform: scaleX(-1) scale(1.15);
-}
+/* ====== มาสคอต A & B ====== ย้ายไป mascot.css แล้ว (คนละธีมกับหน้าแรก) ====== */
 
 /* ====== NAVBAR ====== */
 .navbar {
@@ -816,7 +727,7 @@ body {
 }
 
 .hologram-glow {
-    filter: drop-shadow(0 0 8px rgba(167, 243, 208, 0.5)) drop-shadow(0 0 16px rgba(103, 232, 249, 0.4)) drop-shadow(0 0 24px rgba(165, 180, 252, 0.3));
+    filter: drop-shadow(0 0 8px rgba(157, 243, 201, 0.5)) drop-shadow(0 0 16px rgba(113, 234, 243, 0.4)) drop-shadow(0 0 24px rgba(200, 166, 247, 0.3));
     animation: glow-pulse 4s ease-in-out infinite;
 }
 
@@ -824,36 +735,30 @@ body {
 
     0%,
     100% {
-        filter: drop-shadow(0 0 8px rgba(167, 243, 208, 0.5)) drop-shadow(0 0 16px rgba(103, 232, 249, 0.4)) drop-shadow(0 0 24px rgba(165, 180, 252, 0.3));
+        filter: drop-shadow(0 0 8px rgba(157, 243, 201, 0.5)) drop-shadow(0 0 16px rgba(113, 234, 243, 0.4)) drop-shadow(0 0 24px rgba(200, 166, 247, 0.3));
     }
 
     33% {
-        filter: drop-shadow(0 0 10px rgba(103, 232, 249, 0.6)) drop-shadow(0 0 20px rgba(196, 181, 253, 0.5)) drop-shadow(0 0 28px rgba(240, 171, 252, 0.3));
+        filter: drop-shadow(0 0 10px rgba(113, 234, 243, 0.6)) drop-shadow(0 0 20px rgba(200, 166, 247, 0.5)) drop-shadow(0 0 28px rgba(248, 169, 214, 0.3));
     }
 
     66% {
-        filter: drop-shadow(0 0 8px rgba(240, 171, 252, 0.5)) drop-shadow(0 0 18px rgba(253, 164, 175, 0.4)) drop-shadow(0 0 26px rgba(167, 243, 208, 0.3));
+        filter: drop-shadow(0 0 8px rgba(248, 169, 214, 0.5)) drop-shadow(0 0 18px rgba(248, 169, 214, 0.4)) drop-shadow(0 0 26px rgba(157, 243, 201, 0.3));
     }
 }
 
 .hero-badge {
     display: inline-block;
     padding: 8px 24px;
-    background: rgba(59, 130, 246, 0.1);
+    background: rgba(54, 135, 242, 0.1);
     color: var(--blue-400);
     font-size: 0.85rem;
     font-weight: 500;
     letter-spacing: 1px;
     border-radius: var(--radius-full);
     margin-bottom: 24px;
-    border: 1px solid rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(54, 135, 242, 0.2);
     animation: fade-up 0.8s ease-out 0.2s both;
-}
-
-[data-theme="dark"] .hero-badge {
-    background: rgba(167, 243, 208, 0.1);
-    color: var(--cyan);
-    border-color: rgba(103, 232, 249, 0.2);
 }
 
 .hero-title {
@@ -921,7 +826,7 @@ body {
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(59, 130, 246, 0.35);
+    box-shadow: 0 6px 24px rgba(54, 135, 242, 0.35);
 }
 
 .btn-primary:active {
@@ -1019,11 +924,6 @@ body {
     height: 16px;
     color: var(--blue-400);
     opacity: 0.5;
-}
-
-[data-theme="dark"] .section-star {
-    color: var(--purple-soft);
-    opacity: 0.8;
 }
 
 .section-title {
@@ -1152,12 +1052,12 @@ body {
 }
 
 .status-open {
-    background: rgba(52, 211, 153, 0.15);
-    color: #10b981;
+    background: rgba(44, 186, 117, 0.15);
+    color: var(--green);
 }
 
 .status-closed {
-    background: rgba(107, 114, 128, 0.15);
+    background: rgba(103, 112, 131, 0.15);
     color: var(--gray-500);
 }
 
@@ -1274,7 +1174,7 @@ body {
 
 .form-input:focus {
     border-color: var(--blue-400);
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 0 4px rgba(54, 135, 242, 0.1);
 }
 
 .form-input::placeholder {
@@ -1378,7 +1278,7 @@ body {
 
 .product-select-item.selected {
     border-color: var(--blue-500);
-    background: rgba(59, 130, 246, 0.08);
+    background: rgba(54, 135, 242, 0.08);
 }
 
 .product-select-item input[type="checkbox"] {
@@ -1441,7 +1341,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--green), #10b981);
+    background: linear-gradient(135deg, var(--green), var(--green-deep));
     border-radius: 50%;
     margin: 0 auto 24px;
     animation: success-pop 0.5s ease;
@@ -1552,12 +1452,12 @@ body {
 }
 
 .result-status.active {
-    background: rgba(52, 211, 153, 0.15);
-    color: #10b981;
+    background: rgba(44, 186, 117, 0.15);
+    color: var(--green);
 }
 
 .result-status.cancelled {
-    background: rgba(107, 114, 128, 0.15);
+    background: rgba(103, 112, 131, 0.15);
     color: var(--gray-500);
     text-decoration: line-through;
 }
@@ -1796,11 +1696,6 @@ body {
         text-align: center;
     }
 
-    .wanderer-inner {
-        width: 50px;
-        height: 50px;
-    }
-
     .hero-logo-wrap {
         width: 90px;
         height: 90px;
@@ -1812,13 +1707,6 @@ body {
         height: 60px;
     }
 
-    .theme-toggle {
-        top: auto;
-        bottom: 24px;
-        right: 24px;
-        width: 44px;
-        height: 44px;
-    }
 
     .privacy-notice {
         text-align: left;

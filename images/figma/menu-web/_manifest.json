@@ -1,0 +1,398 @@
+{
+  "source": "images/edit main figma/Frame 2 menu.svg",
+  "viewBox": "0 0 1920 3111",
+  "dpr": 2,
+  "images": [
+    {
+      "image": "image0_0_1",
+      "sha": "6e06b54cea91",
+      "src": [
+        1110,
+        638
+      ],
+      "display": [
+        674.219,
+        385.67
+      ],
+      "out": [
+        1110,
+        638
+      ],
+      "png": 128902,
+      "webp": 20568,
+      "avif": 12598
+    },
+    {
+      "image": "image1_0_1",
+      "sha": "41cecdbcc90d",
+      "src": [
+        1110,
+        638
+      ],
+      "display": [
+        650.171,
+        460.221
+      ],
+      "out": [
+        1110,
+        638
+      ],
+      "png": 188836,
+      "webp": 33302,
+      "avif": 17820
+    },
+    {
+      "image": "image2_0_1",
+      "sha": "86e7a1779d30",
+      "src": [
+        3456,
+        3456
+      ],
+      "display": [
+        669.0,
+        669.0
+      ],
+      "out": [
+        1338,
+        1338
+      ],
+      "png": 6470313,
+      "webp": 139220,
+      "avif": 98819
+    },
+    {
+      "image": "image3_0_1",
+      "sha": "a78dbcb21fdd",
+      "src": [
+        4096,
+        2304
+      ],
+      "display": [
+        543.0,
+        565.0
+      ],
+      "out": [
+        2009,
+        1130
+      ],
+      "png": 7658897,
+      "webp": 261960,
+      "avif": 174760
+    },
+    {
+      "image": "image4_0_1",
+      "sha": "e74e939d386a",
+      "src": [
+        3096,
+        3096
+      ],
+      "display": [
+        211.0,
+        330.0
+      ],
+      "out": [
+        660,
+        660
+      ],
+      "png": 4019860,
+      "webp": 43118,
+      "avif": 27974
+    },
+    {
+      "image": "image5_0_1",
+      "sha": "ae52e10c4b0d",
+      "src": [
+        2500,
+        2879
+      ],
+      "display": [
+        1136.0,
+        947.0
+      ],
+      "out": [
+        2272,
+        2616
+      ],
+      "png": 340530,
+      "webp": 58376,
+      "avif": 25327
+    },
+    {
+      "image": "image6_0_1",
+      "sha": "fae6079aec2a",
+      "src": [
+        2500,
+        2879
+      ],
+      "display": [
+        1378.0,
+        857.0
+      ],
+      "out": [
+        2500,
+        2879
+      ],
+      "png": 420376,
+      "webp": 77410,
+      "avif": 44363
+    },
+    {
+      "image": "image7_0_1",
+      "sha": "e16c04262b23",
+      "src": [
+        1006,
+        1247
+      ],
+      "display": [
+        290,
+        309
+      ],
+      "out": [
+        580,
+        719
+      ],
+      "png": 1508113,
+      "webp": 94326,
+      "avif": 56386
+    },
+    {
+      "image": "image8_0_1",
+      "sha": "ac73ef5997ed",
+      "src": [
+        940,
+        788
+      ],
+      "display": [
+        70,
+        34
+      ],
+      "out": [
+        140,
+        117
+      ],
+      "png": 718859,
+      "webp": 5616,
+      "avif": 3966
+    },
+    {
+      "image": "image9_0_1",
+      "sha": "1416d3998f7b",
+      "src": [
+        2500,
+        2879
+      ],
+      "display": [
+        2253.0,
+        919.0
+      ],
+      "out": [
+        2500,
+        2879
+      ],
+      "png": 1001485,
+      "webp": 129392,
+      "avif": 73335
+    },
+    {
+      "image": "image10_0_1",
+      "sha": "c508a2308f73",
+      "src": [
+        1700,
+        1700
+      ],
+      "display": [
+        453.179,
+        453.179
+      ],
+      "out": [
+        906,
+        906
+      ],
+      "png": 406834,
+      "webp": 48290,
+      "avif": 26094
+    }
+  ],
+  "layers": [
+    {
+      "order": 1,
+      "id": null,
+      "file": "layers/01_unnamed-01.svg",
+      "bytes": 159
+    },
+    {
+      "order": 2,
+      "id": "edit tag",
+      "file": "layers/02_edit-tag.svg",
+      "bytes": 73969
+    },
+    {
+      "order": 3,
+      "id": "product",
+      "file": "layers/03_product.svg",
+      "bytes": 601097
+    },
+    {
+      "order": 4,
+      "id": "Rectangle 12",
+      "file": "layers/04_Rectangle-12.svg",
+      "bytes": 541
+    },
+    {
+      "order": 5,
+      "id": "Rectangle 34",
+      "file": "layers/05_Rectangle-34.svg",
+      "bytes": 524
+    },
+    {
+      "order": 6,
+      "id": " bg star line",
+      "file": "layers/06_bg-star-line.svg",
+      "bytes": 3008
+    },
+    {
+      "order": 7,
+      "id": "bg2",
+      "file": "layers/07_bg2.svg",
+      "bytes": 78436
+    },
+    {
+      "order": 8,
+      "id": "bg1",
+      "file": "layers/08_bg1.svg",
+      "bytes": 103833
+    },
+    {
+      "order": 9,
+      "id": "bg-spin",
+      "file": "layers/09_bg-spin.svg",
+      "bytes": 3749
+    },
+    {
+      "order": 10,
+      "id": "clound2_2",
+      "file": "layers/10_clound2_2.svg",
+      "bytes": 28050
+    },
+    {
+      "order": 11,
+      "id": "background Star_3",
+      "file": "layers/11_background-Star_3.svg",
+      "bytes": 2996
+    },
+    {
+      "order": 12,
+      "id": "image3",
+      "file": "layers/12_image3.svg",
+      "bytes": 173093
+    },
+    {
+      "order": 13,
+      "id": "form card 3degreerotate",
+      "file": "layers/13_form-card-3degreerotate.svg",
+      "bytes": 314134
+    },
+    {
+      "order": 14,
+      "id": "image3_2",
+      "file": "layers/14_image3_2.svg",
+      "bytes": 160841
+    },
+    {
+      "order": 15,
+      "id": "image3_3",
+      "file": "layers/15_image3_3.svg",
+      "bytes": 160783
+    },
+    {
+      "order": 16,
+      "id": "clound1_2",
+      "file": "layers/16_clound1_2.svg",
+      "bytes": 173149
+    },
+    {
+      "order": 17,
+      "id": "stampink",
+      "file": "layers/17_stampink.svg",
+      "bytes": 2352
+    },
+    {
+      "order": 18,
+      "id": "stampstick",
+      "file": "layers/18_stampstick.svg",
+      "bytes": 3041
+    },
+    {
+      "order": 19,
+      "id": "topStar",
+      "file": "layers/19_topStar.svg",
+      "bytes": 6995
+    },
+    {
+      "order": 20,
+      "id": "rope",
+      "file": "layers/20_rope.svg",
+      "bytes": 6339
+    },
+    {
+      "order": 21,
+      "id": "animate star drop",
+      "file": "layers/21_animate-star-drop.svg",
+      "bytes": 2064
+    },
+    {
+      "order": 22,
+      "id": "Group 23",
+      "file": "layers/22_Group-23.svg",
+      "bytes": 39639
+    },
+    {
+      "order": 23,
+      "id": "admin",
+      "file": "layers/23_admin.svg",
+      "bytes": 383
+    },
+    {
+      "order": 24,
+      "id": "pen",
+      "file": "layers/24_pen.svg",
+      "bytes": 65026
+    },
+    {
+      "order": 25,
+      "id": "Group 40",
+      "file": "layers/25_Group-40.svg",
+      "bytes": 6796
+    },
+    {
+      "order": 26,
+      "id": "Group 41",
+      "file": "layers/26_Group-41.svg",
+      "bytes": 6814
+    },
+    {
+      "order": 27,
+      "id": "Group 42",
+      "file": "layers/27_Group-42.svg",
+      "bytes": 7067
+    },
+    {
+      "order": 28,
+      "id": "Group 43",
+      "file": "layers/28_Group-43.svg",
+      "bytes": 6767
+    },
+    {
+      "order": 29,
+      "id": "Group 73",
+      "file": "layers/29_Group-73.svg",
+      "bytes": 34700
+    },
+    {
+      "order": 30,
+      "id": "image3_4",
+      "file": "layers/30_image3_4.svg",
+      "bytes": 148297
+    }
+  ]
+}

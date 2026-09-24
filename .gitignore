@@ -8,3 +8,26 @@ commission_tag_reference.md
 google-apps-script-queue.js
 push.txt
 
+# SVG ดิบที่ export จาก Figma — ไฟล์ละ 30 MB เก็บไว้ในเครื่องพอ
+# ของที่แกะแล้วอยู่ใน images/figma/ ซึ่ง commit ได้
+images/main figma/*.svg
+
+# ชิ้นดิบจาก Figma ที่หน้าเว็บไม่ได้อ้าง — ไฟล์ละหลายสิบ MB เก็บในเครื่องพอ
+# (หน้าเว็บใช้แค่ images/figma/{parts,main-web,img,outer,outline} กับ images/pricing/)
+images/main figma/
+images/edit main figma/
+images/hero/
+images/figma/main/
+images/figma/menu/
+images/figma/lite/
+
+# เอกสารทำงาน · หน้าทดสอบ · ของเครื่องมือ — เก็บในเครื่อง ไม่ขึ้น repo
+# /*.md = เฉพาะที่รากโปรเจกต์ ข้อมูลสีใน paints/*.md ยังขึ้นตามปกติ
+/*.md
+images/figma/README.md
+_qa-*.html
+_measure.html
+index.html.bak-old-hero
+__pycache__/
+.claude/
+.codex/

@@ -1,0 +1,63 @@
+{
+  "note": "ชิ้นที่ครอป viewBox มาใช้กับของที่ขนาดไม่คงที่ (แจ้งเตือน) — path ไม่ถูกแก้แม้แต่ตัวเดียว เปลี่ยนแค่ viewBox",
+  "picks": [
+    {
+      "file": "ticket-frame.svg",
+      "from": "parts/btn/Union_12.svg",
+      "id": "Union_12",
+      "box": [
+        417.72,
+        609.0,
+        342.906,
+        72.758
+      ],
+      "use": "border-image ของ .toast — หัวท้ายคงรูป ตรงกลางยืดได้"
+    },
+    {
+      "file": "ticket-frame-error.svg",
+      "from": "parts/btn/Union_12.svg",
+      "id": "Union_12",
+      "box": [
+        417.72,
+        609.0,
+        342.906,
+        72.758
+      ],
+      "changed": "เส้นขอบ #0E00A8 -> #7C2D45 (เบอร์กันดี = สีตราในดีไซน์)"
+    },
+    {
+      "file": "ticket-frame-success.svg",
+      "from": "parts/btn/Union_12.svg",
+      "id": "Union_12",
+      "box": [
+        417.72,
+        609.0,
+        342.906,
+        72.758
+      ],
+      "changed": "เส้นขอบ #0E00A8 -> #D8B45A (ทองยุคกลาง เข้าชุดกับดาวทองบนตั๋วเอง)"
+    },
+    {
+      "file": "star-left.svg",
+      "from": "parts/btn/Group-13_2.svg",
+      "id": "Star 4_5",
+      "box": [
+        453.17,
+        633.48,
+        10.63,
+        22.99
+      ]
+    },
+    {
+      "file": "star-right.svg",
+      "from": "parts/btn/Group-13_2.svg",
+      "id": "Star 5_4",
+      "box": [
+        713.6,
+        633.48,
+        10.63,
+        22.99
+      ]
+    }
+  ]
+}

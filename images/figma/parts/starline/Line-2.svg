@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="2879" viewBox="0 0 1920 2879" fill="none"><defs><linearGradient id="paint18_linear_0_1" x1="209.903" y1="241.971" x2="505.504" y2="11.0216" gradientUnits="userSpaceOnUse">
+<stop stop-color="#95C1FB" stop-opacity="0" />
+<stop offset="0.278846" stop-color="#95C1FB" />
+<stop offset="0.834135" stop-color="#95C1FB" />
+<stop offset="1" stop-color="white" stop-opacity="0" />
+</linearGradient>
+</defs><line id="Line 2" x1="208.453" y1="240.115" x2="504.055" y2="9.16586" stroke="url(#paint18_linear_0_1)" stroke-width="3.70983" />
+</svg>

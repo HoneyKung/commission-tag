@@ -347,7 +347,7 @@
     white-space: nowrap;
     position: relative;
     letter-spacing: 0.3px;
-    border-bottom: 2px solid rgba(96, 165, 250, 0.3);
+    border-bottom: 2px solid rgba(100, 164, 247, 0.3);
 }
 
 [data-theme="light"] .queue-table thead th {
@@ -379,19 +379,11 @@
 }
 
 .queue-table tbody tr:nth-child(even) {
-    background: rgba(26, 47, 107, 0.04);
-}
-
-[data-theme="dark"] .queue-table tbody tr:nth-child(even) {
-    background: rgba(26, 47, 107, 0.15);
+    background: rgba(43, 30, 92, 0.04);
 }
 
 .queue-table tbody tr:hover {
-    background: rgba(59, 130, 246, 0.06);
-}
-
-[data-theme="dark"] .queue-table tbody tr:hover {
-    background: rgba(59, 130, 246, 0.12);
+    background: rgba(54, 135, 242, 0.06);
 }
 
 .queue-table tbody td {
@@ -411,16 +403,8 @@
     border-right: 1px solid var(--border);
 }
 
-[data-theme="dark"] .queue-table tbody .col-queue {
-    background: var(--navy-deep);
-}
-
 .queue-table tbody tr:nth-child(even) .col-queue {
     background: var(--bg-card);
-}
-
-[data-theme="dark"] .queue-table tbody tr:nth-child(even) .col-queue {
-    background: rgba(6, 14, 36, 0.95);
 }
 
 /* ====== STATUS BADGES — FILLED STYLE (like reference image) ====== */
@@ -437,47 +421,27 @@
 
 /* Idle / Not started — muted, subtle */
 .q-badge-idle {
-    background: rgba(107, 114, 128, 0.18);
+    background: rgba(103, 112, 131, 0.18);
     color: var(--gray-500);
-}
-
-[data-theme="dark"] .q-badge-idle {
-    background: rgba(107, 114, 128, 0.25);
-    color: var(--gray-400);
 }
 
 /* In progress — lighter cyan */
 .q-badge-progress {
-    background: rgba(103, 232, 249, 0.35);
-    color: #0e7490;
-}
-
-[data-theme="dark"] .q-badge-progress {
-    background: rgba(103, 232, 249, 0.3);
-    color: var(--cyan);
+    background: rgba(113, 234, 243, 0.35);
+    color: var(--cyan-deep);
 }
 
 /* Done / Complete — strong saturated blue */
 .q-badge-done {
-    background: rgba(59, 130, 246, 0.55);
+    background: rgba(54, 135, 242, 0.55);
     color: var(--white);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
-[data-theme="dark"] .q-badge-done {
-    background: rgba(96, 165, 250, 0.45);
-    color: var(--white);
-}
-
 /* Partial / deposit / packing — medium blue-purple, filled */
 .q-badge-partial {
-    background: rgba(165, 180, 252, 0.35);
+    background: rgba(200, 166, 247, 0.35);
     color: var(--purple);
-}
-
-[data-theme="dark"] .q-badge-partial {
-    background: rgba(167, 139, 250, 0.3);
-    color: var(--purple-soft);
 }
 
 /* Work type — text style */
@@ -511,13 +475,13 @@
 }
 
 .rush-icon.active {
-    background: rgba(167, 139, 250, 0.2);
+    background: rgba(200, 166, 247, 0.2);
     color: var(--purple-soft);
 }
 
 /* ====== DONE ROW — Lavender background + merged message ====== */
 .queue-table tbody tr.row-done {
-    background: rgba(165, 180, 252, 0.15);
+    background: rgba(200, 166, 247, 0.15);
     border-bottom: 1px solid var(--border);
 }
 
@@ -525,21 +489,12 @@
     border-bottom: none;
 }
 
-[data-theme="dark"] .queue-table tbody tr.row-done {
-    background: rgba(165, 180, 252, 0.1);
-}
-
 .queue-table tbody tr.row-done:hover {
-    background: rgba(165, 180, 252, 0.22);
+    background: rgba(200, 166, 247, 0.22);
 }
 
 .queue-table tbody tr.row-done .col-queue {
     color: var(--purple-soft);
-}
-
-[data-theme="dark"] .queue-table tbody tr.row-done .col-queue {
-    color: var(--purple-soft);
-    background: rgba(165, 180, 252, 0.08);
 }
 
 .done-message {
@@ -741,21 +696,13 @@
         font-weight: 700;
         padding: 8px 10px;
         border-right: none;
-        border-bottom: 2px solid rgba(96, 165, 250, 0.3);
+        border-bottom: 2px solid rgba(100, 164, 247, 0.3);
         position: static;
         justify-content: center;
     }
 
     [data-theme="light"] .queue-table tbody tr:nth-child(n) .col-queue {
         background: linear-gradient(135deg, var(--blue-600), var(--blue-500));
-    }
-
-    [data-theme="dark"] .queue-table tbody tr:nth-child(n) .col-queue {
-        background: linear-gradient(135deg, var(--royal), var(--blue-700));
-    }
-
-    [data-theme="dark"] .queue-table tbody tr:nth-child(even) {
-        background: var(--bg-card);
     }
 
     .queue-table tbody .col-queue::before {
@@ -773,11 +720,11 @@
 
     /* Done card */
     .queue-table tbody tr.row-done {
-        border-color: rgba(103, 232, 249, 0.3);
+        border-color: rgba(113, 234, 243, 0.3);
     }
 
     .queue-table tbody tr.row-done:nth-child(n) .col-queue {
-        background: linear-gradient(135deg, rgba(165, 180, 252, 0.3), rgba(165, 180, 252, 0.15));
+        background: linear-gradient(135deg, rgba(200, 166, 247, 0.3), rgba(200, 166, 247, 0.15));
         color: var(--purple-soft);
     }
 

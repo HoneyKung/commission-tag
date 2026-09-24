@@ -1,0 +1,25 @@
+{
+  "picks": [
+    {
+      "id": "spin4",
+      "file": "spin4.svg",
+      "bytes": 210
+    },
+    {
+      "id": "spin3",
+      "file": "spin3.svg",
+      "bytes": 401
+    },
+    {
+      "id": "spin2",
+      "file": "spin2.svg",
+      "bytes": 232
+    },
+    {
+      "id": "spin1",
+      "file": "spin1.svg",
+      "bytes": 3201
+    }
+  ],
+  "viewBox": "0 0 1920 2879"
+}

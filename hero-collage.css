@@ -1,0 +1,298 @@
+/* ============================================================
+   MOFYCH — HERO ชั้น "โปสเตอร์บล็อกใหญ่"
+   โหลดต่อจาก hero-space.css
+
+   กติกาของไฟล์นี้ (มาจากฟีดแบ็กตรงๆ อย่าฝ่าฝืน):
+     1. ชิ้นใหญ่ สีจัด แบนล้วน — ห้ามไล่เฉดสี ห้ามเงานุ่ม ห้ามอะไรดูสามมิติ
+     2. ห้ามเส้นเล็กจางๆ เยอะแยะ — ของประดับจิ๋วทำให้จอรก ไม่ใช่ทำให้สวย
+     3. ห้ามแตะของเดิมในฉากอวกาศ (ดาว/ดาวหาง/วงโคจร/จันทร์/ดาวเคราะห์)
+        — ความเป็นกาแลคซี่คือของเดิมที่ต้องอยู่ครบ ชั้นนี้แค่ไปนอนอยู่ "ข้างหลัง" มัน
+     4. คุมสีอยู่ในตระกูลม่วง-น้ำเงินของพาเลตต์เท่านั้น ไม่แจกสีรายชิ้น
+
+   ลำดับชั้น: cx-surface (z0) < sk-bg ของเดิม (z1) < เวที (z3) < เชือก (z7)
+   ============================================================ */
+
+.sketch-hero {
+    --cx-ink: var(--pal-primary);
+    --cx-vio: var(--primary-deep);
+    --cx-vio-lit: var(--primary-lit);
+    --cx-mono: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+.cx-surface {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    /* หลังสุด — บล็อกใหญ่ต้องอยู่ใต้ฉากอวกาศเสมอ ไม่ไปกลบดาว */
+    z-index: 0;
+}
+
+.sketch-hero.armed .cx-surface {
+    opacity: 0;
+}
+
+.sketch-hero.go .cx-surface {
+    animation: fade-in .9s ease-out .05s both;
+}
+
+
+/* ===========================================================
+   1) กริดกราฟ — พื้นผิวเดียวที่ยอมให้จาง (มันคือ "กระดาษ" ไม่ใช่ของประดับ)
+   =========================================================== */
+.cx-grid {
+    position: absolute;
+    inset: -2px;
+    /* ตารางพื้นหลัง = เส้นกลาง (เทาเงิน) ไม่ใช่สีนำ — ไม่งั้นแย่งสายตากับลายเส้นจริง */
+    background-image:
+        linear-gradient(to right, rgba(183, 187, 196, .55) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(183, 187, 196, .55) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(120% 100% at 50% 42%, rgba(0, 0, 0, .2) 24%, #000 100%);
+    mask-image: radial-gradient(120% 100% at 50% 42%, rgba(0, 0, 0, .2) 24%, #000 100%);
+}
+
+
+/* ⚠ เคยมีแถบสีเต็มความกว้างที่ขอบบน/ล่างตรงนี้ — ถอดออกแล้ว
+   เหตุผล: แถบทึบกินขอบจอทำให้หน้าดูตัน ไม่โปร่ง (ฟีดแบ็กตรง)
+   ถ้าจะกลับมาทำหัวจออีก ต้องเป็นของที่ "ลอย" ไม่ใช่แถบเต็มขอบ */
+
+
+/* ⚠ เคยมีบล็อกสีริมจอ (.cx-slab.sl-1/.sl-2) ตรงนี้ — ถอดออกแล้ว
+   บทเรียน: ชื่อคลาส .sl-1/.sl-2 ชนกับ "shooting line" ใน style.css:405
+   ซึ่งบังคับ rotate(-25deg) + อนิเมชัน ทำให้บล็อกกลายเป็นแถบทะแยงพาดจอ
+   ถ้าจะเพิ่มชิ้นใหม่ในไฟล์นี้ ต้องขึ้นต้น cx- ทุกคลาสเสมอ */
+
+
+/* ===========================================================
+   5) ฮาล์ฟโทนเม็ดใหญ่ — บล็อกสี่เหลี่ยมขอบคม ไม่ไล่จาง
+   =========================================================== */
+.cx-halftone {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 28%;
+    height: 25%;
+    /* ฮาล์ฟโทน = ท้องฟ้าไกล (กลุ่ม 3) → ม่วงอวกาศ ไม่ใช่สีนำ */
+    background-image: radial-gradient(var(--pal-violet) 3.2px, transparent 3.4px);
+    background-size: 16px 16px;
+    opacity: .34;
+}
+
+
+/* ===========================================================
+   6) วงแหวนซ้อนถี่ (มัวเร่) — ก้อนกลมใหญ่ครึ่งตกขอบจอ
+   =========================================================== */
+.cx-rings {
+    position: absolute;
+    left: -9%;
+    bottom: -20%;
+    width: clamp(300px, 32vw, 470px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    /* วงแหวนมัวเร่ = ท้องฟ้าไกล (กลุ่ม 3) → ฟ้าคราม */
+    background: repeating-radial-gradient(circle, var(--pal-blue) 0 3px, transparent 3px 9px);
+    opacity: .55;
+}
+
+
+/* ===========================================================
+   8) จอแคบ — บล็อกใหญ่ต้องหลบเนื้อหาก่อน
+   =========================================================== */
+@media (max-width: 1180px) {
+
+    .cx-halftone {
+        width: 34%;
+        height: 18%;
+    }
+}
+
+@media (max-width: 900px) {
+
+    .cx-rings,
+    .cx-halftone {
+        display: none;
+    }
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    .sketch-hero.armed .cx-surface {
+        opacity: 1;
+    }
+}
+
+
+/* ===========================================================
+   9) ของเดิมที่สั่งให้เอาออก (ฟีดแบ็กตรง — อย่าเปิดคืนเองโดยไม่ถาม)
+   =========================================================== */
+
+/* วงเล็บ HUD 4 มุมรอบแผงฉาก — ซ้ำซ้อนกับกรอบกระดาษฟอร์มที่มีอยู่แล้ว */
+.sketch-hero .gx-bracket {
+    display: none;
+}
+
+/* เศษคริสตัลลอย (ห้าเหลี่ยมม่วง) */
+.sketch-hero .gx-shard {
+    display: none;
+}
+
+/* พระจันทร์เสี้ยว */
+.sketch-hero .gx-moon {
+    display: none;
+}
+
+/* กากบาทเส้นหนา 2 อัน (มุมขวาบน + ซ้ายล่างของกระดาษฟอร์ม) ที่คร่อมกันเป็นกรอบ
+   ฟีดแบ็ก 2026-07-29: เส้นหนาเทอะทะ ไม่เข้าธีมโฮโลแกรม/celestial */
+.sketch-hero .sk-cross {
+    display: none;
+}
+
+/* ดาวที่วิ่งบนวงโคจร — ต้องเป็นสีหมึกดำ ไม่ใช่ทอง */
+.sketch-hero .orb-sat b {
+    background: var(--sk-ink);
+    box-shadow: none;
+}
+
+
+/* ===========================================================
+   10) กรอบวิจิตร (เรฟ: เกม UI เกาหลี + กรอบป้ายโบราณ)
+       ทองทึบสีเดียว ไม่ไล่เฉด — ของชิ้นใหญ่ อ่านออกจากระยะไกล
+   =========================================================== */
+.sketch-hero {
+    --cx-gold: var(--gold-deep);
+    --gx-corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 72'%3E%3Cpath d='M2 2h36v4.6H6.6V38H2z'/%3E%3Cpath d='M11 11h21v3.4H14.4V32H11z'/%3E%3Cpath d='M32 46c-8.3 0-15-6.7-15-15s6.7-15 15-15 15 6.7 15 15h-4.8c0-5.6-4.6-10.2-10.2-10.2S21.8 25.4 21.8 31 26.4 41.2 32 41.2z'/%3E%3Cpath d='M47 25.5l5.5-5.5 5.5 5.5-5.5 5.5z'/%3E%3Cpath d='M41 8h20v3.4H41z'/%3E%3Cpath d='M8 41h3.4v20H8z'/%3E%3Cpath d='M52 42c4.6 2.2 8.2 5.8 10.4 10.4l-3.4 2.2c-1.8-3.8-4.8-6.8-8.6-8.6z'/%3E%3Cpath d='M42 52c2.2 4.6 5.8 8.2 10.4 10.4l2.2-3.4c-3.8-1.8-6.8-4.8-8.6-8.6z'/%3E%3Ccircle cx='66' cy='15' r='3.2'/%3E%3Ccircle cx='15' cy='66' r='3.2'/%3E%3C/svg%3E");
+    --cx-crest: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 40'%3E%3Cpath d='M62 20c-7 0-11-7-19-7-6 0-10.6 3.6-10.6 8 0 3.8 3 6.6 6.8 6.6 3.2 0 5.8-2.6 5.8-5.8h-5c0 .8-.6 1.4-1.4 1.4s-1.6-.8-1.6-2c0-1.8 1.8-3.2 4.4-3.2 6.4 0 10.8 7 18.6 7z'/%3E%3Ccircle cx='18' cy='20' r='4.2'/%3E%3Cpath d='M22 18h8v4h-8z'/%3E%3Cg transform='translate(140,0) scale(-1,1)'%3E%3Cpath d='M62 20c-7 0-11-7-19-7-6 0-10.6 3.6-10.6 8 0 3.8 3 6.6 6.8 6.6 3.2 0 5.8-2.6 5.8-5.8h-5c0 .8-.6 1.4-1.4 1.4s-1.6-.8-1.6-2c0-1.8 1.8-3.2 4.4-3.2 6.4 0 10.8 7 18.6 7z'/%3E%3Ccircle cx='18' cy='20' r='4.2'/%3E%3Cpath d='M22 18h8v4h-8z'/%3E%3C/g%3E%3Cpath fill-rule='evenodd' d='M70 4l11 12-11 12-11-12z M70 11l-4.6 5 4.6 5 4.6-5z'/%3E%3Cpath d='M67.6 29h4.8v9h-4.8z'/%3E%3C/svg%3E");
+    --cx-flourish: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 36'%3E%3Cpath d='M56 15.6H34v4.8h22z'/%3E%3Cpath d='M36 18c0-6.2-5-11.2-11.2-11.2-5.4 0-10 3.8-11 8.8-.8-.4-1.8-.6-2.8-.6C7.6 15 4 18.6 4 23s3.6 8 8 8 8-3.6 8-8h-4.6c0 1.9-1.5 3.4-3.4 3.4S8.6 24.9 8.6 23s1.5-3.4 3.4-3.4c1.6 0 3 1.1 3.3 2.7l4.6-.9c-.2-.8-.5-1.6-.9-2.3.2-3.6 3.2-6.5 6.8-6.5 3.8 0 6.8 3 6.8 6.8z'/%3E%3Cpath fill-rule='evenodd' d='M27 18l6.4-6.4L39.8 18l-6.4 6.4z M33.4 15l-3 3 3 3 3-3z'/%3E%3Cpath d='M38 6.4c4.2 1.4 7.7 4.1 10.2 7.6l-3.5 2.5c-1.9-2.7-4.6-4.8-7.7-5.9zM38 29.6c4.2-1.4 7.7-4.1 10.2-7.6l-3.5-2.5c-1.9 2.7-4.6 4.8-7.7 5.9z'/%3E%3C/svg%3E");
+}
+
+/* เส้นขอบทองในกระดาษ — หนาขึ้นให้เห็นจริง */
+.sketch-hero .gx-corners {
+    inset: 10px;
+    border: 2px solid var(--cx-gold);
+    border-radius: 13px 10px 15px 11px;
+}
+
+/* ลายมุม 4 มุม — ใหญ่ขึ้นเกือบเท่าตัว */
+.sketch-hero .gx-corners i {
+    width: 44px;
+    height: 44px;
+    background: var(--cx-gold);
+    opacity: 1;
+}
+
+.sketch-hero .gx-corners i:nth-child(1),
+.sketch-hero .gx-corners i:nth-child(4) {
+    left: -7px;
+}
+
+.sketch-hero .gx-corners i:nth-child(2),
+.sketch-hero .gx-corners i:nth-child(3) {
+    right: -7px;
+}
+
+.sketch-hero .gx-corners i:nth-child(1),
+.sketch-hero .gx-corners i:nth-child(2) {
+    top: -7px;
+}
+
+.sketch-hero .gx-corners i:nth-child(3),
+.sketch-hero .gx-corners i:nth-child(4) {
+    bottom: -7px;
+}
+
+/* ยอดกรอบกลางขอบบนของกระดาษ */
+.cx-crest {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 140px;
+    height: 40px;
+    transform: translate(-50%, -56%);
+    background: var(--cx-gold);
+    -webkit-mask: var(--cx-crest) center / contain no-repeat;
+    mask: var(--cx-crest) center / contain no-repeat;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* ปลายลายสองข้างของป้ายหัวฟอร์ม */
+.sketch-hero .form-card-title {
+    padding-inline: 40px;
+}
+
+.cx-plate {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 36px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: -3;
+}
+
+.cx-plate::before,
+.cx-plate::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 52px;
+    height: 34px;
+    background: var(--cx-gold);
+    -webkit-mask: var(--cx-flourish) center / contain no-repeat;
+    mask: var(--cx-flourish) center / contain no-repeat;
+}
+
+.cx-plate::before {
+    left: -46px;
+    transform: translateY(-50%);
+}
+
+.cx-plate::after {
+    right: -46px;
+    transform: translateY(-50%) scaleX(-1);
+}
+
+
+/* ===========================================================
+   11) ปุ่ม — ทรงเกม UI: สีทึบ ขอบหนา เงาแข็ง (เรฟปุ่มเกมเกาหลี)
+   =========================================================== */
+.sketch-hero .ink-oval {
+    filter: drop-shadow(4px 5px 0 rgba(14, 0, 168, .88));
+}
+
+.sketch-hero .ink-oval .oval-face,
+.sketch-hero .ink-oval .oval-back {
+    stroke-width: 4.4;
+}
+
+/* ปุ่มแรก = สีนำทึบ ตัวหนังสือขาว */
+.sketch-hero .ink-btn .ink-oval .oval-face {
+    fill: var(--gx-primary);
+}
+
+.sketch-hero .ink-btn:hover .ink-oval .oval-face {
+    fill: var(--gx-primary-lit);
+}
+
+.sketch-hero .ink-btn .ink-btn-label {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* ปุ่มเหรียญ = ทองทึบ ตัวหนังสือหมึก (ต้องมาหลังบล็อกบน) */
+.sketch-hero .ink-btn-coin .ink-oval .oval-face {
+    fill: var(--gx-gold);
+}
+
+.sketch-hero .ink-btn-coin:hover .ink-oval .oval-face {
+    fill: var(--gold-lit);
+}
+
+.sketch-hero .ink-btn-coin .ink-btn-label {
+    color: var(--sk-ink);
+    font-weight: 600;
+}

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MOFYCH — ฝากแทค Commission</title>
+    <meta name="description" content="ฝากแทคสินค้าคอมมิชชั่นจาก MOFYCH ลงชื่อง่าย แจ้งเตือนอัตโนมัติเมื่อเปิดรอบ">
+    <link rel="icon" href="logo/Logo.png" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- ฟอนต์ที่ดีไซน์ใช้และมีบน Google Fonts (figma-layout-spec ข้อ 6)
+         Bachelorette / Parastoo ไม่มีบนเว็บ → ใช้ไฟล์ outline ที่แปลงเป็น path แล้ว -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600;700&family=IBM+Plex+Serif:wght@700&family=Cantora+One&family=Montserrat:wght@900&family=Piazzolla:wght@900&display=swap">
+
+    <link rel="stylesheet" href="figma.css?v=27">
+    <link rel="stylesheet" href="figma-text.css?v=5">
+    <link rel="stylesheet" href="figma-scene.css?v=10">
+    <!-- มาสคอต A/B — แยกออกมาจาก style.css เพราะหน้านี้ใช้คนละธีม
+         ห้ามลิงก์ style.css เข้าหน้านี้ ธีมเก่าจะทับ layout ของ Figma -->
+    <link rel="stylesheet" href="mascot.css?v=7">
+    <!-- เฟส 3 — อนิเมชัน ต้องมาหลัง figma.css เสมอ -->
+    <link rel="stylesheet" href="figma-anim.css?v=93">
+</head>
+
+<body>
+
+    <!-- ตัวครอบที่ทำให้แคนวาส 1920 ย่อพอดีความกว้างจอเอง (figma.js ตั้งค่า --fit)
+         พิกัดข้างในยังเป็นของ Figma 1:1 ทุกตัว ย่อทีเดียวที่ชั้นนอกสุดเท่านั้น -->
+    <div class="fit" id="fit">
+
+        <!-- ============================================================
+             แคนวาส 1920 x 2879 · เรียงเลเยอร์ตามลำดับใน Figma (01 ล่างสุด)
+
+             ⭐ ซีนเมนูไม่ใช่หน้าอื่น — เป็น "ชิ้นเดิมที่ขยับ/หมุน/ซ่อน"
+                ทุกชิ้นในไฟล์นี้มีชุดเดียว ตำแหน่งซีนเมนูอยู่ใน figma-scene.css
+                (เฟส 3 แค่เติม transition ให้ transform ตัวเดิมก็ได้อนิเมชัน)
+
+             img.ly      งานอาร์ตที่ขยับด้วย transform อย่างเดียวก็พอ
+             มาร์กเกอร์ @  ฝัง SVG ลงหน้า ใช้กับชิ้นที่ animation-list ข้อ 8 บังคับ
+                         ว่าต้องเป็นโหนดจริง (เชือก ดาว เส้นทอง การ์ดรูป ปุ่ม)
+             @notext     ตัดตัวหนังสือในงานอาร์ตทิ้ง เพราะเขียนเป็น HTML text แทน
+             span.tx     ข้อความจริง ตำแหน่งมาจาก figma-text.css (สร้างจากไฟล์ export)
+
+             คงเป็นงานอาร์ตตามที่เจ้าของงานสั่ง: MOFYCH · ข้อความในตั๋วฟอร์ม ·
+             ข้อความในตรา · ชื่อสินค้าหน้า product · admin
+             ============================================================ -->
+        <div class="stage" id="stage" data-scene="main">
+            <!-- จุดยึดของ showAddMore() ในโค้ดเดิม -->
+            <span id="hero" class="sr">ลงชื่อฝากแทค</span>
+
+            <!-- 01 พื้นขาวของเฟรม -->
+            <img class="ly" src="images/figma/main-web/layers/01_unnamed-01.svg" alt="">
+
+            <!-- ==================== 02 edit tag (เซกชันล่างสุด) ====================
+                 ซีนเมนูดันทั้งเซกชันลง 232 (คลาส shift) -->
+            <div class="pc shift" id="pcEditBg">
+                <!--@ images/figma/parts/main/Rectangle-36.svg -->
+            </div>
+            <div class="pc shift" id="pcMofych">
+                <!--@ images/figma/parts/main/MOFYCH.svg -->
+            </div>
+            <div class="pc shift" id="pcCloudBottom">
+                <!--@ images/figma/parts/main/Group-71.svg | -202 2541 2247.2 466.2 -->
+            </div>
+
+            <!-- ==================== 03 product ====================
+                 แยกทีละชิ้นตาม animation-list ข้อ 6 (สินค้าโผล่จากหลังเส้น) -->
+            <div class="pc shift" id="pcProduct">
+                <img class="ly" id="lyProductBg" src="images/figma/parts/product/Rectangle-30.svg" alt="">
+                <!-- ดาวประดับของเซกชันสินค้า — ใช้ระบบสุ่มตัวเดียวกับ hero
+                     ! ไม่ฝัง background-Star.svg / background-Star_2.svg แล้ว
+                       สองไฟล์นั้นคือชุดตัวอย่างเหมือนของ hero (ขนาด/สีชุดเดียวกันเป๊ะ)
+                       ขอบเขตของแต่ละโซนถอดมาจากตำแหน่งดาวในสองไฟล์นั้น -->
+                <div class="pc" id="pcProdStar1" aria-hidden="true"></div>
+                <div class="pc" id="pcProdStar2" aria-hidden="true"></div>
+                <!-- ชื่อสินค้า = งานอาร์ต · Cookie ใช้ฟอนต์ Bachelorette ที่ไม่มีบนเว็บ → ไฟล์ outline
+                     Cotton Doll (Cantora One) / 3D Print (Montserrat) มีบนเว็บ → ฝัง SVG ให้ฟอนต์ทำงาน -->
+                <img class="ly" id="lyWordCookie" src="images/figma/outline/Cookie.svg" alt="Cookie">
+                <div class="pc" id="pcWordCotton">
+                    <!--@ images/figma/parts/product/Cotton-Doll.svg -->
+                </div>
+                <div class="pc" id="pcWord3D">
+                    <!--@ images/figma/parts/product/3D-Print.svg -->
+                </div>
+                <!-- รูปสินค้า 3 ใบ — ต้องฝังลงหน้า ใช้ <img> ไม่ได้
+                     เพราะ SVG ที่โหลดผ่าน <img> เบราว์เซอร์ห้ามไปดึงไฟล์ข้างนอก
+                     (รูปถูกแยกออกไปเป็น .webp แล้วเพื่อไม่ให้ HTML บวม) -->
+                <div class="pc" id="pcPhoto1">
+                    <!--@ images/figma/parts/product/IMG_20260610_181948-1.svg -->
+                </div>
+                <div class="pc" id="pcPhoto2">
+                    <!--@ images/figma/parts/product/IMG_20250810_194129-1.svg -->
+                </div>
+                <div class="pc" id="pcPhoto3">
+                    <!--@ images/figma/parts/product/IMG_20260715_182013-1.svg -->
+                </div>
+                <!-- เส้นคั่นทองต้องเป็น path สดไว้ทำวิบวับ (ข้อ 8) -->
+                <div class="pc" id="pcGoldLine">
+                    <!--@ images/figma/parts/product/Rectangle-35.svg -->
+                </div>
+                <div class="pc" id="pcStar11">
+                    <!--@ images/figma/parts/product/Star-11.svg -->
+                </div>
+            </div>
+
+            <!-- ==================== 04 พื้นหลัง hero ====================
+                 ตอนเปิดเมนูจะ "ยืด" สูงขึ้นจาก 1040 → 1272 (animation-list ข้อ 1.4) -->
+            <div class="pc" id="pcHeroBg">
+                <!--@ images/figma/main-web/layers/04_Rectangle-12.svg -->
+            </div>
+            <!-- พื้นหลังของซีนเมนู = ไฟล์จริงจาก export ไม่ใช่ตัวเดิมที่ถูกบิด
+                 ซ้อนไว้เฉยๆ แล้วไล่ opacity สลับกัน (ดู figma-anim.css ส่วนที่ 8)
+                 ⚠ ไฟล์นี้ viewBox สูง 3111 ต้องใช้ความสูงของตัวเอง ไม่งั้นภาพยืด -->
+            <div class="pc" id="pcHeroBgMenu">
+                <!--@ images/figma/menu-web/layers/04_Rectangle-12.svg -->
+            </div>
+
+            <!-- 05 วงลายพิมพ์ -->
+            <div class="pc" id="pcDotRing">
+                <!--@ images/figma/main-web/layers/05_Rectangle-34.svg | -14 411 396 396 -->
+            </div>
+
+            <!-- 06 เส้นเฉียงพื้นหลัง — ออโรร่า จางเข้า-จางหาย (animation-list ข้อ 1.3)
+
+                 ⭐ แยกเป็นไฟล์ละเส้นจริงๆ (images/figma/parts/starline) ไม่ใช่ไฟล์เดียวแล้วเลือกด้วย CSS
+                   เพราะ opacity ที่ขยับต้องอยู่บน "กล่อง div" ถึงจะได้ชั้นของตัวเองบน GPU
+                   ถ้าไปไล่ opacity ที่ <line> ในไฟล์เดียว เบราว์เซอร์ต้องวาดเส้นใหม่ทุกเฟรม
+                   บน main thread ตัวเดียวกับที่ลูปฟิสิกส์เชือกใช้อยู่ (บทเรียนเดียวกับส่วนที่ 8)
+
+                 ไม่มีการสุ่มทั้งสิ้น — จังหวะจาง/รอบของแต่ละเส้นเป็นค่าคงที่ใน figma-anim.css ส่วนที่ 15
+                 เรียงตามลำดับหน้าหลังเดิมในไฟล์ Figma: 1 3 5 6 2 4 -->
+            <div class="pc" id="pcStarLine">
+                <div class="pc auline" id="auLine1">
+                    <!--@ images/figma/parts/starline/Line-1.svg | 40.4 6.2 506.2 396.8 -->
+                </div>
+                <div class="pc auline" id="auLine3">
+                    <!--@ images/figma/parts/starline/Line-3.svg | 575.8 -34 575.8 451.2 -->
+                </div>
+                <div class="pc auline" id="auLine5">
+                    <!--@ images/figma/parts/starline/Line-5.svg | 360 545.3 575.8 451.2 -->
+                </div>
+                <div class="pc auline" id="auLine6">
+                    <!--@ images/figma/parts/starline/Line-6.svg | 703.8 338.2 575.8 451.2 -->
+                </div>
+                <div class="pc auline" id="auLine2">
+                    <!--@ images/figma/parts/starline/Line-2.svg | 205.5 6.2 301.6 236.9 -->
+                </div>
+                <div class="pc auline" id="auLine4">
+                    <!--@ images/figma/parts/starline/Line-4.svg | 541.2 168.2 301.6 236.9 -->
+                </div>
+            </div>
+
+            <!-- 07-08 ภาพพื้นหลังสองชั้น -->
+            <div class="pc" id="pcBg2">
+                <!--@ images/figma/main-web/layers/07_bg2.svg | 811 -3 1142 953 -->
+            </div>
+            <div class="pc" id="pcBg1">
+                <!--@ images/figma/main-web/layers/08_bg1.svg | 830 158 1384 863 -->
+            </div>
+
+            <!-- 09 วงแหวนทอง 4 ชั้น — หมุนแยกกันได้ (ข้อ 3.2) -->
+            <!-- 09 วงแหวนทอง 4 ชั้น — หมุนรอบจุดศูนย์กลางคนละความเร็ว (animation-list ข้อ 3.2)
+                 ทั้ง 4 วงร่วมศูนย์กันที่ 1239.62, 512.867 พอดีเป๊ะ
+                 ครอปทุกชั้นเท่ากล่องวงนอกสุด (683x683) ชั้นที่หมุนจะได้เป็นแผ่นเล็ก
+                 ไม่ใช่แผ่นเต็มเฟรม 1920x2879 ที่ว่างเปล่าเกือบทั้งแผ่น
+                 เรียงตามลำดับหน้าหลังเดิมในไฟล์: 4 3 2 1
+                 ความเร็วอยู่ที่ figma-anim.css ส่วนที่ 17 -->
+            <div class="pc" id="pcSpin">
+                <div class="spinring" id="pcSpin4">
+                    <!--@ images/figma/parts/spin/spin4.svg | 898.12 171.367 683 683 -->
+                </div>
+                <div class="spinring" id="pcSpin3">
+                    <!--@ images/figma/parts/spin/spin3.svg | 898.12 171.367 683 683 -->
+                </div>
+                <div class="spinring" id="pcSpin2">
+                    <!--@ images/figma/parts/spin/spin2.svg | 898.12 171.367 683 683 -->
+                </div>
+                <div class="spinring" id="pcSpin1">
+                    <!--@ images/figma/parts/spin/spin1.svg | 898.12 171.367 683 683 -->
+                </div>
+            </div>
+
+            <!-- 10 เมฆขวาบน — อยู่นิ่งทั้งสองซีน -->
+            <div class="pc" id="pcCloud2">
+                <!--@ images/figma/main-web/layers/10_clound2_2.svg | 1321.1 -46.2 680.2 391.7 -->
+            </div>
+
+            <!-- 11 ดาวประดับ — ระบบสุ่มเกิด-ดับ (animation-list ข้อ 1.1)
+                 ⚠ ไม่ฝังไฟล์ 11_background-Star_3.svg แล้ว
+                   เพราะดาวชุดนั้นคือ "ผลลัพธ์หนึ่งครั้ง" ของระบบสุ่มนี้เอง ไม่ใช่พื้นหลังตายตัว
+                   ค่าที่ระบบใช้ (จำนวน/ขอบเขต/ขนาด/สี) ถอดมาจากไฟล์นั้นทั้งหมด
+                 figma-anim.js เป็นคนสร้างดาวใส่กล่องนี้ -->
+            <div class="pc" id="pcHeroStars" aria-hidden="true"></div>
+
+            <!-- ดาวตก — ระบบสุ่ม (animation-list ข้อ 1.2)
+                 ⚠ ย้ายมาอยู่ชั้นเดียวกับดาวประดับตามที่เจ้าของงานสั่ง (2026-08-19)
+                   เดิมอยู่เลเยอร์ 24 (หลังเชือก) ซึ่งลอยอยู่หน้าฟอร์ม/การ์ด
+                   ที่นี่คือเลเยอร์ 11 = อยู่หลังบล็อกแบรนด์ ฟอร์ม การ์ด ทั้งหมด
+                   ไฟล์ 24_animate-star-drop.svg ไม่ได้ฝังแล้ว — มันคือ "ตัวอย่าง 2 ดวง"
+                   ที่ดีไซน์วาดไว้ให้ดูหน้าตากับองศา ทรง/สี/องศา/หาง ถอดมาจากไฟล์นั้นหมด -->
+            <div class="pc" id="pcStarDrop" aria-hidden="true"></div>
+
+            <!-- ==================== บล็อกแบรนด์ — ซ่อนตอนเปิดเมนู ==================== -->
+            <div class="pc" id="pcBrand">
+                <!-- 12-13 ข้อความสองบรรทัด -->
+                <span class="tx b-drift scene-main" data-t="ฝากแทคงาน-Commission-main"><span>ฝากแทคงาน Commission</span></span>
+                <span class="tx b-drift scene-main" data-t="แจ้งเตือนผ่าน-Email-อัตโนมัติเมื่อเปิดรอบใหม่-main"><span>แจ้งเตือนผ่าน Email</span><span>อัตโนมัติเมื่อเปิดรอบใหม่</span></span>
+
+                <!-- 14 ปุ่ม สำรวจชิ้นงาน — ปุ่มตั๋ว 2 ชั้นซ้อนเยื้อง 14.6 (ตั้งใจ ข้อ 11.6)
+                     ห่อไว้เพื่อให้ figma-anim ขยับ "หน้าปุ่ม + ดาวทอง + ตัวหนังสือ"
+                     ไปด้วยกัน ส่วนชั้นใต้ปุ่มอยู่กับที่ (animation-list ข้อ 2.3)
+                     ⚠ ตัวหนังสือต้องอยู่ในกล่องนี้ด้วย ไม่งั้นกดแล้วปุ่มยุบลง
+                       แต่คำว่า "สำรวจชิ้นงาน" ค้างอยู่ที่เดิม
+                     ชิ้นข้างใน: Union_11 ชั้นใต้ปุ่ม · Union_12 หน้าปุ่ม · Group 13_2 ดาวทอง -->
+                <div class="pc scene-main" id="pcBtnExplore">
+                    <!-- ชั้นขยายตอนเมาส์วาง — ต้องเป็นชั้นแยก เพราะ #pcBtnExplore
+                         ถือ transform ของการเด้งสลับซีนอยู่ และลูกแต่ละชิ้นก็มีจุดหมุน
+                         ของตัวเอง (ดาวหมุนรอบตัวเอง) จะยัดสเกลลงชั้นไหนก็ชนหมด -->
+                    <div class="pc" id="pcBtnGrow">
+                        <!-- ⭐ แยกเป็นกล่อง HTML กล่องละชิ้น ไม่ใช่ SVG ก้อนเดียวแล้วขยับข้างใน
+                             เพราะ Chrome ยก transform ของ HTML ขึ้นไปให้ GPU ทำได้
+                             แต่ transform ของ <path>/<g> ใน SVG ยกไม่ได้ ต้องวาดใหม่บน
+                             main thread ทุกเฟรม = ไปแย่งเฟรมกับลูปฟิสิกส์ของเชือก แล้วกระตุก
+                             (มาสคอตลื่นเพราะมันเป็น div ตั้งแต่แรก)
+                             ทุกไฟล์ viewBox เท่าเฟรมเต็ม ซ้อนที่ 0,0 ตำแหน่งตรงเองไม่ต้องคำนวณ
+                             เรียงล่างขึ้นบนตามลำดับเดิมในไฟล์ -->
+                        <div class="pc" id="pcBtnBase">
+                            <!--@ images/figma/parts/btn/Union_11.svg -->
+                        </div>
+                        <!-- ตัวหนังสืออยู่ในกล่องเดียวกับหน้าปุ่ม = ขยับเป็นชั้นเดียวกัน
+                             ไม่งั้นกดแล้วปุ่มยุบแต่คำว่า "สำรวจชิ้นงาน" ค้างอยู่ที่เดิม -->
+                        <div class="pc" id="pcBtnFace">
+                            <!--@ images/figma/parts/btn/Union_12.svg -->
+                            <span class="tx" data-t="สำรวจชิ้นงาน_2-main"><span>สำรวจชิ้นงาน</span></span>
+                        </div>
+                        <div class="pc" id="pcBtnStarL">
+                            <!--@ images/figma/parts/btn/Star-4_5.svg -->
+                        </div>
+                        <div class="pc" id="pcBtnStarR">
+                            <!--@ images/figma/parts/btn/Star-5_4.svg -->
+                        </div>
+                    </div>
+                    <a class="hit" id="btnExplore" href="#products"><span class="sr">สำรวจชิ้นงาน</span></a>
+                </div>
+            </div>
+
+                <!-- ==================== เมนู 4 ปุ่ม — โผล่ตอนเปิดเมนู ====================
+                     ขนาด 413.7 x 72.7 เยื้องเป็นขั้นบันได (คนละขนาดกับปุ่มเมนูลอย)
+
+                     ⚠ ทุกช่องใช้ "ป้ายสีน้ำเงินใบเดียวกัน" เป็นสถานะปกติ และ
+                       "ป้ายสีม่วงใบเดียวกัน" เป็นสถานะเมาส์วาง — ทั้งสองใบ export มาจาก Figma
+                       ไม่มีการเขียนค่าสีเองแม้แต่ตัวเดียว แค่เลื่อนตำแหน่งให้ตรงช่อง
+                       (ในดีไซน์ ช่อง แก้ไขฝากแทค ถูกวาดเป็นสีม่วง = ตัวอย่างสถานะ ไม่ใช่สีของช่องนั้น)
+
+                       ป้ายน้ำเงินต้นทาง Group 43 อยู่ที่ 347,273
+                       ป้ายม่วงต้นทาง   Group 40 อยู่ที่ 297.1,391.4
+                       ระยะเลื่อนของแต่ละช่องอยู่ใน figma.css -->
+                <div class="pc scene-menu" id="pcHeroMenu">
+                    <span class="mbtn" data-btn="1">
+                        <span class="art art--n">
+                            <!--@ images/figma/menu-web/layers/28_Group-43.svg @notext -->
+                        </span>
+                        <span class="art art--h">
+                            <!--@ images/figma/menu-web/layers/25_Group-40.svg @notext -->
+                        </span>
+                    </span>
+                    <span class="mbtn" data-btn="2">
+                        <span class="art art--n">
+                            <!--@ images/figma/menu-web/layers/28_Group-43.svg @notext -->
+                        </span>
+                        <span class="art art--h">
+                            <!--@ images/figma/menu-web/layers/25_Group-40.svg @notext -->
+                        </span>
+                    </span>
+                    <span class="mbtn" data-btn="3">
+                        <span class="art art--n">
+                            <!--@ images/figma/menu-web/layers/28_Group-43.svg @notext -->
+                        </span>
+                        <span class="art art--h">
+                            <!--@ images/figma/menu-web/layers/25_Group-40.svg @notext -->
+                        </span>
+                    </span>
+                    <span class="mbtn" data-btn="4">
+                        <span class="art art--n">
+                            <!--@ images/figma/menu-web/layers/28_Group-43.svg @notext -->
+                        </span>
+                        <span class="art art--h">
+                            <!--@ images/figma/menu-web/layers/25_Group-40.svg @notext -->
+                        </span>
+                    </span>
+                    <span class="tx" data-btn="1" data-t="สำรวจชิ้นงาน-menu"><span>สำรวจชิ้นงาน</span></span>
+                    <span class="tx" data-btn="2" data-t="แก้ไขฝากแทค-menu"><span>แก้ไขฝากแทค</span></span>
+                    <span class="tx" data-btn="3" data-t="ตรวจสอบคิว-menu"><span>ตรวจสอบคิว</span></span>
+                    <span class="tx" data-btn="4" data-t="ตรวจสอบสี-menu"><span>ตรวจสอบสี</span></span>
+                    <a class="hit menu-hit" data-btn="1" id="heroM1" href="#products"><span class="sr">สำรวจชิ้นงาน</span></a>
+                    <a class="hit menu-hit" data-btn="2" id="heroM2" href="#lookup"><span class="sr">แก้ไขฝากแทค</span></a>
+                    <a class="hit menu-hit" data-btn="3" id="heroM3" href="queue.html"><span class="sr">ตรวจสอบคิว</span></a>
+                    <a class="hit menu-hit" data-btn="4" id="heroM4" href="colors.html"><span class="sr">ตรวจสอบสี</span></a>
+                </div>
+
+                <!-- 15/17 การ์ดรูป — สำรับ 3 ใบ สับวนกันไปเรื่อยๆ (animation-list ข้อ 3.3)
+                     กรอบใช้ไฟล์เดียวกันทั้งสามใบ = parts/card/frame.svg ซึ่งเป็นตัวที่
+                     "ไม่มีรูปฝังอยู่ข้างใน" รูปเป็น <image> ตัวเดียวในลาย (pattern)
+                     figma-anim.js สลับ href ของมันเพื่อเปลี่ยนรูป → ใบที่วนกลับมาเป็นรูปใหม่เสมอ
+                     (figma-page.py เติมท้าย id ให้ไม่ซ้ำเองเวลาฝังไฟล์เดิมหลายครั้ง)
+
+                     ⚠ ทั้งสามใบต้องอยู่ "ก่อนฟอร์ม" ใน DOM = อยู่ใต้ฟอร์มโดยปริยาย
+                       ใบที่ขึ้นมาเป็นใบบนสุดถึงจะได้ z-index ให้ทะลุขึ้นเหนือฟอร์ม
+                       ตรวจแล้วไม่มีชิ้นอื่นในหน้าทับโซนใบบนสุด (x890..1158 y16..309)
+                       จึงยกขึ้นได้โดยไม่ไปบังของอื่น -->
+                <div class="pc card" id="pcCard1">
+                    <!--@ images/figma/parts/card/frame-a.svg -->
+                    <span class="goldshine" aria-hidden="true"><i></i></span>
+                </div>
+                <div class="pc card" id="pcCard2">
+                    <!--@ images/figma/parts/card/frame-a.svg -->
+                    <span class="goldshine" aria-hidden="true"><i></i></span>
+                </div>
+                <div class="pc card" id="pcCard3">
+                    <!--@ images/figma/parts/card/frame-a.svg -->
+                    <span class="goldshine" aria-hidden="true"><i></i></span>
+                </div>
+
+                <!-- ==================== 16 ฟอร์มลงชื่อฝากแทค ====================
+                     ⚠ id ทุกตัวผูกกับ script.js เดิม ห้ามเปลี่ยนชื่อ
+                     ทุกอย่างของฟอร์ม (งานอาร์ต ข้อความ ช่องกรอก ตั๋ว ปุ่ม) อยู่ในกล่องนี้
+                     → ตอนเปิดเมนู กล่องนี้หมุน 11° + เลื่อน 108.2 ทีเดียว ทุกชิ้นตามไปพร้อมกัน -->
+                <div class="pc" id="pcForm">
+                    <!-- ⭐ ชั้นเอียง 3D ของทั้งฟอร์ม — ห่อทุกอย่างในกระดาษไว้ชั้นเดียว
+                         ต้องมีชั้นนี้เพราะช่อง transform ของ #pcForm ถือตำแหน่งซีนเมนูอยู่แล้ว -->
+                    <span class="holo">
+                    <!-- กระดาษ (กรอบทองต้องเลื่อม → ฝังลงหน้า) + แสงพื้นหลัง -->
+                    <div class="pc" id="pcPaper">
+                        <!--@ images/figma/parts/form/Subtract_7.svg | 1078 37 634.8 768.4 -->
+                    </div>
+                    <img class="ly" src="images/figma/parts/form/path1.svg" alt="">
+                    <!-- กรอบทองวิบวับ (animation-list ข้อ 3.4) — วิธีเดียวกับเส้นทองการ์ด (ส่วนที่ 11)
+                         ใช้ path1.svg เป็นทั้งงานอาร์ตและ mask ได้เลย เพราะกรอบทองอยู่ไฟล์นี้ไฟล์เดียว
+                         ไม่ต้องทำไฟล์ mask เพิ่มเหมือนการ์ด (ของการ์ดเส้นทองปนอยู่กับชิ้นอื่น) -->
+                    <span class="goldshine goldshine--form" aria-hidden="true"><i></i></span>
+
+                    <span class="tx" data-t="ลงชื่อฝากแทค-form"><span>ลงชื่อฝากแทค</span></span>
+                    <span class="tx" data-t="กรอกข้อมูลด้านล่างเพื่อฝากแทค-form"><span>กรอกข้อมูลด้านล่างเพื่อฝากแทค</span></span>
+
+                    <form id="registerForm">
+                        <!-- ช่องชื่อ / ช่องอีเมล — งานอาร์ตให้เฉพาะกรอบ
+                             คำว่า "ชื่อ :" เป็น text จริง · ตัวอย่างข้อความใช้ placeholder ของ input -->
+                        <div class="pc">
+                            <!--@ images/figma/parts/form/Group-55.svg @notext -->
+                        </div>
+                        <span class="tx" data-t="t-form2"><span>ชื่อ :</span></span>
+                        <div class="form-fld" id="fldName">
+                            <label class="sr" for="regName">ชื่อ</label>
+                            <input type="text" id="regName" placeholder="ชื่อหรือนามแฝงที่ต้องการให้เราเรียก">
+                        </div>
+
+                        <div class="pc">
+                            <!--@ images/figma/parts/form/Group-57_2.svg @notext -->
+                        </div>
+                        <span class="tx" data-t="t-form4"><span>อีเมล :</span></span>
+                        <span class="tx" data-t="ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ-+-ตรวจสอบฝากแทค-form"><span>ใช้สำหรับแจ้งเตือนเมื่อเปิดรอบ + ตรวจสอบฝากแทค</span></span>
+                        <div class="form-fld" id="fldEmail">
+                            <label class="sr" for="regEmail">อีเมล</label>
+                            <input type="email" id="regEmail" placeholder="example@email.com">
+                        </div>
+
+                        <span class="tx" data-t="เลือกสินค้าที่ต้องการฝากแทค-form"><span>เลือกสินค้าที่ต้องการฝากแทค</span></span>
+
+                        <!-- ตั๋วสินค้า — ข้อความในตั๋วเป็นงานอาร์ตตามที่เจ้าของงานสั่ง
+                             ช่องละ 2 สถานะ (ปกติ / เลือกแล้ว) โชว์ทีละใบ -->
+                        <div class="tk" id="tkNormal1">
+                            <span class="tilt">
+                                <!--@ images/figma/parts/form/normal-product.svg | 1154 460 492 159 -->
+                            
+                                <span class="tkspark" aria-hidden="true"><svg viewBox="0 0 72 113" fill="none"><path d="M36 0C36 0 38.2449 31.7844 46.3562 44.5145C54.4674 57.2447 72 56.5 72 56.5C72 56.5 54.4674 55.7553 46.3562 68.4855C38.2449 81.2156 36 113 36 113C36 113 33.7551 81.2156 25.6438 68.4855C17.5326 55.7553 0 56.5 0 56.5C0 56.5 17.5326 57.2447 25.6438 44.5145C33.7551 31.7844 36 0 36 0Z" fill="currentColor" /></svg></span></span>
+                        </div>
+                        <div class="tk" id="tkSelected1" hidden>
+                            <span class="tilt">
+                                <!--@ images/figma/parts/form/selected-product.svg | 1147.3 332.15 492 159 -->
+                            
+                                <span class="tkspark" aria-hidden="true"><svg viewBox="0 0 72 113" fill="none"><path d="M36 0C36 0 38.2449 31.7844 46.3562 44.5145C54.4674 57.2447 72 56.5 72 56.5C72 56.5 54.4674 55.7553 46.3562 68.4855C38.2449 81.2156 36 113 36 113C36 113 33.7551 81.2156 25.6438 68.4855C17.5326 55.7553 0 56.5 0 56.5C0 56.5 17.5326 57.2447 25.6438 44.5145C33.7551 31.7844 36 0 36 0Z" fill="currentColor" /></svg></span></span>
+                        </div>
+                        <div class="tk" id="tkNormal2">
+                            <span class="tilt">
+                                <!--@ images/figma/parts/form/normal-product.svg | 1154 460 492 159 -->
+                            
+                                <span class="tkspark" aria-hidden="true"><svg viewBox="0 0 72 113" fill="none"><path d="M36 0C36 0 38.2449 31.7844 46.3562 44.5145C54.4674 57.2447 72 56.5 72 56.5C72 56.5 54.4674 55.7553 46.3562 68.4855C38.2449 81.2156 36 113 36 113C36 113 33.7551 81.2156 25.6438 68.4855C17.5326 55.7553 0 56.5 0 56.5C0 56.5 17.5326 57.2447 25.6438 44.5145C33.7551 31.7844 36 0 36 0Z" fill="currentColor" /></svg></span></span>
+                        </div>
+                        <div class="tk" id="tkSelected2" hidden>
+                            <span class="tilt">
+                                <!--@ images/figma/parts/form/selected-product.svg | 1147.3 332.15 492 159 -->
+                            
+                                <span class="tkspark" aria-hidden="true"><svg viewBox="0 0 72 113" fill="none"><path d="M36 0C36 0 38.2449 31.7844 46.3562 44.5145C54.4674 57.2447 72 56.5 72 56.5C72 56.5 54.4674 55.7553 46.3562 68.4855C38.2449 81.2156 36 113 36 113C36 113 33.7551 81.2156 25.6438 68.4855C17.5326 55.7553 0 56.5 0 56.5C0 56.5 17.5326 57.2447 25.6438 44.5145C33.7551 31.7844 36 0 36 0Z" fill="currentColor" /></svg></span></span>
+                        </div>
+                        <!-- ตั๋วแบ่งเป็นสามส่วน (เจ้าของงานยืนยัน 2026-08-04)
+                             1. ช่อง SELECT  = จุดที่กดเลือกสินค้า -> #productSelectList ของโค้ดเดิม
+                             2. กลุ่มเนื้อหา = ไม่มีปุ่ม ไม่ต้องกด
+                             3. ลูกศรขวาสุดในกลุ่มเนื้อหา = ปุ่มลงไปดูสินค้าข้างล่าง
+                             โครงส่วนที่ 1 renderProductSelect() ในโค้ดเดิมเป็นคนสร้าง CSS จับมาวางทับ -->
+                        <div class="product-select-list" id="productSelectList"></div>
+                        <a class="hit tk-arrow" id="tkArrow1" href="#products">
+                            <span class="sr">ดูสินค้าใบนี้ข้างล่าง</span>
+                        </a>
+                        <a class="hit tk-arrow" id="tkArrow2" href="#products">
+                            <span class="sr">ดูสินค้าใบนี้ข้างล่าง</span>
+                        </a>
+                        <span class="hf-error" id="productError" style="display:none;">กรุณาเลือกสินค้าอย่างน้อย 1
+                            รายการ</span>
+
+                        <!-- ติ๊กยืนยัน — วงกลม + เครื่องหมายถูกมาจากงานอาร์ต ข้อความเป็น text -->
+                        <div class="pc" id="lyConfirm">
+                            <!--@ images/figma/parts/form/Group-64.svg @notext -->
+                        </div>
+                        <span class="tx" data-t="ยืนยันว่า-Email-ถูกต้องและได้ตรวจสอบแล้ว-form"><span>ยืนยันว่า Email ถูกต้องและได้ตรวจสอบแล้ว</span></span>
+                        <input type="checkbox" id="confirmEmail" class="hit"
+                            aria-label="ยืนยันว่า Email ถูกต้องและได้ตรวจสอบแล้ว">
+                        <span class="hf-error" id="confirmError" style="display:none;">กรุณาติ๊กยืนยันว่า Email
+                            ถูกต้อง</span>
+
+                        <!-- ปุ่มลงชื่อฝากแทค -->
+                        <div class="pc">
+                            <!--@ images/figma/parts/form/Group-63.svg @notext -->
+                        </div>
+                        <span class="tx" data-t="ลงชื่อฝากแทค_2-form"><span>ลงชื่อฝากแทค</span></span>
+                        <button type="submit" class="hit" id="submitBtn">
+                            <span class="btn-text sr">ลงชื่อฝากแทค</span>
+                            <span class="btn-loading sr" style="display:none;">กำลังส่ง…</span>
+                        </button>
+                    </form>
+
+                    <!-- หน้าจอ "ส่งสำเร็จ" — ดีไซน์ไม่ได้วาดไว้ ใช้ข้อความล้วนทับบนกระดาษ -->
+                    <div id="formSuccess" style="display:none;">
+                        <h3>ลงชื่อสำเร็จ!</h3>
+                        <p>เราจะส่ง Email แจ้งเตือนเมื่อเปิดรอบใหม่</p>
+                        <p class="success-hint">กรุณาเช็ค Inbox (รวมถึง Spam) เพื่อยืนยันการลงชื่อ</p>
+                        <button type="button" onclick="resetForm()">ฝากแทคอีกรายการ</button>
+                    </div>
+                
+                    </span>
+                    </div>
+
+            <!-- 18 การ์ดรูป C — ใบขวา ไม่เกี่ยวกับสำรับที่สับ
+                 (ใบ B เดิมถูกยุบเข้าไปเป็นหนึ่งในสำรับ 3 ใบข้างบนแล้ว) -->
+            <!-- การ์ดขวา 2 ใบ — ไม่สับ (animation-list ข้อ 3.3) มี 3 อย่าง:
+                 เอียง 3D ตามเมาส์ · ลอยขึ้น-ลงเองคนละจังหวะ · เปลี่ยนรูปแบบครอสเฟด
+                 ⚠ ชั้น .tilt ต้องแยกจาก .pc เพราะ .pc ถือ transform ของซีนเมนูอยู่แล้ว
+
+                 ไฟล์ frame-c / frame-d = เลเยอร์การ์ดของ Figma ที่แก้ 2 อย่าง (ตัวงานอาร์ตเหมือนเดิมทุกเส้น):
+                   1. รูปที่ Figma ฝังมาเป็น base64 → ชี้ไปไฟล์ข้างนอกแทน (เล็กลง 240 KB และแคชได้)
+                   2. เพิ่มชั้นรูปที่สองซ้อนทับชั้นแรกพอดี ไว้ให้ figma-anim.js ไล่จางสลับรูป
+                      (ใช้ matrix เดิมของ pattern = กรอบรูปตรงกันเป๊ะทั้งสองชั้น) -->
+            <div class="pc tiltcard" id="pcCardC">
+                <span class="tilt">
+                    <!--@ images/figma/parts/card/frame-c.svg | 1675.6 272.8 262.6 285.4 -->
+                    <span class="goldshine goldshine--c" aria-hidden="true"><i></i></span>
+                </span>
+            </div>
+
+            <!-- 20 แท่นหมึก · 22 ด้ามตรา — ลำดับ: ด้ามตรา > รอยตรา > กระดาษ (ข้อ 11.2) -->
+            <div class="pc" id="pcStampInk">
+                <!--@ images/figma/main-web/layers/20_stampink.svg | 1621.8 631.8 524 319.6 -->
+            </div>
+
+            <!-- 21 โลโก้ MOFYCH — งานอาร์ต (ฟอนต์ Bachelorette) ซ่อนตอนเปิดเมนู
+                 แยก 2 ชิ้นตาม animation-list ข้อ 2.2 — หัวหมา / ตัวอักษร
+                 ขยับที่กล่อง div ไม่ใช่ข้างใน SVG (เหตุผลเดียวกับปุ่ม: GPU ไม่ใช่ main thread)
+                 เรียงตามลำดับเดิมในไฟล์ — ตัวอักษรอยู่ล่าง หัวหมาอยู่บน -->
+            <div class="pc scene-main b-drift" id="pcLogoWord">
+                <img class="ly" src="images/figma/parts/logo/MOFYCH_2.svg" alt="MOFYCH">
+                <!-- แถบแสงกวาดผ่านตัวอักษร — ตัดขอบด้วย "ไฟล์ตัวอักษรเอง" เป็น mask
+                     เลยได้รูปทรงตัวอักษรเป๊ะโดยไม่ต้องวาดทับใหม่ -->
+                <span class="wordshine" aria-hidden="true"><i></i></span>
+                <!-- ดาววิ้งตรงมุมขวาบน — ทรง Star 2 จากคลัง Figma (images/figma/outer)
+                     คัดลอก path มาตรงๆ ฝังลงหน้าเพื่อให้ทาสีจากพาเลตด้วย CSS ได้ (ข้อ 9.1) -->
+                <span class="wordspark" aria-hidden="true">
+                    <svg viewBox="0 0 72 113" fill="none">
+                        <path d="M36 0C36 0 38.2449 31.7844 46.3562 44.5145C54.4674 57.2447 72 56.5 72 56.5C72 56.5 54.4674 55.7553 46.3562 68.4855C38.2449 81.2156 36 113 36 113C36 113 33.7551 81.2156 25.6438 68.4855C17.5326 55.7553 0 56.5 0 56.5C0 56.5 17.5326 57.2447 25.6438 44.5145C33.7551 31.7844 36 0 36 0Z" fill="currentColor" />
+                    </svg>
+                </span>
+            </div>
+            <div class="pc scene-main b-drift" id="pcLogoHead">
+                <img class="ly" src="images/figma/parts/logo/path1_2.svg" alt="">
+            </div>
+
+
+            <!-- ดาวบน (ดาวใหญ่ + ดาวเล็ก + ลูกกลมม่วง) — มีทั้งสองซีน
+                 ⚠ ไฟล์นี้แกะมาจากซีนเมนู เพราะดีไซน์วาดชุดนี้ไว้แค่ซีนเมนู
+                   (ตรวจแล้ว: ไฟล์ซีนปกติไม่มี Ellipse 27 เลยสักเลเยอร์)
+                   เจ้าของงานยืนยันว่าซีนปกติต้องมีด้วย — ใช้ชิ้นเดิม แค่ย้ายตำแหน่ง
+                   ตำแหน่งของซีนปกติอยู่ใน figma.css (ย้อน transform ของฟอร์มกลับ) -->
+            <div class="pc" id="pcTopStar">
+                <!--@ images/figma/menu-web/layers/19_topStar.svg -->
+            </div>
+
+            <!-- 23 เชือก — อยู่นิ่งทั้งสองซีน · เส้นเชือกต้องเป็น path สดให้ JS แก้ d ได้ (ข้อ 8) -->
+            <div class="pc" id="pcRope">
+                <!--@ images/figma/main-web/layers/23_rope.svg | 122 -108 105.2 412.1 -->
+            </div>
+            <button type="button" class="hit" id="ropeHit" aria-pressed="false">
+                <span class="sr">ดึงเชือกเพื่อเปิด-ปิดเมนู</span>
+            </button>
+
+            <!-- 25 ตรา COMFIRM — อยู่นิ่งทั้งสองซีน ข้อความในตราเป็นงานอาร์ต -->
+            <div class="pc" id="pcSeal">
+                <img class="ly" src="images/figma/outline/Group-23.svg" alt="">
+            </div>
+
+
+            <!-- 26 การ์ดรูป D — มีทั้งสองซีน (ไฟล์ export รอบ 2026-08-04 ใส่กลับมาแล้ว
+                 รอบก่อนหลุดนอกเฟรมตอนเซฟเลยหายไป) ซีนเมนูหมุน 13.06 เลื่อน 29.68,41.84 -->
+            <div class="pc tiltcard" id="pcCardD">
+                <span class="tilt">
+                    <!--@ images/figma/parts/card/frame-d.svg | 1820.6 374 243.1 270.6 -->
+                    <span class="goldshine goldshine--d" aria-hidden="true"><i></i></span>
+                </span>
+            </div>
+            <!-- โซนรับเมาส์ของการ์ดขวา — งานอาร์ตไม่รับเมาส์ (pointer-events:none) -->
+            <span class="hit tiltzone" id="tiltC" aria-hidden="true"></span>
+            <span class="hit tiltzone" id="tiltD" aria-hidden="true"></span>
+
+            <!-- 27 admin — งานอาร์ต (ฟอนต์ Bachelorette) และเป็นปุ่มเข้าหน้าแอดมิน (ข้อ 11.3) -->
+            <div class="pc" id="pcAdmin">
+                <img class="ly" src="images/figma/outline/admin.svg" alt="">
+                <a class="hit" id="btnAdmin" href="admin.html"><span class="sr">admin</span></a>
+            </div>
+
+            <!-- 28 ปากกา -->
+            <div class="pc" id="pcPen">
+                <!--@ images/figma/main-web/layers/28_pen.svg | 1362 -240 547.5 547.5 -->
+            </div>
+
+            <!-- ด้ามตรา — ต้องอยู่ "เหนือ" รอยตราเสมอ (animation-list ข้อ 4)
+                 ลำดับที่ถูกคือ ด้ามตรา > ปุ่ม admin > ปากกา > รอยตรา > ตลับหมึก > กระดาษฟอร์ม
+                 (เจ้าของงานสั่งเพิ่ม 2026-08-19: ต้องอยู่หน้าปุ่ม admin ด้วย)
+                 กลุ่มนี้ z-index เท่ากันหมด (30) ลำดับจึงตัดสินด้วยลำดับใน DOM ล้วน -->
+            <div class="pc" id="pcStampStick">
+                <!--@ images/figma/main-web/layers/22_stampstick.svg | 1749.1 716.1 193.9 165.2 -->
+            </div>
+
+            <!-- 19 เมฆใหญ่ — เปิดเมนูแล้วเลื่อน +67 ขวา +155 ลง
+                 ⚠ เจ้าของงานสั่งย้ายมาไว้บนสุด (2026-08-19) จากเดิมอยู่ก่อนตลับหมึก
+                   ลำดับหน้าหลังของกลุ่มนี้ตัดสินด้วยลำดับใน DOM ล้วน (z-index เท่ากันหมด 30)
+                   ย้ายมาต่อท้ายปากกา = ทับทุกชิ้นในกลุ่ม: ตลับหมึก ด้ามตรา รอยตรา
+                   โลโก้ เชือก การ์ด D ปุ่ม admin ปากกา
+                 ไม่ได้ขยับพิกัดใดๆ ตำแหน่งยังเป็นของ Figma เป๊ะเหมือนเดิม -->
+            <div class="pc" id="pcCloud1">
+                <!--@ images/figma/main-web/layers/19_clound1_2.svg | -132 382 2259 925 -->
+            </div>
+
+            <!-- 29-30 ตัวนับฝากแทค — ไอคอนหัวใจเป็นงานอาร์ต ตัวเลขเป็นข้อความจริง (ข้อ 8)
+                 ⚠ ค่า data-t สะกด "ฝาคแทค" ตกตัว ก ตามที่ดีไซน์สะกดไว้ — ห้ามแก้
+                    มันเป็นแค่ "ชื่อคีย์" ที่ใช้จับคู่กับ figma-text.css เท่านั้น
+                    ตัวหนังสือที่คนอ่านเห็นคือข้อความข้างใน ซึ่งสะกดถูกแล้ว -->
+            <div class="pc shift" id="pcCount1">
+                <!--@ images/figma/main-web/layers/29_Group-74.svg @notext -->
+                <span class="tx" data-t="ฝาคแทคแล้ว-xx-คน-main"><span id="countLeft">ฝากแทคแล้ว 0 คน</span></span>
+            </div>
+            <div class="pc shift" id="pcCount2">
+                <!--@ images/figma/main-web/layers/30_Group-75.svg @notext -->
+                <span class="tx" data-t="ฝาคแทคแล้ว-xx-คน_2-main"><span id="countRight">ฝากแทคแล้ว 0 คน</span></span>
+            </div>
+
+            <!-- ==================== บล็อกค้นหา / แก้ไขฝากแทค ====================
+                 ⚠ id + ฟังก์ชันเป็นของโค้ดเดิมทั้งหมด (script.js) ห้ามเปลี่ยนชื่อ
+                 5 สถานะ ความสูงไม่คงที่ → บล็อกนี้เรียงแบบไหล กล่องแต่ละใบสูงตามดีไซน์
+                 ข้อความข้างในวางด้วยพิกัดดิบจาก Figma (--ax/--ay ลบด้วยมุมกล่อง) -->
+            <section id="lookup" class="shift">
+                <div class="lk-row lk-head">
+                    <span class="tx" data-t="ตรวจสอบ-แก้ไขฝากแทค-lookup"><span>ตรวจสอบ / แก้ไขฝากแทค</span></span>
+                    <span class="tx" data-t="ใส่-Email-ที่ลงชื่อไว้เพื่อดูหรือแก้ไขรายการฝากแทค-lookup"><span>ใส่ Email ที่ลงชื่อไว้เพื่อดูหรือแก้ไขรายการฝากแทค</span></span>
+                </div>
+
+                <div class="lk-row lk-field">
+                    <!--@ images/figma/parts/lookup-main/Subtract.svg | 725 2252 470.7 40.8 -->
+                    <span class="tx" data-t="t-lookup2"><span>อีเมล :</span></span>
+                    <label class="sr" for="lookupEmail">Email ที่ลงชื่อไว้</label>
+                    <input type="email" id="lookupEmail" placeholder="example@email.com">
+                </div>
+
+                <div class="lk-row lk-forgot">
+                    <button class="hit" type="button" onclick="toggleForgotEmail()">
+                        <span class="sr">จำ Email ไม่ได้ ?</span>
+                    </button>
+                    <span class="tx" data-t="จำ-Email-ไม่ได้--lookup"><span>จำ Email ไม่ได้ ?</span></span>
+                </div>
+
+                <!-- เส้นทางลืมอีเมล — โผล่เมื่อกดลิงก์ข้างบน (toggleForgotEmail ของโค้ดเดิม) -->
+                <div class="forgot-content" id="forgotContent" style="display:none;">
+                    <div class="lk-row lk-field lk-field--name">
+                        <!--@ images/figma/parts/lookup-menu/Subtract_27.svg | 725 2562 470.7 40.8 -->
+                        <span class="tx" data-t="t-lookupfull3"><span>ค้นหาด้วยชื่อ</span></span>
+                        <span class="tx" data-t="t-lookupfull5"><span> : </span></span>
+                        <label class="sr" for="forgotName">ชื่อที่ลงทะเบียนไว้</label>
+                        <input type="text" id="forgotName" placeholder="ชื่อ/นามแฝงที่ลงทะเบรียนไว้">
+                    </div>
+                    <div class="lk-row lk-hint">
+                        <span class="tx" data-t="ระบบจะแสดงข้อมูลบางส่วนของ-Email-ที่ลงไว้-เช่น-tgmail.com-lookupfull"><span>ระบบจะแสดงข้อมูลบางส่วนของ Email ที่ลงไว้ (เช่น t***@gmail.com)</span></span>
+                    </div>
+                </div>
+
+                <div class="lk-row lk-btn">
+                    <button class="hit" id="lookupBtn" onclick="lookupTags()">
+                        <!--@ images/figma/parts/lookup-main/button.svg | 878.6 2333.6 144.8 72.1 @notext -->
+                        <span class="sr">ค้นหา</span>
+                    </button>
+                    <span class="tx" data-t="ค้นหา-lookup"><span>ค้นหา</span></span>
+                </div>
+
+                <!-- ผลการค้นหา -->
+                <div class="lookup-results" id="lookupResults" style="display:none;">
+                    <div class="lk-row results-header">
+                        <h3 class="tx" data-t="รายการฝากแทค-lookupfull"><span>รายการฝากแทค</span></h3>
+                        <span class="results-email" id="resultsEmail"></span>
+                    </div>
+                    <div class="results-list" id="resultsList"></div>
+                    <div class="lk-row results-actions">
+                        <button class="hit" onclick="showAddMore()">
+                            <!--@ images/figma/parts/lookup-menu/button.svg | 782.1 2799.3 354.2 93 @notext -->
+                            <span class="sr">เพิ่มฝากแทค</span>
+                        </button>
+                        <span class="tx" data-t="เพิ่มฝากแทค-lookupfull"><span>เพิ่มฝากแทค</span></span>
+                    </div>
+                </div>
+
+                <!-- ไม่พบรายการ — ดีไซน์ไม่มีสถานะนี้ เจ้าของงานสั่งให้ทำเป็นบรรทัดข้อความง่ายๆ -->
+                <p class="lookup-empty" id="lookupEmpty" style="display:none;">ไม่พบรายการฝากแทคของ Email นี้</p>
+
+                <!-- แม่แบบกรอบแถวรายการ — JS โคลนไปใส่ให้แต่ละแถวที่ displayResults() สร้าง -->
+                <template id="rowFrameTpl">
+                    <!--@ images/figma/parts/lookup-menu/Subtract_28.svg | 725 2679 470.7 40.8 -->
+                </template>
+            </section>
+
+            <!-- จุดยึดของลิงก์ สำรวจชิ้นงาน — เซกชัน product เป็นงานอาร์ต ไม่มีกล่องของตัวเอง
+                 วางไว้ที่ขอบบนของเซกชัน (y 1040 · ซีนเมนู 1272) ไม่ใช่ท้ายหน้า
+                 ไม่งั้นกดแล้วเลื่อนไปจนสุดหน้าเห็นพื้นขาว -->
+            <span id="products" class="anchor shift">สินค้าที่เปิดรับฝากแทค</span>
+        </div>
+    </div><!-- /.fit -->
+
+    <!-- ============================================================
+         เมนูลอยติดหน้าจอ (figma-layout-spec ข้อ 5.5)
+         ไม่ใช่ของในหน้าเว็บ → position:fixed คิดพิกัดจากขอบจอ
+         โผล่เมื่อเลื่อนพ้น hero แล้วเท่านั้น · ปุ่มดาวเปิด-ปิดเมนู
+         ⚠ ปุ่มชุดนี้ขนาด 299.1 x 52.6 คนละขนาดกับในซีนเมนู (413.7 x 72.7) อย่าใช้ปน
+         ปุ่มของหน้าที่กำลังอยู่จะยื่นออกมาขวา 29.9 + เปลี่ยนเป็นสีม่วง
+         (ดีไซน์วาดตัวอย่างไว้ที่ช่อง แก้ไขฝากแทค)
+         ============================================================ -->
+    <div class="dock" id="dock" hidden>
+        <div class="pc" id="pcMenuStar">
+            <!--@ images/figma/parts/main/กดเปิดปิดเมนู.svg -->
+        </div>
+        <button type="button" class="hit" id="menuStar" aria-expanded="false" aria-controls="dockMenu">
+            <span class="sr">เปิด-ปิดเมนู</span>
+        </button>
+
+        <!-- ป้ายชุดนี้ก็ใช้หลักเดียวกับเมนูใน hero: น้ำเงินใบเดียวทุกช่อง + ม่วงใบเดียวตอนเมาส์วาง
+             ป้ายน้ำเงินต้นทาง Group 43 อยู่ที่ -110,2161.2 · ป้ายม่วงต้นทาง Group 40 อยู่ที่ -80.1,2232.2 -->
+        <div class="dock-menu" id="dockMenu">
+            <span class="mbtn" data-btn="1">
+                <span class="art art--n">
+                    <!--@ images/figma/parts/main/Group-43.svg @notext -->
+                </span>
+                <span class="art art--h">
+                    <!--@ images/figma/parts/main/Group-40.svg @notext -->
+                </span>
+            </span>
+            <span class="mbtn" data-btn="2">
+                <span class="art art--n">
+                    <!--@ images/figma/parts/main/Group-43.svg @notext -->
+                </span>
+                <span class="art art--h">
+                    <!--@ images/figma/parts/main/Group-40.svg @notext -->
+                </span>
+            </span>
+            <span class="mbtn" data-btn="3">
+                <span class="art art--n">
+                    <!--@ images/figma/parts/main/Group-43.svg @notext -->
+                </span>
+                <span class="art art--h">
+                    <!--@ images/figma/parts/main/Group-40.svg @notext -->
+                </span>
+            </span>
+            <span class="mbtn" data-btn="4">
+                <span class="art art--n">
+                    <!--@ images/figma/parts/main/Group-43.svg @notext -->
+                </span>
+                <span class="art art--h">
+                    <!--@ images/figma/parts/main/Group-40.svg @notext -->
+                </span>
+            </span>
+            <span class="tx" data-btn="1" data-t="สำรวจชิ้นงาน-dock"><span>สำรวจชิ้นงาน</span></span>
+            <span class="tx" data-btn="2" data-t="แก้ไขฝากแทค-dock"><span>แก้ไขฝากแทค</span></span>
+            <span class="tx" data-btn="3" data-t="ตรวจสอบคิว-dock"><span>ตรวจสอบคิว</span></span>
+            <span class="tx" data-btn="4" data-t="ตรวจสอบสี-dock"><span>ตรวจสอบสี</span></span>
+            <a class="hit menu-item" data-btn="1" id="dockM1" href="#products"><span class="sr">สำรวจชิ้นงาน</span></a>
+            <a class="hit menu-item" data-btn="2" id="dockM2" href="#lookup"><span class="sr">แก้ไขฝากแทค</span></a>
+            <a class="hit menu-item" data-btn="3" id="dockM3" href="queue.html"><span class="sr">ตรวจสอบคิว</span></a>
+            <a class="hit menu-item" data-btn="4" id="dockM4" href="colors.html"><span class="sr">ตรวจสอบสี</span></a>
+        </div>
+    </div>
+
+    <!-- โค้ดเดิมเรียกใช้สองอันนี้ (showToast / createSparkles) — ดีไซน์ไม่ได้วาด
+         ไม่แสดงผลจนกว่าจะถูกเรียก -->
+    <div class="sparkle-container" id="sparkleContainer"></div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- มาสคอต A/B — หัวลอยที่เดินไปมาบนจอ ตรรกะอยู่ใน script.js (setupMascots)
+         position: fixed ลอยอยู่เหนือทุกอย่าง ไม่เกี่ยวกับ .stage ของ Figma
+         ⚠ โครง 4 ชั้นนี้ห้ามยุบ — แต่ละชั้นถือ transform คนละอย่าง (ดู mascot.css) -->
+    <div class="wanderer" id="wanderer1" data-mascot="a">
+        <div class="wanderer-flip">
+            <div class="wanderer-hop">
+                <div class="wanderer-inner">
+                    <img src="images/charA.png" alt="Mascot 1" class="wanderer-img" id="imgWanderer1">
+                </div>
+            </div>
+        </div>
+        <div class="wanderer-tooltip">Drag Me!</div>
+    </div>
+
+    <div class="wanderer" id="wanderer2" data-mascot="b">
+        <div class="wanderer-flip">
+            <div class="wanderer-hop">
+                <div class="wanderer-inner">
+                    <img src="images/charB.png" alt="Mascot 2" class="wanderer-img" id="imgWanderer2">
+                </div>
+            </div>
+        </div>
+        <div class="wanderer-tooltip">Drag Me!</div>
+    </div>
+
+    <script src="script.js?v=36"></script>
+    <script src="figma.js?v=11"></script>
+    <script src="figma-anim.js?v=48"></script>
+</body>
+
+</html>

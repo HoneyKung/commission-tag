@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1920" height="3111" viewBox="0 0 1920 3111" fill="none"><defs><linearGradient id="paint92_linear_0_1" x1="1760.45" y1="740.862" x2="1987.97" y2="951.038" gradientUnits="userSpaceOnUse">
+<stop stop-color="#ECDAAD" />
+<stop offset="0.047832" stop-color="#D9D9D9" />
+<stop offset="0.133757" stop-color="white" />
+<stop offset="0.273611" stop-color="#D8B45A" />
+</linearGradient>
+<pattern id="pattern15_0_1" patternUnits="userSpaceOnUse" patternTransform="matrix(20.3981 0 0 32.0137 1700.34 739.247)" preserveAspectRatio="none" viewBox="0 0 56.88 89.27" width="1" height="1">
+<use xlink:href="#pattern15_0_1_inner" transform="translate(-56.88 -89.27)" />
+<use xlink:href="#pattern15_0_1_inner" transform="translate(0 -89.27)" />
+<use xlink:href="#pattern15_0_1_inner" transform="translate(-56.88 0)" />
+<g id="pattern15_0_1_inner">
+<path id="Star 2_6" d="M36 0C36 0 38.2449 31.7844 46.3562 44.5145C54.4674 57.2447 72 56.5 72 56.5C72 56.5 54.4674 55.7553 46.3562 68.4855C38.2449 81.2156 36 113 36 113C36 113 33.7551 81.2156 25.6438 68.4855C17.5326 55.7553 0 56.5 0 56.5C0 56.5 17.5326 57.2447 25.6438 44.5145C33.7551 31.7844 36 0 36 0Z" fill="black" />
+</g>
+</pattern><g id="pattern15_0_1_inner">
+<path id="Star 2_6" d="M36 0C36 0 38.2449 31.7844 46.3562 44.5145C54.4674 57.2447 72 56.5 72 56.5C72 56.5 54.4674 55.7553 46.3562 68.4855C38.2449 81.2156 36 113 36 113C36 113 33.7551 81.2156 25.6438 68.4855C17.5326 55.7553 0 56.5 0 56.5C0 56.5 17.5326 57.2447 25.6438 44.5145C33.7551 31.7844 36 0 36 0Z" fill="black" />
+</g>
+</defs><g id="stampink">
+<rect id="Rectangle 16" x="1682.81" y="728.481" width="480.423" height="221.971" rx="14.5302" transform="rotate(-11 1682.81 728.481)" fill="url(#paint92_linear_0_1)" stroke="#D8B45A" stroke-width="3.09152" />
+<rect id="Rectangle 17" x="1693.93" y="735.453" width="460.637" height="203.422" rx="16.0759" transform="rotate(-11 1693.93 735.453)" fill="black" />
+<g id="Rectangle 18">
+<rect x="1700.34" y="739.247" width="450.126" height="198.476" rx="16.0759" transform="rotate(-11 1700.34 739.247)" fill="#7C2D45" />
+<rect x="1700.34" y="739.247" width="450.126" height="198.476" rx="16.0759" transform="rotate(-11 1700.34 739.247)" fill="url(#pattern15_0_1)" fill-opacity="0.2" />
+</g>
+</g>
+</svg>

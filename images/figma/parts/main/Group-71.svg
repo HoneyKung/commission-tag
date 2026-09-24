@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1920" height="2879" viewBox="0 0 1920 2879" fill="none"><defs><image id="image0_0_1" data-name="Untitled867_20260802011636.png" width="1110" height="638" preserveAspectRatio="none" xlink:href="../../img/ad2d549b452c.webp" />
+<image id="image1_0_1" data-name="Untitled867_20260802011633.png" width="1110" height="638" preserveAspectRatio="none" xlink:href="../../img/81371bc1e1c7.webp" />
+<pattern id="pattern0_0_1" patternContentUnits="objectBoundingBox" x="-0.02" y="-0.02" width="1.04" height="1.04">
+<use xlink:href="#image0_0_1" transform="matrix(0.00208768 0 0 0.00364964 -1.23678 0.02)" />
+</pattern>
+<pattern id="pattern1_0_1" patternContentUnits="objectBoundingBox" x="-0.02" y="-0.02" width="1.04" height="1.04">
+<use xlink:href="#image1_0_1" transform="matrix(0.00166945 0 0 0.00235849 0.02 -0.484717)" />
+</pattern>
+</defs><g id="Group 71">
+<rect id="clound2" x="475.219" y="2981.67" width="674.219" height="385.67" transform="rotate(180 475.219 2981.67)" fill="url(#pattern0_0_1)" />
+<rect id="clound1" width="650.171" height="460.221" transform="matrix(-1 0 0 1 2042.17 2544)" fill="url(#pattern1_0_1)" />
+</g>
+</svg>

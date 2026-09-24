@@ -1,0 +1,1115 @@
+/* ============================================================
+   MOFYCH — จัดหน้าตาม Figma (เฟส 1: จัดวางอย่างเดียว)
+
+   กติกาของไฟล์นี้ — อ่าน figma-rebuild-plan.md ก่อนแก้
+   1. เฟรม Figma กว้าง 1920 = จอผู้ใช้พอดี → สเกล 1:1
+      ตัวเลขในไฟล์นี้ = ตัวเลขใน Figma ตัวต่อตัว ห้ามปัดให้สวย (1447.3 ก็คือ 1447.3)
+   2. ทุกชิ้นวาง position:absolute ด้วยพิกัดดิบ ไม่มี layout flow ยกเว้นบล็อกค้นหา
+      (บล็อกนั้นมี 5 สถานะ ความสูงเปลี่ยน → ต้องไหลตามเนื้อ)
+   3. **ห้ามมี transition / @keyframes / hover ที่ Figma ไม่ได้ออกแบบ** — เฟส 3 ค่อยใส่
+   4. ไฟล์ SVG ที่ export มา "หมุนติดมาแล้ว" → ห้าม rotate() ซ้ำ
+      ที่มี rotate() ในไฟล์นี้คือ element ที่ "เราสร้างใหม่" (input / ปุ่ม / ตัวคลิก)
+      ซึ่งต้องเอียงตามให้ตรงกับงานอาร์ตที่มันทับอยู่
+   5. ชิ้นที่แยกออกมาต้องขยับอิสระได้ → ห่อ element ของตัวเอง ไม่ผูก layout ให้ดันกัน
+      และ **ไม่ตั้ง transform-origin ล่วงหน้า** ถ้ายังไม่รู้ว่าจะหมุนรอบอะไร
+   ============================================================ */
+
+:root {
+    /* สีจากดีไซน์ — figma-layout-spec.md ข้อ 7 */
+    --c-brand: #0e00a8;
+    --c-ink: #000000;
+    --c-gray: #777a80;
+    --c-gray2: #626262;
+    --c-gray3: #b7bbc4;
+    --c-gold: #d8b45a;
+    --c-pink: #ff5689;
+    --c-menu-text: #eff6ff;
+
+    /* ความสูงของสองซีน — ต่างกัน 232 พอดี */
+    --scene-main: 2879px;
+    --scene-menu: 3111px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background: #ffffff;
+}
+
+body {
+    margin: 0;
+    font-family: 'Kanit', system-ui, sans-serif;
+    color: var(--c-ink);
+    overflow-x: hidden;
+    /* ห้ามมีแถบเลื่อนแนวนอน — หน้าต้องเต็มจอทุกเบราว์เซอร์ */
+}
+
+/* ---------- ย่อทั้งแคนวาสให้พอดีความกว้างจอ ----------
+   เขียนโค้ดด้วยพิกัด Figma 1:1 ทุกตัวเหมือนเดิม (1447.3 ก็คือ 1447.3)
+   แล้วค่อยย่อ "ทั้งผืน" ทีเดียวที่ชั้นนอกสุด → สัดส่วนไม่เพี้ยน ไม่ต้องแปลงค่าในหัว
+   --fit ตั้งจาก figma.js = ความกว้างจอ ÷ 1920 (จอ 1920 จริง = 1 พอดี)
+
+   ทำไมต้องย่อ: จอผู้ใช้อาจตั้งสเกลระบบ 125% หรือหน้าต่างไม่เต็มจอ
+   พื้นที่ CSS จริงจึงไม่ถึง 1920 — ถ้าไม่ย่อจะล้นและต้องเลื่อนแนวนอน */
+.fit {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* ---------- แคนวาส ----------
+   ความสูง = ความสูงเฟรม ไม่ใช่ความสูงจอ (870 คือแค่ส่วนที่เห็นตอนยังไม่เลื่อน) */
+.stage {
+    position: relative;
+    width: 1920px;
+    height: var(--scene-main);
+    overflow: hidden;
+    /* เฟรมใน Figma ครอบของที่ล้นออกนอกขอบ (เมฆ -129 / edit tag -204) */
+    transform-origin: 0 0;
+    transform: scale(var(--fit, 1));
+}
+
+/* ---------- เลิกดันเซกชันล่างแล้ว (2026-08-19 เจ้าของงานสั่ง) ----------
+   ของเดิม: ซีนเมนูดันทุกอย่างใต้ hero ลง 232 (figma-layout-spec ข้อ 1)
+   ปัญหา: พอเลื่อนลง figma.js ยุบกลับเป็นซีนปกติให้เอง ครึ่งล่างของหน้า
+   ทั้งพื้นหลัง เนื้อหา บล็อกค้นหา ตัวนับ จะกระโดดขึ้น 232 พร้อมกัน
+   = ของที่กำลังอ่านอยู่เด้งหนีตา
+
+   ตอนนี้ทุกอย่างใต้ hero อยู่ที่เดิมทั้งสองซีน สิ่งที่เปลี่ยนมีแค่พื้นหลัง hero
+   ที่สูงขึ้น 1040 → 1272 กับเมฆ ซึ่งเป็นสองอย่างที่เจ้าของงานบอกว่าให้ขยับ
+
+   ช่วงที่พื้นหลัง hero ล้นลงไปทับหัวเซกชัน product (y 1040-1272) มองไม่เห็น
+   เพราะซีนเมนูดูได้เฉพาะตอนอยู่บนสุดของหน้า (จอสูง ~870) พอเลื่อนถึง 1040
+   figma.js ก็ยุบกลับเป็นซีนปกติไปแล้ว
+
+   คลาส .shift ยังคาอยู่ใน HTML — ถ้าจะเอาการดันกลับมา ใส่กฎนี้คืนที่เดียวพอ */
+
+/* ความสูงหน้าเท่ากันทั้งสองซีนแล้ว ไม่มีอะไรใต้ hero ขยับ
+   (เดิม .stage[data-scene='menu'] สูง 3111 — ตัดออกเพราะหน้าจะยาวขึ้นเปล่าๆ
+    แล้วแถบเลื่อนกระตุกทุกครั้งที่กดเชือก) */
+
+/* ---------- เลเยอร์ ----------
+   ทุกไฟล์ที่แกะมาใช้ viewBox เท่าเฟรมเต็ม → ซ้อนกันที่ 0,0 ขนาดเท่าเฟรม
+   แล้วตำแหน่งตรงกับ Figma เป๊ะทันที ไม่ต้องคำนวณรายชิ้น */
+.ly {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: var(--scene-main);
+    pointer-events: none;
+    /* งานอาร์ตไม่รับคลิก — ตัวคลิกเป็น element แยกต่างหาก */
+
+    /* ⭐ ห้ามตัดที่ตัวเลเยอร์ — Figma ตัดที่ "ขอบเฟรม" ไม่ใช่ตัดทีละเลเยอร์
+       ไฟล์ที่ export มามี viewBox เท่าเฟรมพอดี ของที่ล้นออกนอกขอบ
+       (เมฆ x=-129 · ปากกา y=-235 · MOFYCH ล่างสุด y=3004) จึงถูกตัดไปตั้งแต่ในไฟล์
+       ถ้าปล่อยไว้ พอชิ้นนั้นเลื่อนตอนเปิดเมนู ส่วนที่โดนตัดไปแล้วจะกลายเป็นแถบว่าง
+       → ปล่อยให้ล้นได้ แล้วให้ .stage เป็นคนตัดแทน (เหมือนเฟรมใน Figma)
+       ⚠ ใช้ได้เฉพาะ SVG ที่ฝังลงหน้า — ถ้าเป็น <img> เบราว์เซอร์ตัดไปตั้งแต่ตอนวาดแล้ว
+         ชิ้นไหนที่ขยับและมีเนื้อล้นขอบ จึงต้องฝังลงหน้าเท่านั้น */
+    overflow: visible;
+}
+
+/* ชิ้นที่แกะมาจากไฟล์ซีนเมนู viewBox สูง 3111 → ต้องใช้ความสูงของตัวเอง ไม่งั้นภาพยืด
+   (มีแค่ 2 ชิ้นที่ซีนปกติไม่มี: ดาวบน กับ ปุ่มเมนู 4 อัน) */
+#pcTopStar .ly,
+#pcHeroMenu .ly {
+    height: var(--scene-menu);
+}
+
+/* ---------- ดาวบน: ตำแหน่งของซีนปกติ ----------
+   ดีไซน์วาดชุดนี้ (ดาวใหญ่ + ดาวเล็ก + ลูกกลมม่วง) ไว้แค่ซีนเมนู
+   ไฟล์ที่แกะมาจึงเป็นพิกัดซีนเมนู = ตำแหน่งตั้งต้นของชิ้นนี้คือ "ซีนเมนู"
+   ซึ่งกลับด้านกับชิ้นอื่นทั้งหน้า (ที่ตั้งต้นเป็นซีนปกติแล้วค่อยขยับตอนเปิดเมนู)
+
+   เจ้าของงานสั่งว่าซีนปกติต้องมีด้วย และให้เกาะไปกับฟอร์ม
+   → ซีนปกติ = ย้อน transform ของ form card กลับ
+     ฟอร์มไปซีนเมนู: translate(108.02px,0) rotate(11deg) รอบ 1395.37,421.22
+     ผกผัน:          rotate(-11deg) translate(-108.02px,0) รอบจุดเดียวกัน
+   ตรวจแล้วตกที่ x 1053.9..1295.5  y 585.4..864.1 = ยังอยู่ในกรอบ hero 1920x1040
+
+   ⚠ ค่าคู่นี้ผูกกับ #pcForm ใน figma-scene.css ถ้าฟอร์มขยับ ต้องแก้ตามกัน */
+#pcTopStar {
+    transform-origin: 1395.37px 421.22px;
+    transform: rotate(-11deg) translate(-108.02px, 0);
+}
+
+/* ซีนเมนู = ตำแหน่งที่ไฟล์ export มาอยู่แล้ว ไม่ต้องขยับ */
+.stage[data-scene='menu'] #pcTopStar {
+    transform: none;
+}
+
+/* ชิ้นที่ถูกครอป viewBox แล้ว (figma-page.py) — กางเต็มกล่องที่มันอยู่แทน
+   ใช้กับบล็อกค้นหาที่ต้องไหลตามเนื้อ วางแบบเต็มเฟรมไม่ได้ */
+.ly--crop {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ห่อเลเยอร์ที่ต้องขยับแยก — ตัวห่อไม่มีขนาด ปล่อยให้ .ly ข้างในกำหนด */
+.pc {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 0;
+}
+
+/* สลับซีน — ชิ้นส่วนใหญ่เป็นชิ้นเดียวกันที่ "ขยับ" (ดู figma-scene.css)
+   มีแค่ไม่กี่ชิ้นที่เป็นการ "ซ่อน/โผล่" ล้วนๆ:
+     บล็อกแบรนด์ (โลโก้ + 2 บรรทัด + ปุ่มสำรวจชิ้นงาน) · การ์ดรูปใบที่ 4  → ซ่อนตอนเปิดเมนู
+     ปุ่มเมนู 4 อัน · ดาวบน                                              → โผล่ตอนเปิดเมนู */
+.stage[data-scene='main'] .scene-menu,
+.stage[data-scene='menu'] .scene-main {
+    display: none;
+}
+
+/* พื้นหลัง hero — เลิกใช้วิธี "บิดชิ้นเดิม" แล้ว (2026-08-19)
+   ของเดิมเอาชิ้นซีนปกติมายืด 1.223 + หมุน 180 + เปลี่ยน stop-color เป็น #1B20B3
+   ปลายทางถูก แต่พอจะใส่ transition ให้มันไหล มันพังทันที:
+   ระหว่างทางที่หมุนผ่าน 90 องศา แผ่นพื้นหลังจะกลายเป็นแท่งเฉียงพาดจอ
+
+   ตอนนี้ใช้ไฟล์ export ของซีนเมนูจริงๆ ซ้อนเป็นอีกชั้น (#pcHeroBgMenu)
+   แล้วไล่ opacity สลับกันแทน — ปลายทางเป็นของ Figma ทั้งสองฝั่ง ไม่มีการคำนวณ
+   และ opacity ทำงานบน GPU ไม่ต้องวาดเกรเดียนต์ใหม่ทุกเฟรม
+   จังหวะอยู่ใน figma-anim.css ส่วนที่ 8 */
+#pcHeroBgMenu .ly {
+    height: var(--scene-menu);
+}
+
+/* ---------- ตัวคลิก ----------
+   วางทับงานอาร์ต โปร่งใส ไม่มีขอบ ไม่มี hover ที่ Figma ไม่ได้ออกแบบ */
+.hit {
+    position: absolute;
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: transparent;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.hit:focus-visible {
+    outline: 2px solid var(--c-brand);
+    outline-offset: 2px;
+}
+
+/* ข้อความสำหรับโปรแกรมอ่านหน้าจอ — ตัวอักษรจริงอยู่ในงานอาร์ต */
+.sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* จุดยึดของลิงก์ข้ามเซกชัน — มองไม่เห็น แต่ต้องอยู่ตรงขอบบนของเซกชันจริง
+   ไม่ใช้ .sr เพราะ .sr ถูกบีบเหลือ 1px แล้ววางที่ไหนก็ได้ ทำให้เลื่อนไปผิดที่ */
+.anchor {
+    position: absolute;
+    left: 0;
+    top: 1040px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+/* เชือก — ดึงลงเปิดเมนู / ดึงขึ้นปิด (figma-layout-spec ข้อ 11.4)
+   กล่องคลิกครอบทั้งเส้น 127,-103 ถึง 222.2,299.1 */
+#ropeHit {
+    left: 127px;
+    top: 0;
+    width: 95.2px;
+    height: 299.1px;
+}
+
+/* เชือกเป็นชิ้นเดียวกันทั้งสองซีน ต่างแค่ "สีแสงตรงหัวดาว"
+   ซีนปกติ #FF4800 (ส้ม) → ซีนเมนูเป็นขาว (เทียบจากไฟล์ export ทั้งสองซีน) */
+.stage[data-scene='menu'] #pcRope radialGradient stop:first-child {
+    stop-color: #ffffff;
+}
+
+/* ปุ่ม สำรวจชิ้นงาน — ปุ่มตั๋ว 2 ชั้นซ้อน (ชั้นเงา + ชั้นหน้า) */
+#btnExplore {
+    left: 412.1px;
+    top: 603.3px;
+    width: 354.2px;
+    height: 93px;
+}
+
+/* ปุ่มเข้าหน้าแอดมิน — ข้อความ admin ข้างตราประทับ (ข้อ 11.3) */
+#btnAdmin {
+    left: 1725.1px;
+    top: 664.7px;
+    width: 79.1px;
+    height: 46.3px;
+}
+
+/* ---------- ฟอร์มลงชื่อฝากแทค ----------
+   งานอาร์ตให้ทั้งกรอบและคำว่า "ชื่อ :" / "อีเมล :" มาแล้ว
+   ที่ต้องทำเองคือช่องพิมพ์ — วางทับตรงตำแหน่งของ "ข้อความตัวอย่าง" ในดีไซน์เป๊ะ
+   โดยยึด transform ของ <text> ในไฟล์ SVG เป็นหลัก ไม่ใช่กะจากกรอบ
+
+   ตัวอย่างข้อความในดีไซน์เป็นตัวเทาขีดเส้นใต้ → ซ่อนทิ้ง ใช้ placeholder ของ input แทน
+   (input ทำงานได้จริง: พิมพ์แล้วข้อความหาย ซึ่งรูปทำไม่ได้) */
+.form-art text[text-decoration='underline'],
+.lk-field text[text-decoration='underline'] {
+    display: none;
+}
+
+/* จุดอ้างอิง = translate() ของ <text> ในไฟล์ · องศา = rotate() ในไฟล์
+   ซีนปกติ -3° · ซีนเมนู 8° */
+.form-fld {
+    position: absolute;
+    width: 0;
+    height: 0;
+    transform-origin: 0 0;
+}
+
+.form-fld input {
+    position: absolute;
+    /* baseline ในดีไซน์อยู่ที่ y 19.845 · Kanit 18px ในเบราว์เซอร์ baseline อยู่ที่ 20
+       → ยกขึ้น 0.155 ให้เส้นบรรทัดตรงกับดีไซน์ */
+    top: -0.155px;
+    height: 27.2px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: 'Kanit', sans-serif;
+    font-size: 18px;
+    line-height: 27.2px;
+    color: var(--c-ink);
+    outline: none;
+}
+
+.form-fld input::placeholder {
+    color: var(--c-gray);
+    /* สี #777A80 เท่าตัวอย่างในดีไซน์ */
+}
+
+/* จุดอ้างอิงเดียว — ตอนเปิดเมนู กล่อง #pcForm หมุน+เลื่อนทั้งใบ ช่องกรอกตามไปเอง
+   ไม่ต้องมีพิกัดของซีนเมนูแยกอีกชุด */
+#fldName {
+    left: 1164.45px;
+    top: 205.923px;
+    transform: rotate(-3deg);
+}
+
+#fldEmail {
+    left: 1166.97px;
+    top: 253.857px;
+    transform: rotate(-3deg);
+}
+
+/* ระยะเยื้องซ้ายของช่องพิมพ์ = ตำแหน่ง tspan ของข้อความตัวอย่างในดีไซน์ */
+#fldName input {
+    left: 32.3438px;
+    width: 400px;
+}
+
+#fldEmail input {
+    left: 48.9727px;
+    width: 384px;
+}
+
+/* ติ๊กยืนยัน — วงกลมขอบดำ + เครื่องหมายถูก (งานอาร์ตมีทั้งสองชั้นอยู่แล้ว)
+   ⚠ id ต้องเป็น confirmEmail — handleRegister() ในโค้ดเดิมอ่านจากตัวนี้ */
+#confirmEmail {
+    opacity: 0;
+    /* ใช้ช่องจริงเพื่อให้คีย์บอร์ด/ฟอร์มทำงาน แต่ภาพมาจากงานอาร์ต */
+    cursor: pointer;
+    margin: 0;
+}
+
+/* ⚠ ต้องอยู่เหนือปุ่มลงชื่อ ไม่งั้นกดครึ่งล่างของวงกลมไม่ติด
+   วัดจากงานอาร์ตจริง: วงกลมติ๊กกินถึง y 652.7 แต่กรอบปุ่มเริ่มที่ y 645.2
+   = ซ้อนกัน 7.5px และปุ่มอยู่หลังใน DOM เลยกินคลิกช่วงนั้นไปหมด
+   ยกวงกลมขึ้นมาแทนการหั่นพื้นที่กดของปุ่ม เพราะวงกลมเล็กกว่ามาก เสียไม่ได้เลย
+   (มุมซ้ายบนของปุ่มขนาด 34x7.5 จะกลายเป็นติ๊กแทน ซึ่งเทียบกับปุ่ม 472x79.7 แล้วไม่มีผล) */
+#confirmEmail {
+    left: 1186.1px;
+    top: 619.6px;
+    width: 34.4px;
+    height: 34.2px;
+    z-index: 2;
+}
+
+/* เครื่องหมายถูกในดีไซน์ = Vector 33 ซ่อนไว้ก่อน โผล่เมื่อติ๊ก */
+#lyConfirm [id^='Vector 33'] {
+    visibility: hidden;
+}
+
+.stage.is-confirmed #lyConfirm [id^='Vector 33'] {
+    visibility: visible;
+}
+
+/* ปุ่มลงชื่อฝากแทค — งานอาร์ตให้กรอบมาแล้ว ตัวนี้เป็นแค่พื้นที่กด */
+#submitBtn {
+    left: 1171.8px;
+    top: 645.2px;
+    width: 472.2px;
+    height: 79.7px;
+}
+
+/* ข้อความเตือนของฟอร์ม — ดีไซน์ไม่มี วางไว้ให้ไม่ทับของอื่น */
+#productError {
+    left: 1150px;
+    top: 610px;
+}
+
+/* ⚠ ทั้งข้อความยืนยันและคำเตือนเอียง -3° เท่ากัน = ขอบล่าง/ขอบบนเป็นเส้นขนานกัน
+   ระยะห่างจึงคงที่ทุกตำแหน่ง คิดจากซ้ายสุดจุดเดียวพอ
+     ขอบล่างข้อความยืนยัน  ~644
+     ขอบบนกรอบปุ่ม ณ x นี้ ~667  (กรอบปุ่มกว้าง 472 พอเอียง -3° ปลายซ้ายจึงต่ำกว่าปลายขวา 24.7)
+   = มีที่ว่างจริง 23px คำเตือนสูง 21px วางที่ 646 แล้วพอดีช่อง ไม่ชนทั้งบนและล่าง */
+#confirmError {
+    left: 1229px;
+    top: 640px;
+}
+
+/* ---------- ตั๋วสินค้าในฟอร์ม ----------
+   ดีไซน์วางไว้ 2 ใบ = 2 ช่อง · ใบบนเป็นตัวอย่างสถานะ "เลือกแล้ว" ใบล่าง "ปกติ"
+   โค้ดเดิม (renderProductSelect) สร้างรายการเอง → จับมาวางทับช่องทั้งสอง
+   ตัวอักษรบนตั๋วเขียนทับด้วยข้อมูลจริงใน figma.js */
+#productSelectList {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 0;
+}
+
+#productSelectList .product-select-item {
+    position: absolute;
+    display: block;
+    cursor: pointer;
+}
+
+/* ตั๋วแบ่งเป็นสามส่วน (เจ้าของงานยืนยัน 2026-08-04)
+   กดได้แค่สองจุด คือช่อง SELECT กับลูกศรขวาสุด ตรงกลางไม่มีปุ่ม
+   พิกัดวัดจากไฟล์ export: ช่อง SELECT = Group 52 / Group 54 · ลูกศร = to see more */
+#productSelectList .product-select-item:nth-child(1) {
+    left: 1155.3px;
+    top: 358.8px;
+    width: 103.7px;
+    height: 124px;
+}
+
+#productSelectList .product-select-item:nth-child(2) {
+    left: 1162px;
+    top: 486.7px;
+    width: 103.7px;
+    height: 124px;
+}
+
+/* ลูกศรขวาสุดของกลุ่มเนื้อหา = ปุ่มลงไปดูสินค้าข้างล่าง */
+.tk-arrow {
+    width: 48.8px;
+    height: 64.3px;
+}
+
+#tkArrow1 {
+    left: 1553.4px;
+    top: 370.6px;
+}
+
+#tkArrow2 {
+    left: 1560.1px;
+    top: 498.4px;
+}
+
+/* ช่องติ๊กจริงยังอยู่ (handleRegister อ่านค่าจากตรงนี้) แค่ไม่แสดง
+   ภาพของสถานะมาจากงานอาร์ตสองใบที่สลับกัน */
+#productSelectList input[type='checkbox'],
+#productSelectList .product-checkbox,
+#productSelectList .product-select-thumb,
+#productSelectList .product-select-info {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    opacity: 0;
+}
+
+/* งานอาร์ตของตั๋ว — ช่องละ 2 ใบ (ปกติ / เลือกแล้ว) โชว์ทีละใบ
+   ใบที่ Figma ไม่ได้วาดไว้ที่ช่องนั้น เลื่อนมาจากอีกช่องด้วยระยะที่วัดมา
+   (ช่องบน 1155.3,339.4 · ช่องล่าง 1162,468.2 → ต่างกัน 6.7 / 128.8) */
+.tk {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 0;
+}
+
+/* ⚠ 127.85 ไม่ใช่ 128.8 ที่เป็นระยะช่องตามดีไซน์
+   วัดทุกชิ้นในไฟล์อาร์ตสองสถานะแล้ว ทั้งใบห่างกัน 127.8-127.9 มีแค่ "กรอบใหญ่สุด" ที่ห่าง 128.8
+   = กรอบใหญ่ในไฟล์ export เป็นชิ้นที่หลุดกลุ่ม ไม่ใช่ชิ้นอื่น
+   แก้ที่ต้นทางแล้ว (ขยับกรอบใหญ่ใน normal-product.svg ขึ้น 0.95px ให้เข้ากลุ่ม)
+   ตรงนี้จึงยึดตามกลุ่มใหญ่ = ตอนสลับสถานะทุกชิ้นอยู่นิ่งพร้อมกันหมด */
+#tkNormal1 {
+    transform: translate(-6.7px, -127.85px);
+}
+
+#tkSelected2 {
+    transform: translate(6.7px, 127.85px);
+}
+
+.tk[hidden] {
+    display: none;
+}
+
+/* ============================================================
+   เซกชัน product — ตัวนับฝากแทค
+   ตัวเลขเปลี่ยนได้ → ต้องเป็นข้อความจริง ไม่ใช่ path (animation-list ข้อ 8)
+
+   ตัวซ้าย (Group 74) ดีไซน์จัดชิดขวา ขอบขวาอยู่ที่ 725.8
+   → ตรึงขอบขวาไว้ ตัวเลขยาวขึ้นแล้วข้อความขยายไปทางซ้าย ไม่ไปทับไอคอนหัวใจ
+   (กล่องนอกอยู่ที่ x 475 → 475 + 250.8 = 725.8)
+   ============================================================ */
+[data-t='ฝากแทคแล้ว-xx-คน-main']>span {
+    left: auto;
+    right: -250.8px;
+}
+
+/* ============================================================
+   บล็อกค้นหา / แก้ไขฝากแทค
+   ⚠ id และฟังก์ชันทั้งหมดเป็นของโค้ดเดิม ห้ามเปลี่ยนชื่อ
+   บล็อกนี้มี 5 สถานะ ความสูงไม่คงที่ → ใช้ flow ไม่ใช่ absolute รายชิ้น
+   ขอบบน/ซ้าย/กว้าง มาจาก Figma (725, 2160.5, กว้าง 470.7)
+   ============================================================ */
+#lookup {
+    position: absolute;
+    left: 725px;
+    top: 2160.5px;
+    width: 470.7px;
+}
+
+/* หนึ่งบรรทัด = หนึ่งกล่องสูงคงที่ตามดีไซน์ · งานอาร์ตครอปมาเท่ากล่องพอดี
+   ระยะห่างข้างล่างคำนวณจากพิกัด y ของสองซีนใน Figma (ซีนเมนู - 232 = ซีนปกติ) */
+#lookup .lk-row {
+    position: relative;
+}
+
+/* ข้อความในบล็อกนี้ต้องวางเทียบ "กล่องของตัวเอง" ไม่ใช่เทียบทั้งหน้า
+   เพราะบล็อกไหลตามสถานะ (บางสถานะสูง 248.8 บางสถานะ 505)
+   --ax/--ay = พิกัดดิบจาก Figma ที่ figma-text.css แนบมาให้
+   --ry      = ขอบบนของกล่องนั้นในพิกัด Figma (ตั้งไว้ทีละแถวข้างล่าง)
+   บรรทัดที่ดึงค่ามาจากไฟล์ซีนเมนู ให้ใส่ --ry เป็นพิกัดซีนเมนู ส่วนต่าง 232 จะหักกันเอง */
+#lookup .tx {
+    left: calc(var(--ax) - 725px);
+    top: calc(var(--ay) - var(--ry));
+}
+
+#lookup .lk-head {
+    --ry: 2160.5px;
+}
+
+#lookup .lk-field {
+    --ry: 2252px;
+}
+
+#lookup .lk-forgot {
+    --ry: 2301.5px;
+}
+
+#lookup .lk-field--name {
+    --ry: 2562px;
+}
+
+#lookup .lk-hint {
+    --ry: 2611.5px;
+}
+
+#lookup .lk-btn {
+    --ry: 2333.6px;
+}
+
+#lookup .results-header {
+    --ry: 2648px;
+}
+
+#lookup .results-actions {
+    --ry: 2799.3px;
+}
+
+#lookup .lk-head {
+    height: 63.5px;
+    /* 2160.5 → 2224 */
+}
+
+#lookup .lk-field {
+    height: 40.8px;
+    margin-top: 28px;
+    /* 2224 → 2252 */
+}
+
+#lookup .lk-forgot {
+    height: 22.4px;
+    margin-top: 8.7px;
+    /* 2292.8 → 2301.5 */
+}
+
+#lookup .lk-forgot .hit {
+    left: 18px;
+    /* 743 - 725 */
+    top: 0;
+    width: 98.2px;
+    height: 22.4px;
+}
+
+#lookup .forgot-content .lk-field {
+    margin-top: 6.1px;
+    /* 2323.9 → 2330 */
+}
+
+#lookup .lk-hint {
+    height: 22.4px;
+    margin-top: 8.7px;
+    /* 2370.8 → 2379.5 */
+}
+
+#lookup .lk-btn {
+    height: 72.1px;
+    margin-top: 9.7px;
+    /* 2323.9 → 2333.6 */
+}
+
+#lookup #lookupBtn {
+    left: 153.6px;
+    /* 878.6 - 725 */
+    top: 0;
+    width: 144.8px;
+    height: 72.1px;
+}
+
+/* ช่องพิมพ์ — เยื้องซ้ายเท่าตำแหน่ง tspan ของข้อความตัวอย่างในดีไซน์
+   บรรทัดฐานในดีไซน์อยู่ที่ y 25.845 ของกล่อง · Kanit 18px baseline 20 → top 5.845 */
+#lookup .lk-field input {
+    position: absolute;
+    top: 5.845px;
+    height: 27.2px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: 'Kanit', sans-serif;
+    font-size: 18px;
+    line-height: 27.2px;
+    color: var(--c-ink);
+    outline: none;
+}
+
+#lookup .lk-field input {
+    left: 66.973px;
+    /* 18 + tspan x 48.9727 */
+    width: 386px;
+}
+
+#lookup .lk-field--name input {
+    left: 122.361px;
+    /* 18 + tspan x 104.361 */
+    width: 330px;
+}
+
+#lookup .lk-field input::placeholder {
+    color: var(--c-gray);
+}
+
+/* หัวผลลัพธ์ — "รายการฝากแทค" มาจากงานอาร์ต · อีเมลเป็นข้อมูลจริง ชิดขวาของบล็อก */
+#lookup .results-header {
+    height: 24px;
+    margin-top: 14.1px;
+    /* 2401.9 → 2416 (สถานะกางเต็ม) */
+}
+
+#lookup .results-email {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 15.8645px;
+    line-height: normal;
+    color: var(--c-brand);
+}
+
+/* แถวรายการ — สูง 40.8 ห่างกัน 49 (2679 → 2728 ในดีไซน์) */
+#lookup .result-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    height: 40.8px;
+    margin-top: 8.2px;
+    padding: 5.845px 13.4px 0 18px;
+    font-size: 18px;
+    line-height: 27.2px;
+}
+
+#lookup .result-item:first-child {
+    margin-top: 7px;
+    /* 2440 → 2447 */
+}
+
+#lookup .result-info {
+    display: flex;
+    gap: 6px;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+#lookup .result-date {
+    color: var(--c-gray);
+}
+
+/* ปุ่มลบ — ในดีไซน์เป็นข้อความขีดเส้นใต้ */
+#lookup .result-item .btn-danger {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: 'Kanit', sans-serif;
+    font-size: 18px;
+    line-height: 27.2px;
+    color: var(--c-ink);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#lookup .results-actions {
+    height: 93px;
+    margin-top: 30.5px;
+    /* 2536.8 → 2567.3 */
+}
+
+/* ปุ่ม เพิ่มฝากแทค — ปุ่มตั๋วใหญ่ชุดเดียวกับ สำรวจชิ้นงาน 354.2 x 93 */
+#lookup .results-actions button {
+    left: 57.1px;
+    /* 782.1 - 725 */
+    top: 0;
+    width: 354.2px;
+    height: 93px;
+}
+
+/* ไม่พบรายการ — ดีไซน์ไม่มีสถานะนี้ เจ้าของงานสั่งให้ทำเป็นบรรทัดข้อความง่ายๆ */
+#lookup .lookup-empty {
+    margin: 14.1px 0 0;
+    font-size: 15.8645px;
+    line-height: normal;
+    color: var(--c-gray);
+}
+
+/* กรอบแถวรายการที่ JS โคลนมาใส่ */
+#lookup .result-item>.ly--crop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* ============================================================
+   เมนูลอยติดหน้าจอ (figma-layout-spec ข้อ 5.5)
+   ไม่ใช่ของในหน้าเว็บ → position:fixed คิดพิกัดจากขอบจอ ไม่ใช่จากหน้า
+   ปุ่มดาวโผล่เมื่อเลื่อนพ้น hero แล้วเท่านั้น
+   ============================================================ */
+/* --dock-top = ระยะจากขอบบนจอถึงยอดปุ่มดาว (หน่วยเดียวกับ Figma)
+   ตั้งต้นคิดจากดีไซน์ได้ 52 (ปุ่มดาว y 2061 − เซกชัน edit tag เริ่ม 2009)
+   แล้วเจ้าของงานสั่งปรับ: ลง 150 (→202) แล้วขึ้นอีก 50 (→152)
+   อยากขยับอีก แก้เลขนี้ตัวเดียวพอ */
+.dock {
+    --dock-top: 152px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 365.6px;
+    /* ในดีไซน์กินพื้นที่ y 2061 (ยอดปุ่มดาว) → 2426.6 (ก้นปุ่มล่างสุด) */
+    z-index: 40;
+    pointer-events: none;
+    /* ย่อเท่าแคนวาส แล้วค่อยเลื่อนลงมาตาม --dock-top
+       (transform ไล่จากขวาไปซ้าย → translate ทำงานในระบบพิกัดที่ย่อแล้ว
+        ระยะจึงย่อตามจอไปด้วย ไม่ต้องคูณ --fit เอง) */
+    transform-origin: 0 0;
+    transform: scale(var(--fit, 1)) translateY(var(--dock-top));
+}
+
+.dock[hidden] {
+    display: none;
+}
+
+/* งานอาร์ตในดีไซน์อยู่ที่ y 2028 ขึ้นไป — ยกกลับมาที่ 0 ของกล่องลอย */
+.dock .ly {
+    top: -2061px;
+}
+
+.dock .hit {
+    pointer-events: auto;
+}
+
+/* ข้อความในเมนูลอยก็ต้องยกกลับมาเหมือนงานอาร์ต ไม่งั้นตกไปอยู่ใต้จอจนมองไม่เห็น
+   (--ay คือพิกัด y ดิบจาก Figma ที่ figma-text.css แนบมาให้)
+   ต้องเขียน [data-t] ด้วย ไม่งั้นน้ำหนักเท่ากับกฎใน figma-text.css ที่โหลดทีหลังแล้วแพ้ */
+.dock .tx[data-t] {
+    top: calc(var(--ay) - 2061px);
+}
+
+/* ปุ่มดาว 100.2 x 100.2 ที่ 55.9,2061 → เทียบขอบจอคือ 55.9,0 */
+#menuStar {
+    left: 55.9px;
+    top: 0;
+    width: 100.2px;
+    height: 100.2px;
+}
+
+/* ปุ่มเมนู 4 อัน ขนาด 299.1 x 52.6 (คนละขนาดกับในซีนเมนู — อย่าใช้ปน)
+   ดีไซน์ให้ปุ่มโผล่จากขอบจอซ้าย ตัวปุ่มเริ่มที่ x -110 */
+.dock .menu-item {
+    width: 299.1px;
+    height: 52.6px;
+}
+
+#dockM1 {
+    left: -110px;
+    top: 100.2px;
+}
+
+#dockM2 {
+    left: -110px;
+    top: 171.2px;
+}
+
+#dockM3 {
+    left: -110px;
+    top: 242px;
+}
+
+#dockM4 {
+    left: -110px;
+    top: 313px;
+}
+
+/* ปิดเมนูอยู่ = เห็นแค่ปุ่มดาว */
+.dock:not(.is-open) .dock-menu {
+    display: none;
+}
+
+/* ============================================================
+   ปุ่มเมนูในซีนเมนู (hero) — ขนาด 413.7 x 72.7
+   วัดจากไฟล์ export รอบ 2026-08-04 (เจ้าของงานจัดตำแหน่งใหม่)
+   ============================================================ */
+.menu-hit {
+    width: 413.7px;
+    height: 72.7px;
+}
+
+#heroM1 {
+    left: 347px;
+    top: 273px;
+}
+
+#heroM2 {
+    left: 297.1px;
+    top: 391.4px;
+}
+
+#heroM3 {
+    left: 346.6px;
+    top: 509.8px;
+}
+
+#heroM4 {
+    left: 451.3px;
+    top: 628.2px;
+}
+
+/* ============================================================
+   ของที่โค้ดเดิมต้องมี แต่ดีไซน์ไม่ได้วาด — ไม่แสดงผลจนกว่าจะถูกเรียก
+   ============================================================ */
+.toast-container {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+/* ---------- แจ้งเตือน (toast) ----------
+   ⭐ ใช้ "ทรงตั๋ว" ของจริงจากดีไซน์ ไม่ใช่กล่องสี่เหลี่ยม (เจ้าของงานสั่ง 2026-08-21)
+     ธีมนี้ไม่มีกล่องสี่เหลี่ยมมนสักชิ้นเดียว ของทุกอย่างเป็นทรงตั๋ว/ทรงป้าย
+     ตัวที่หยิบมาคือ ปุ่มตั๋ว `Union_12` (ปุ่ม สำรวจชิ้นงาน / ค้นหา / เพิ่มฝากแทค)
+       พื้นขาว · เส้นขอบเป็น inside stroke จึงไม่ล้นกล่อง
+       ⭐ ขอบทำเป็น "สองชั้นบางๆ" ตามที่เจ้าของงานสั่ง 2026-08-21 (ของเดิมชั้นเดียวหนา 5.7)
+         ความหนาไม่ได้คิดเอง — ยืมค่ากรอบสองชั้นของการ์ดรูปในดีไซน์มา (spec ข้อ 10.1)
+         ขอบนอก 1.9 · เว้น 3.5 · ขอบใน 1.2 (วัดบนจอ ไฟล์ svg เก็บค่าที่หารด้วย 0.66 ไว้แล้ว)
+       หัวท้ายผายออกเป็นปีกแล้วเรียวเข้าเป็นจะงอยโค้ง r 28.3 กลางขอบซ้าย-ขวา
+       ดาวทองครึ่งดวง 2 ดวงขนาบข้อความ (Star 4_5 / Star 5_4 · #d8b45a)
+
+   ⭐ ทำไมยืดได้ทั้งที่เป็นงานอาร์ตขนาดตายตัว
+     กลางตั๋ว (x 475.1-703.9 ในไฟล์ต้นทาง) เป็นแท่งตรงล้วน ขอบบน-ล่างเป็นเส้นตรง
+     จึงตัดเป็น 3 ท่อนด้วย border-image: หัว 58 หน่วย + กลางยืด + ท้าย 58 หน่วย
+     หัวท้ายคงสัดส่วนเดิมเป๊ะทุกความยาวข้อความ
+     ย่อ 0.66 เท่าจากของจริง 342.9 x 72.76 → สูง 48 (ตัวหนังสือไม่ได้ย่อตาม ดูข้างล่าง)
+     (ข้อความยาวจนขึ้นสองบรรทัด = จะงอยหัวท้ายยืดตามความสูง ยอมได้ ดีกว่าตัดข้อความทิ้ง)
+
+   ชิ้นงานอยู่ที่ images/figma/parts/ui/ — ครอป viewBox จาก parts/btn/ มาเฉยๆ
+   ⚠ ?v= ท้าย url ของไฟล์ตั๋วต้องบวกทุกครั้งที่แก้สีในไฟล์ svg — บวกแค่ ?v= ของ figma.css
+     ไม่พอ เพราะ url ของ svg ไม่ได้เปลี่ยน เบราว์เซอร์จะใช้ไฟล์เก่าในแคชต่อ (เจอมาแล้ว)
+   ไม่ได้แก้ path แม้แต่ตัวเดียว (ดู _manifest.json ในโฟลเดอร์นั้น)
+   ⚠ สีสถานะต้องมาจากพาเลตของเว็บเท่านั้น (เจ้าของงานสั่ง 2026-08-21)
+     เขียว/แดงสดเป็นสีของธีมเก่า ไม่มีอยู่ในดีไซน์นี้ — ห้ามเอากลับมา
+       ทั่วไป/info  ขอบ #0e00a8  น้ำเงินแบรนด์ = สีขอบของปุ่มตั๋วจริง
+       สำเร็จ       ขอบ #d8b45a  ทองยุคกลาง เข้าชุดกับดาวทองบนตั๋วเอง (เส้นบาง ไม่ถมทึบ)
+       ผิดพลาด      ขอบ #7c2d45  เบอร์กันดี = สีตราในดีไซน์ (spec ข้อ 7)
+     ทั้งสามใบเป็นไฟล์เดียวกันเป๊ะ ต่างกันแค่ค่าสีของเส้นขอบค่าเดียว */
+.toast {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    /* ⚠ ห้ามให้ตั๋วสูงขึ้น — บังคับบรรทัดเดียวเสมอ (เจ้าของงานสั่ง 2026-08-21)
+       จะงอยหัวท้ายถูกยืดให้เท่าความสูงของกล่องเสมอ (border-image ตัดบน-ล่าง 0)
+       พอข้อความขึ้นสองบรรทัด กล่องสูงขึ้น จะงอยก็ยืดยาวตาม = เสียทรง
+       ข้อความยาวขึ้นให้ "ตั๋วยาวขึ้น" ไม่ใช่ "ตั๋วสูงขึ้น" ซึ่งตรงกับทรงตั๋วอยู่แล้ว
+       (ข้อความจริงยาวสุดในหน้านี้ราว 500px ยังห่างจากขอบจอมาก) */
+    white-space: nowrap;
+    max-width: calc(100vw - 48px);
+    /* เว้นซ้าย-ขวาให้พ้นดาวทอง (ดาวกว้าง 7) + ระยะหายใจแบบเดียวกับปุ่มในดีไซน์ */
+    padding: 5px 22px;
+    border-style: solid;
+    border-width: 0 38.3px;
+    border-image: url("images/figma/parts/ui/ticket-frame.svg?v=3") 0 58 fill / 0 38.3px stretch;
+    /* ⚠ ไม่ได้ย่อตามตั๋ว — ของจริง 32.3 x 0.66 = 21.3 แต่ใหญ่เกินสำหรับแจ้งเตือน
+       (เจ้าของงานสั่ง 2026-08-21) ใช้ 18 ซึ่งเป็นขนาดที่หน้านี้ใช้อยู่แล้ว
+       กับข้อความเตือนในฟอร์ม ตั๋วเลยดูโปร่งขึ้นด้วย */
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.25;
+    text-align: center;
+    color: var(--c-ink);
+    rotate: -1.5deg;
+}
+
+/* ดาวทองซ้าย-ขวา — ต้องอยู่ชั้น pseudo ไม่ใช่ background ของตัวเอง
+   เพราะ border-image ที่มี fill ถูกวาดทับ background ของ element เสมอ */
+.toast::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        url("images/figma/parts/ui/star-left.svg") left center / auto 15.2px no-repeat,
+        url("images/figma/parts/ui/star-right.svg") right center / auto 15.2px no-repeat;
+    pointer-events: none;
+}
+
+.toast.success {
+    border-image-source: url("images/figma/parts/ui/ticket-frame-success.svg?v=3");
+}
+
+.toast.error {
+    border-image-source: url("images/figma/parts/ui/ticket-frame-error.svg?v=3");
+}
+
+.sparkle-container {
+    position: fixed;
+    inset: 0;
+    z-index: 95;
+    pointer-events: none;
+}
+
+.sparkle {
+    position: fixed;
+    border-radius: 50%;
+}
+
+/* ฟอร์มส่งสำเร็จ — ดีไซน์ไม่มีหน้าจอนี้ วางทับกระดาษฟอร์มไว้ก่อน */
+#formSuccess {
+    position: absolute;
+    left: 1147.2px;
+    top: 176.15px;
+    width: 470.1px;
+    transform: rotate(-3deg);
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+#formSuccess h3 {
+    margin: 0 0 8px;
+    font-size: 23.7967px;
+    font-weight: 500;
+}
+
+#formSuccess p {
+    margin: 0 0 8px;
+}
+
+#formSuccess .success-hint {
+    font-size: 15px;
+    color: var(--c-gray);
+}
+
+#formSuccess button {
+    margin-top: 12px;
+    padding: 10px 22px;
+    border: 4.6px solid var(--c-gray3);
+    border-radius: 5.9px;
+    background: none;
+    font-family: 'Kanit', sans-serif;
+    font-size: 23.7967px;
+    cursor: pointer;
+}
+
+/* ⚠ กระดาษฟอร์มในดีไซน์เอียง -3° ข้อความทุกชิ้นบนกระดาษจึงเอียงตามหมด (figma-text.css)
+   ข้อความเตือนสองอันนี้ดีไซน์ไม่ได้วาดไว้ เลยไม่มีใครใส่มุมให้ ต้องใส่เองให้ตรงกัน
+   จุดหมุน 0 0 เหมือน .tx เพราะพิกัดที่ตั้งไว้คือมุมซ้ายบนของข้อความ ไม่ใช่จุดกึ่งกลาง */
+.hf-error {
+    position: absolute;
+    color: #ff3d3d;
+    font-size: 13px;
+    transform-origin: 0 0;
+    transform: rotate(-3deg);
+    /* กล่องข้อความเตี้ยลง = ได้ที่ว่างมาถอยห่างจากบรรทัดบนอีก 4px โดยไม่ชนกรอบปุ่มด้านล่าง */
+    line-height: 1.15;
+}
+
+/* ============================================================
+   สถานะของปุ่มเมนู  (เจ้าของงานยืนยัน 2026-08-04)
+
+   ดีไซน์วาดช่อง แก้ไขฝากแทค เป็นสีม่วง = **ตัวอย่างของสถานะ ไม่ใช่สีของช่องนั้น**
+   -> ทุกช่องต้องหน้าตาเหมือนกันหมด ต่างกันแค่ข้อความ
+
+   วิธีทำ: เอา "ป้ายจาก Figma" มาซ้อนกันสองใบในทุกช่อง แล้วสลับว่าจะโชว์ใบไหน
+       .art--n  ป้ายสีน้ำเงิน  = สถานะปกติ
+       .art--h  ป้ายสีม่วง     = สถานะเมาส์วาง
+   **ไม่มีการเขียนค่าสีเองแม้แต่ตัวเดียว** ทั้งสองใบเป็นไฟล์ที่ export มาตรงๆ
+   ที่ทำเพิ่มคือเลื่อนตำแหน่งให้ป้ายไปตรงช่องของมัน (ระยะคำนวณจากพิกัดจริง)
+   ============================================================ */
+/* ตัวครอบป้าย — ไม่มีขนาดของตัวเอง ปล่อยให้ .ly ข้างในกางเต็มเฟรมเหมือนเลเยอร์อื่น */
+.mbtn,
+.mbtn .art {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 0;
+}
+
+.mbtn .art--h {
+    display: none;
+}
+
+.mbtn.is-on .art--n {
+    display: none;
+}
+
+.mbtn.is-on .art--h {
+    display: block;
+}
+
+/* ---- เมนูใน hero: ป้ายน้ำเงินต้นทางอยู่ที่ 347,273 · ป้ายม่วงต้นทาง 297.1,391.4 ---- */
+#pcHeroMenu .mbtn[data-btn='1'] .art--h .ly {
+    transform: translate(49.9px, -118.4px);
+}
+
+#pcHeroMenu .mbtn[data-btn='2'] .art--n .ly {
+    transform: translate(-49.9px, 118.4px);
+}
+
+#pcHeroMenu .mbtn[data-btn='3'] .art--n .ly {
+    transform: translate(-0.4px, 236.8px);
+}
+
+#pcHeroMenu .mbtn[data-btn='3'] .art--h .ly {
+    transform: translate(49.5px, 118.4px);
+}
+
+#pcHeroMenu .mbtn[data-btn='4'] .art--n .ly {
+    transform: translate(104.3px, 355.2px);
+}
+
+#pcHeroMenu .mbtn[data-btn='4'] .art--h .ly {
+    transform: translate(154.2px, 236.8px);
+}
+
+/* ---- เมนูลอย: ป้ายน้ำเงินต้นทาง -110,2161.2 · ป้ายม่วงต้นทาง -80.1,2232.2 ----
+   ทุกช่องเรียงตรงกันที่ x -110 ห่างกันแนวตั้งช่องละ ~71 */
+.dock .mbtn[data-btn='1'] .art--h .ly {
+    transform: translate(-29.9px, -71px);
+}
+
+.dock .mbtn[data-btn='2'] .art--n .ly {
+    transform: translateY(71px);
+}
+
+.dock .mbtn[data-btn='2'] .art--h .ly {
+    transform: translateX(-29.9px);
+}
+
+.dock .mbtn[data-btn='3'] .art--n .ly {
+    transform: translateY(141.8px);
+}
+
+.dock .mbtn[data-btn='3'] .art--h .ly {
+    transform: translate(-29.9px, 70.8px);
+}
+
+.dock .mbtn[data-btn='4'] .art--n .ly {
+    transform: translateY(212.8px);
+}
+
+.dock .mbtn[data-btn='4'] .art--h .ly {
+    transform: translate(-29.9px, 141.8px);
+}
+
+/* เมนูลอย: ป้ายของหน้าที่กำลังเปิดอยู่ยื่นออกมาทางขวา 29.9
+   (ระยะเอามาจากดีไซน์: ช่องตัวอย่างวางที่ -80.1 ส่วนช่องอื่น -110) */
+.dock .mbtn.is-here {
+    transform: translateX(29.9px);
+}
+
+#dockM1.is-here {
+    left: -80.1px;
+}
+
+#dockM2.is-here {
+    left: -80.1px;
+}
+
+#dockM3.is-here {
+    left: -80.1px;
+}
+
+#dockM4.is-here {
+    left: -80.1px;
+}
+
+/* ข้อความต้องขยับตามป้ายด้วย ไม่งั้นตัวหนังสือหลุดออกนอกป้าย
+   บรรทัด แก้ไขฝากแทค ถูก export มาพร้อมป้ายตัวอย่างที่วางเยื้องขวา 29.9
+   ดึงกลับให้ตรงแนวเดียวกับอีก 3 บรรทัดก่อน แล้วค่อยยื่นตามหน้าที่กำลังอยู่
+   (figma.js ใส่ .is-here-tx ให้บรรทัดของช่องนั้น) */
+.dock .tx[data-t='แก้ไขฝากแทค-dock'] {
+    left: calc(var(--ax) - 29.9px);
+}
+
+.dock .tx.is-here-tx[data-t] {
+    transform: translateX(29.9px);
+}

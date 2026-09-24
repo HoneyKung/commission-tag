@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="482" height="379" viewBox="0 0 482 379" fill="none">
+<g id="Group 25">
+<line id="Line 3" x1="93.9216" y1="367.049" x2="257.741" y2="239.06" stroke="url(#paint0_linear_0_1)" stroke-width="22" />
+<path id="Star 4" d="M99.6938 319.728C99.6938 319.728 101.19 340.824 106.598 349.273C112.005 357.722 123.694 357.228 123.694 357.228C123.694 357.228 112.005 356.734 106.598 365.183C101.19 373.632 99.6938 394.728 99.6938 394.728C99.6938 394.728 98.1972 373.632 92.7897 365.183C87.3823 356.734 75.6938 357.228 75.6938 357.228C75.6938 357.228 87.3823 357.722 92.7897 349.273C98.1972 340.824 99.6938 319.728 99.6938 319.728Z" fill="#EFF6FF" stroke="#0E00A8" stroke-width="4" stroke-linejoin="round" />
+</g>
+<line id="Line 4" x1="1.84686" y1="375.884" x2="479.931" y2="2.36404" stroke="url(#paint1_linear_0_1)" stroke-width="6" />
+<g id="rope">
+<g id="Group 19">
+<g id="Ellipse 31">
+<circle cx="-60.3062" cy="213.228" r="77" fill="url(#paint2_radial_0_1)" style="mix-blend-mode:hard-light" />
+</g>
+</g>
+</g>
+<line id="Line 4_2" x1="365.922" y1="369.049" x2="529.741" y2="241.06" stroke="url(#paint3_linear_0_1)" stroke-width="22" />
+<line id="Line 5" x1="283.922" y1="369.049" x2="447.741" y2="241.06" stroke="url(#paint4_linear_0_1)" stroke-width="22" />
+<line id="Line 6" x1="201.922" y1="369.049" x2="365.741" y2="241.06" stroke="url(#paint5_linear_0_1)" stroke-width="22" />
+<defs>
+<linearGradient id="paint0_linear_0_1" x1="101.002" y1="376.112" x2="264.821" y2="248.122" gradientUnits="userSpaceOnUse">
+<stop stop-color="#95C1FB" stop-opacity="0" />
+<stop offset="0.168269" stop-color="#71EAF3" />
+<stop offset="1" stop-color="white" stop-opacity="0" />
+</linearGradient>
+<linearGradient id="paint1_linear_0_1" x1="4.00168" y1="378.642" x2="482.086" y2="5.12208" gradientUnits="userSpaceOnUse">
+<stop stop-color="#95C1FB" stop-opacity="0" />
+<stop offset="0.278846" stop-color="#95C1FB" />
+<stop offset="0.834135" stop-color="#95C1FB" />
+<stop offset="1" stop-color="white" stop-opacity="0" />
+</linearGradient>
+<radialGradient id="paint2_radial_0_1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(-60.3062 213.228) rotate(90) scale(77)">
+<stop stop-color="#FF4800" />
+<stop offset="1" stop-color="white" stop-opacity="0" />
+</radialGradient>
+<linearGradient id="paint3_linear_0_1" x1="373.002" y1="378.112" x2="536.821" y2="250.122" gradientUnits="userSpaceOnUse">
+<stop stop-color="#95C1FB" stop-opacity="0" />
+<stop offset="0.168269" stop-color="#71EAF3" />
+<stop offset="1" stop-color="white" stop-opacity="0" />
+</linearGradient>
+<linearGradient id="paint4_linear_0_1" x1="291.002" y1="378.112" x2="454.821" y2="250.122" gradientUnits="userSpaceOnUse">
+<stop stop-color="#95C1FB" stop-opacity="0" />
+<stop offset="0.168269" stop-color="#C8A6F7" />
+<stop offset="1" stop-color="white" stop-opacity="0" />
+</linearGradient>
+<linearGradient id="paint5_linear_0_1" x1="209.002" y1="378.112" x2="372.821" y2="250.122" gradientUnits="userSpaceOnUse">
+<stop stop-color="#95C1FB" stop-opacity="0" />
+<stop offset="0.168269" stop-color="#F8A9D6" />
+<stop offset="1" stop-color="white" stop-opacity="0" />
+</linearGradient>
+</defs>
+</svg>

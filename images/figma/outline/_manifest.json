@@ -1,0 +1,40 @@
+{
+  "picks": [
+    {
+      "id": "Group 23",
+      "file": "Group-23.svg",
+      "bytes": 101137
+    },
+    {
+      "id": "Group 16",
+      "file": "Group-16.svg",
+      "bytes": 195959
+    },
+    {
+      "id": "admin",
+      "file": "admin.svg",
+      "bytes": 234868
+    },
+    {
+      "id": "Cookie",
+      "file": "Cookie.svg",
+      "bytes": 488706
+    },
+    {
+      "id": "Cotton Doll",
+      "file": "Cotton-Doll.svg",
+      "bytes": 656830
+    },
+    {
+      "id": "3D Print",
+      "file": "3D-Print.svg",
+      "bytes": 3384
+    },
+    {
+      "id": "MOFYCH",
+      "file": "MOFYCH.svg",
+      "bytes": 4254
+    }
+  ],
+  "viewBox": "0 0 1920 2879"
+}

@@ -1,0 +1,50 @@
+{
+  "picks": [
+    {
+      "id": "Subtract_7",
+      "file": "Subtract_7.svg",
+      "bytes": 9157
+    },
+    {
+      "id": "path1",
+      "file": "path1.svg",
+      "bytes": 57913
+    },
+    {
+      "id": "Group 66_2",
+      "file": "Group-66_2.svg",
+      "bytes": 841
+    },
+    {
+      "id": "Group 55",
+      "file": "Group-55.svg",
+      "bytes": 5067
+    },
+    {
+      "id": "Group 57_2",
+      "file": "Group-57_2.svg",
+      "bytes": 5432
+    },
+    {
+      "id": "Group 63",
+      "file": "Group-63.svg",
+      "bytes": 16819
+    },
+    {
+      "id": "Group 64",
+      "file": "Group-64.svg",
+      "bytes": 21992
+    },
+    {
+      "id": "normal product",
+      "file": "normal-product.svg",
+      "bytes": 93020
+    },
+    {
+      "id": "selected product",
+      "file": "selected-product.svg",
+      "bytes": 96126
+    }
+  ],
+  "viewBox": "0 0 1920 2879"
+}

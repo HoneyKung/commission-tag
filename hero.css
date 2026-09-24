@@ -1,0 +1,751 @@
+/* ============================================================
+   MOFYCH — HERO (ตาม Figma Frame 2)  ·  2 ฉาก: หลัก / เมนู
+   ------------------------------------------------------------
+   ระบบพิกัด: อ้างอิง "design px" ของเฟรม 2560 กว้าง
+   --u = 1 design px → เขียน calc(1415.29 * var(--u)) ได้ตรงจากค่าใน Figma
+
+   หน้าเว็บที่เห็น = ภาพในเฟรม Figma ตอนเปิด Clip content เป๊ะๆ
+   ฉาก = ขนาดพื้นหลัง Rectangle 12 คือ 2560 x 1899
+   กว้างเต็มจอเสมอ สูงเท่าภาพ (หน้ายาวเลื่อนอ่าน ไม่ตัดตามความสูงจอ)
+
+   ⚠ ยังไม่มี animation ใดๆ ตามที่เจ้าของงานสั่ง — สลับฉากคือตัดภาพทันที
+   ============================================================ */
+
+/* ตัวครอบ: ทำให้ .hero วัด "ความกว้างจริงของตัวเอง" ได้ผ่าน 100cqw
+   ถ้าใช้ 100vw จะรวมความกว้างสกรอลล์บาร์เข้ามาด้วย (~15px)
+   ทำให้ภาพกว้างกว่า hero แล้วถูกจัดกึ่งกลาง → ทุกชิ้นเลื่อนไป ~13 design px */
+/* <svg> ฟิลเตอร์บนสุดของ body เป็น inline element กินพื้นที่บรรทัดไป 26px
+   ทำให้มีแถบว่างเหนือ hero — ต้องถอดออกจากการไหลของหน้า */
+.sr-only-svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.hero-wrap {
+    container-type: inline-size;
+}
+
+.hero {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #fff;
+    isolation: isolate;
+
+    /* หน้านี้เป็นหน้ายาวเลื่อนอ่าน ไม่ใช่สไลด์เต็มจอ
+       hero จึงสูงเท่า "ภาพจริง" ไม่ผูกกับความสูงจอ ไม่ตัดฉากทิ้ง
+       สเกลยึดความกว้างอย่างเดียว: 2560 design px = ความกว้างจอพอดี
+       ภาพพื้นหลัง (Rectangle 12) คือ 2560 x 1899 → hero สูงเท่านั้น */
+    --u: calc(100cqw / 2560);
+    height: calc(1899 * var(--u));
+
+    /* ตำแหน่ง+องศาของเนื้อในฟอร์ม — ต่างกันตามฉาก ค่าจาก Figma โดยตรง */
+    --form-x: 1415.29;
+    --form-y: 312.739;
+    --form-rot: -6deg;
+
+    /* ล้างของเดิมจาก style.css:1183 (.hero ของฉากอวกาศเก่า)
+       ที่นั่นตั้ง min-height:100vh + padding + display:flex + gradient
+       ถ้าไม่ล้าง สัดส่วนจะเพี้ยนทั้งหมด */
+    display: block;
+    min-height: 0;
+    padding: 0;
+    background-image: none;
+    transition: none;
+}
+
+.hero[data-scene="menu"] {
+    --form-x: 1621.29;
+    --form-y: 254.698;
+    --form-rot: 7.08497deg;
+}
+
+/* ---------- สลับฉาก (ตัดภาพทันที ไม่มีทรานซิชัน) ---------- */
+.hero [data-scene-art],
+.hero [data-scene-only] {
+    display: none;
+}
+
+.hero[data-scene="main"] [data-scene-art="main"],
+.hero[data-scene="menu"] [data-scene-art="menu"] {
+    display: block;
+}
+
+.hero[data-scene="main"] [data-scene-only="main"],
+.hero[data-scene="menu"] [data-scene-only="menu"] {
+    display: flex;
+}
+
+/* ============================================================
+   ชั้นภาพ
+   ทุกชั้นใช้ viewBox 0 0 2560 1340 เหมือนกัน → พิกัดตรงกันเองอัตโนมัติ
+   ⚠ ห้ามใส่ overflow:visible — ภาพส่วนที่วาดล้นขอบเฟรมมีไว้ให้ชิ้นงาน
+   "เลื่อนเข้ามา" ตอนทำอนิเมชันเท่านั้น ไม่ใช่ให้โผล่มาเป็นพื้นที่หน้าเว็บ
+   ============================================================ */
+/* ทุกชั้นใช้กล่องอ้างอิงใบเดียวกัน = 2560x1340 คูณ --u ชิดมุมบนซ้ายของ hero
+   ภาพจึงกว้างเท่า hero พอดีเสมอ ไม่ต้องจัดกึ่งกลาง ไม่มีขอบว่าง */
+.hero-art,
+.hero-paper,
+.hero-form-unit,
+.hero-hits {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(2560 * var(--u));
+    height: calc(1899 * var(--u));
+}
+
+.hero-art,
+.hero-paper {
+    pointer-events: none;
+}
+
+.hero-art svg,
+.hero-paper svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.hero-art--below {
+    z-index: 1;
+}
+
+.hero-form-unit {
+    z-index: 2;
+}
+
+.hero-art--above {
+    z-index: 3;
+}
+
+.hero-hits {
+    z-index: 4;
+}
+
+/* ============================================================
+   กล่องฟอร์ม — กระดาษ + เนื้อในผูกอยู่ด้วยกัน
+   ขยับ .hero-form-unit ทีเดียว กระดาษกับช่องกรอกไปพร้อมกันเสมอ
+   ============================================================ */
+
+/* ---------- เนื้อในฟอร์ม ----------
+   วางที่มุมบนซ้ายของกล่องอินพุตใบแรก แล้วหมุนตามองศาของกระดาษ
+   ลูกข้างในนับพิกัดเป็น "local y" จากจุดนั้นลงมา (ถอดการหมุนออกแล้ว)
+   ระยะ local เท่ากันทั้ง 2 ฉาก ต่างแค่จุดวางกับองศา */
+.hero-fields {
+    position: absolute;
+    left: calc(var(--form-x) * var(--u));
+    top: calc(var(--form-y) * var(--u));
+    width: calc(685.35 * var(--u));
+    transform: rotate(var(--form-rot));
+    transform-origin: 0 0;
+    font-family: 'Kanit', sans-serif;
+    color: #12102b;
+}
+
+.hero-fields>*,
+.hero-fields form>* {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    margin: 0;
+}
+
+.hero-fields form {
+    position: static;
+}
+
+/* ---------- หัวเรื่อง ---------- */
+.hf-title {
+    top: calc(-160 * var(--u));
+    font-size: calc(48 * var(--u));
+    font-weight: 600;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.hf-desc {
+    top: calc(-84 * var(--u));
+    font-size: calc(24 * var(--u));
+    font-weight: 400;
+    line-height: 1.1;
+    text-align: center;
+}
+
+/* ---------- ช่องกรอก ----------
+   กล่องลายมือเส้นสั่นวาดอยู่ในภาพ SVG แล้ว ตรงนี้ใส่แค่ป้ายกับช่องพิมพ์
+   ให้นอนทับพอดี ไม่วาดกรอบซ้ำ */
+.hf-field {
+    display: flex;
+    align-items: center;
+    gap: calc(10 * var(--u));
+    height: calc(57.69 * var(--u));
+    padding: 0 calc(20 * var(--u));
+}
+
+.hf-field--name {
+    top: 0;
+}
+
+.hf-field--email {
+    top: calc(82.85 * var(--u));
+}
+
+.hf-label {
+    flex: none;
+    font-size: calc(30 * var(--u));
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.hf-label b {
+    color: #7C2D45;
+    font-weight: 500;
+}
+
+.hf-field input {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: calc(40 * var(--u));
+    border: 0;
+    border-bottom: calc(2 * var(--u)) dashed #9b98b8;
+    background: transparent;
+    font-family: inherit;
+    font-size: calc(27 * var(--u));
+    font-weight: 400;
+    color: inherit;
+}
+
+.hf-field input::placeholder {
+    color: #a5a2bd;
+}
+
+.hf-field input:focus {
+    outline: none;
+    border-bottom-color: var(--pal-primary, #0E00A8);
+}
+
+.hf-hint {
+    top: calc(151.34 * var(--u));
+    padding-left: calc(20 * var(--u));
+    font-size: calc(23 * var(--u));
+    font-weight: 400;
+    line-height: 1.15;
+}
+
+.hf-subtitle {
+    top: calc(203 * var(--u));
+    padding-left: calc(20 * var(--u));
+    font-size: calc(36 * var(--u));
+    font-weight: 600;
+    line-height: 1.1;
+}
+
+.hf-subtitle b {
+    color: #7C2D45;
+    font-weight: 600;
+}
+
+/* ---------- รายการสินค้า ----------
+   markup มาจาก renderProductSelect() ใน script.js — ห้ามเปลี่ยนชื่อคลาส
+   กล่องแถวลายมือวาดไว้ในภาพแล้ว 2 ใบ ถ้าสินค้ามากกว่านั้นจะไม่มีกรอบรองรับ
+   จึงใส่กรอบสำรองแบบจางๆ ไว้ให้ใบที่ 3 ขึ้นไป */
+.product-select-list {
+    top: calc(269.21 * var(--u));
+    display: flex;
+    flex-direction: column;
+    gap: calc(13.15 * var(--u));
+}
+
+.product-select-item {
+    display: flex;
+    align-items: center;
+    gap: calc(18 * var(--u));
+    height: calc(155.7 * var(--u));
+    padding: 0 calc(24 * var(--u));
+    cursor: pointer;
+    /* ล้างสไตล์การ์ดของเดิมจาก style.css:1806 (พื้นหลัง+ขอบ+เงา)
+       ในดีไซน์นี้กล่องแถวเป็นกรอบลายมือใน SVG ถ้าไม่ล้างจะเห็นกล่องซ้อนกล่อง */
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+    transition: none;
+}
+
+.product-select-item:hover {
+    border-color: transparent;
+}
+
+.product-select-item:nth-child(n+3) {
+    border: calc(2 * var(--u)) solid #b9b6d0;
+    border-radius: calc(10 * var(--u));
+}
+
+.product-select-item input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* วงกลมของ 2 แถวแรกเป็นวงลายมือใน SVG (Ellipse 25/26) — มันคือ "ช่อง"
+   ที่ไว้ใส่เครื่องหมายถูก ไม่ใช่ตัวที่จะถมสีทั้งวง
+   ฝั่ง HTML จึงไม่วาดขอบซ้ำ เหลือแค่ตัวถูกวางกลางวง
+   แถวที่ 3 ขึ้นไปไม่มีวงในดีไซน์ ต้องวาดขอบเอง */
+.product-checkbox {
+    flex: none;
+    width: calc(70 * var(--u));
+    height: calc(70 * var(--u));
+    border-radius: 50%;
+    /* ล้างของเดิมจาก style.css:1821 ที่วาดกล่องติ๊กสี่เหลี่ยมมนของตัวเอง
+       ในดีไซน์นี้ "วง" มาจากลายมือใน SVG แล้ว ตรงนี้เหลือแค่เครื่องหมายถูก */
+    border: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(40 * var(--u));
+    line-height: 1;
+    color: transparent;
+}
+
+.product-select-item:nth-child(n+3) .product-checkbox {
+    border: calc(4 * var(--u)) solid #12102b;
+}
+
+.product-select-item.selected .product-checkbox {
+    color: var(--pal-primary, #0E00A8);
+    background: transparent;
+    border-color: transparent;
+}
+
+/* style.css:1812 ทาพื้นหลังฟ้าให้แถวที่เลือก — ในดีไซน์นี้ไม่มี
+   สถานะ "เลือกแล้ว" สื่อด้วยเครื่องหมายถูกในวงลายมืออย่างเดียว */
+.hero-fields .product-select-item.selected {
+    background: transparent;
+    border-color: transparent;
+}
+
+.product-select-thumb {
+    flex: none;
+    width: calc(184 * var(--u));
+    height: calc(151 * var(--u));
+    object-fit: cover;
+    border-radius: calc(4 * var(--u));
+}
+
+/* 2 แถวแรกมีกรอบขรุขระใส่รูป + วงกลมติ๊กลายมือวาดไว้ใน SVG แล้ว
+   ฝั่ง HTML จึงซ่อนไว้ แต่ยังกินที่เท่าเดิมเพื่อให้ตัวหนังสือตกตรงตำแหน่ง
+   รูปจริงถูกยัดเข้าไปในกรอบ SVG โดย fillProductArt() ใน hero.js */
+.product-select-item:nth-child(-n+2) .product-select-thumb {
+    visibility: hidden;
+}
+
+.product-select-info {
+    min-width: 0;
+}
+
+.product-select-name {
+    font-size: calc(26 * var(--u));
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.product-select-artist {
+    font-size: calc(23 * var(--u));
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+/* ---------- ติ๊กยืนยัน + ปุ่มส่ง ----------
+   วางต่อจากรายการสินค้าแบบไหลตามเนื้อหา เพราะจำนวนสินค้าเปลี่ยนได้ */
+.hf-confirm {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: calc(600 * var(--u));
+    padding-left: calc(20 * var(--u));
+}
+
+.confirm-label {
+    display: flex;
+    align-items: center;
+    gap: calc(14 * var(--u));
+    font-size: calc(24 * var(--u));
+    cursor: pointer;
+}
+
+.confirm-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.confirm-check {
+    flex: none;
+    width: calc(46 * var(--u));
+    height: calc(46 * var(--u));
+    border: calc(4 * var(--u)) solid #12102b;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--pal-primary, #0E00A8);
+}
+
+.confirm-check svg {
+    width: 62%;
+    height: 62%;
+    opacity: 0;
+}
+
+.confirm-label input:checked~.confirm-check svg {
+    opacity: 1;
+}
+
+.hf-error {
+    display: block;
+    position: static !important;
+    margin: calc(6 * var(--u)) 0 0 calc(20 * var(--u));
+    font-size: calc(22 * var(--u));
+    line-height: 1.2;
+    color: #B3253F;
+}
+
+/* ปุ่มส่ง — กล่องลายมืออยู่ในภาพแล้ว ตรงนี้เป็นตัวหนังสือ + พื้นที่กด */
+.hf-submit {
+    top: calc(697.4 * var(--u));
+    left: calc(24 * var(--u)) !important;
+    width: calc(659 * var(--u)) !important;
+    height: calc(80 * var(--u));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(10 * var(--u));
+    border: 0;
+    background: transparent;
+    font-family: 'Kanit', sans-serif;
+    font-size: calc(36 * var(--u));
+    font-weight: 500;
+    color: inherit;
+    cursor: pointer;
+}
+
+.hf-submit .btn-loading {
+    display: none;
+    align-items: center;
+    gap: calc(10 * var(--u));
+}
+
+.spinner {
+    width: calc(26 * var(--u));
+    height: calc(26 * var(--u));
+    border: calc(3 * var(--u)) solid #b9b6d0;
+    border-top-color: var(--pal-primary, #0E00A8);
+    border-radius: 50%;
+}
+
+/* ---------- กล่องสำเร็จ ---------- */
+.hf-success {
+    top: 0;
+    text-align: center;
+    font-size: calc(24 * var(--u));
+}
+
+.hf-success h3 {
+    font-size: calc(42 * var(--u));
+    font-weight: 600;
+    margin: calc(14 * var(--u)) 0 calc(8 * var(--u));
+}
+
+.hf-success .success-icon {
+    width: calc(76 * var(--u));
+    height: calc(76 * var(--u));
+    margin: 0 auto;
+    border-radius: 50%;
+    background: var(--pal-primary, #0E00A8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hf-success .success-icon svg {
+    width: 55%;
+    height: 55%;
+}
+
+.hf-success .success-hint {
+    margin: calc(14 * var(--u)) calc(30 * var(--u));
+    font-size: calc(21 * var(--u));
+    line-height: 1.4;
+}
+
+.hf-success .hf-submit {
+    position: static;
+    margin: calc(10 * var(--u)) auto 0;
+    width: calc(420 * var(--u)) !important;
+    border: calc(2 * var(--u)) solid var(--pal-primary, #0E00A8);
+    border-radius: calc(10 * var(--u));
+}
+
+/* ============================================================
+   พื้นที่รับคลิก — วางทับบนภาพ ตัวหนังสือจริงอยู่ในภาพ SVG แล้ว
+   ============================================================ */
+.hero-hits {
+    pointer-events: none;
+}
+
+/* ข้อความที่มีไว้ให้โปรแกรมอ่านหน้าจอ/เสิร์ชเอนจินเท่านั้น — ตาคนไม่เห็น
+   (ตัวหนังสือที่เห็นจริงเป็นภาพเวกเตอร์จาก Figma ซึ่งอ่านไม่ได้)
+   โปรเจกต์นี้ไม่มีคลาสนี้มาก่อน ต้องประกาศเอง */
+.sr-only {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+.hero-hit {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+    font-size: calc(30 * var(--u));
+    text-decoration: none;
+    background: transparent;
+    border: 0;
+    border-radius: calc(14 * var(--u));
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.hero-hit:focus-visible {
+    outline: calc(3 * var(--u)) solid var(--pal-primary, #0E00A8);
+    outline-offset: calc(4 * var(--u));
+}
+
+/* พิกัดทั้งหมดวัดจากภาพจริงในเบราว์เซอร์ (getBoundingClientRect ของเลเยอร์ใน SVG)
+   ไม่ได้เดา — ถ้าดีไซน์ขยับ ให้วัดใหม่แล้วแก้ตัวเลขตรงนี้ */
+
+/* ปุ่มใหญ่ใต้โลโก้ (ป้ายสองชั้น + ดาวแหลม อยู่ในภาพ) */
+.hero-hit--btn {
+    left: calc(471 * var(--u));
+    top: calc(904 * var(--u));
+    width: calc(438 * var(--u));
+    height: calc(115 * var(--u));
+}
+
+/* เชือกมุมบนซ้าย — ดึงเพื่อสลับฉาก
+   ภาพเชือกเริ่มที่ y -84 (ล้นขอบบน) พื้นที่กดจึงเริ่มที่ 0 */
+.hero-hit--rope {
+    left: calc(82 * var(--u));
+    top: 0;
+    width: calc(154 * var(--u));
+    height: calc(566 * var(--u));
+}
+
+/* เมนู 4 ปุ่ม (โผล่เฉพาะฉากเมนู) — ป้ายจริงอยู่ในภาพ เรียงเฉียงลงมา */
+.hero-hit--menu {
+    width: calc(637 * var(--u));
+    height: calc(112 * var(--u));
+}
+
+.hero-hit--menu.m1 {
+    left: calc(169 * var(--u));
+    top: calc(510 * var(--u));
+}
+
+.hero-hit--menu.m2 {
+    left: calc(203 * var(--u));
+    top: calc(692 * var(--u));
+}
+
+.hero-hit--menu.m3 {
+    left: calc(279 * var(--u));
+    top: calc(875 * var(--u));
+}
+
+.hero-hit--menu.m4 {
+    left: calc(440 * var(--u));
+    top: calc(1057 * var(--u));
+}
+
+/* ============================================================
+   มือถือ / จอแคบ — เลิกใช้พิกัดของ Figma แล้วเรียงเป็นคอลัมน์เดียว
+   ภาพฉากยังอยู่แต่ถอยไปเป็นพื้นหลังจางๆ
+   ============================================================ */
+@media (max-width: 900px) {
+    .hero {
+        --u: 1px;
+        height: auto;
+        max-height: none;
+        min-height: 100svh;
+        padding: 20px 16px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .hero-art {
+        opacity: .3;
+    }
+
+    .hero-art svg,
+    .hero-paper svg {
+        object-fit: cover;
+    }
+
+    .hero-paper {
+        display: none !important;
+    }
+
+    .hero-form-unit {
+        position: static;
+        width: 100%;
+        max-width: 520px;
+        margin: 0 auto;
+    }
+
+    .hero-fields {
+        position: static;
+        width: 100%;
+        transform: none;
+        padding: 20px 16px;
+        border: 2px solid var(--pal-gold, #D8B45A);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, .93);
+    }
+
+    .hero-fields>*,
+    .hero-fields form>*,
+    .hf-confirm,
+    .hf-submit {
+        position: static !important;
+        width: 100% !important;
+        left: auto !important;
+    }
+
+    .hf-title {
+        font-size: 26px;
+        margin-bottom: 2px;
+    }
+
+    .hf-desc {
+        font-size: 14px;
+        margin-bottom: 14px;
+    }
+
+    .hf-field {
+        height: auto;
+        padding: 8px 10px;
+        margin-bottom: 10px;
+        border: 2px solid #b9b6d0;
+        border-radius: 8px;
+    }
+
+    .hf-label {
+        font-size: 16px;
+    }
+
+    .hf-field input {
+        height: 30px;
+        font-size: 16px;
+    }
+
+    .hf-hint {
+        font-size: 13px;
+        padding-left: 2px;
+        margin-bottom: 12px;
+    }
+
+    .hf-subtitle {
+        font-size: 18px;
+        padding-left: 2px;
+        margin-bottom: 8px;
+    }
+
+    .product-select-item {
+        height: auto;
+        gap: 10px;
+        padding: 10px;
+        border: 2px solid #b9b6d0;
+        border-radius: 8px;
+    }
+
+    .product-checkbox {
+        width: 26px;
+        height: 26px;
+        border-width: 2px;
+        font-size: 16px;
+    }
+
+    .product-select-thumb {
+        width: 66px;
+        height: 54px;
+    }
+
+    .product-select-name {
+        font-size: 15px;
+    }
+
+    .product-select-artist,
+    .confirm-label {
+        font-size: 13px;
+    }
+
+    .confirm-check {
+        width: 22px;
+        height: 22px;
+        border-width: 2px;
+    }
+
+    .hf-confirm {
+        margin: 12px 0;
+        padding-left: 0;
+    }
+
+    .hf-submit {
+        height: 48px;
+        margin-top: 6px;
+        font-size: 18px;
+        color: #fff;
+        background: var(--pal-primary, #0E00A8);
+        border-radius: 10px;
+    }
+
+    .hf-error {
+        margin-left: 0;
+        font-size: 13px;
+    }
+
+    .hero-hits {
+        position: static;
+    }
+
+    .hero-hit--rope,
+    .hero-hit--btn {
+        display: none;
+    }
+
+    .hero-hit--menu {
+        position: static;
+        width: 100%;
+        height: auto;
+        margin-top: 8px;
+        padding: 10px;
+        color: var(--pal-primary, #0E00A8);
+        border: 2px solid var(--pal-primary, #0E00A8);
+    }
+}
+

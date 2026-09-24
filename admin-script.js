@@ -98,6 +98,7 @@ function switchTab(name) {
     if (name === 'registrations') renderRegistrations();
     if (name === 'notify') { showNotifySelector(); }
     if (name === 'queues') { showQueueSelector(); }
+    if (name === 'pricing' && window.refreshAdminPricing) window.refreshAdminPricing();
 }
 
 // ============ Admin Product Selector ============
@@ -342,22 +343,25 @@ function adminDeleteReg(id) {
     // ดึงชื่อสินค้าแบบเดียวกับที่หน้าบ้านทำ เพื่อส่งไปลบในชีท
     const reg = getRegistrations().find(r => r.id === id);
     if (!reg) return;
-    const product = getProducts().find(p => p.id === reg.productId);
-    const productName = product ? product.name : reg.productId;
+    // ต้องเป็นชื่อมาตรฐาน ไม่งั้น Apps Script จะไปลบผิดแท็บ (helper อยู่ใน script.js)
+    const productName = getCanonicalRegistrationProductName(reg.productId);
+    if (!productName) { showToast('ระบบไม่รู้จักสินค้าของรายการนี้', 'error'); return; }
     const email = reg.email;
 
-    // ส่งคำสั่งลบไปที่ Google Sheets (แอบทำเบื้องหลัง ไม่กระทบการใช้งาน)
-    const payload = {
-        action: 'deleteReg',
-        email: email,
-        productName: productName
-    };
+    // ส่งคำสั่งลบไปที่ Google Sheets — อ่านคำตอบได้แล้ว จะได้รู้ว่าลบจริงกี่แถว
     fetch(APPS_SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload)
-    }).catch(() => { });
+        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+        body: JSON.stringify({ action: 'deleteReg', email: email, productName: productName })
+    })
+        .then(res => res.json())
+        .then(res => {
+            if (!res || res.success !== true) throw new Error((res && res.error) || 'ลบไม่สำเร็จ');
+        })
+        .catch(err => {
+            console.error('Delete on Sheets failed:', err);
+            showToast('ลบในหน้านี้แล้ว แต่ลบใน Google Sheets ไม่สำเร็จ กรุณาตรวจสอบ', 'error');
+        });
 
     // ลบข้อมูลในเครื่องตามปกติ
     const regs = getRegistrations().filter(r => r.id !== id);
@@ -434,23 +438,43 @@ function sendNotification() {
     const emailSubject = document.getElementById('emailSubject').value.replace(/{product}/g, selectedProductName);
     const emailBody = document.getElementById('emailBody').value;
 
+    /* ⚠ ส่งชื่อมาตรฐานจาก "รหัสสินค้า" ไม่ใช่ข้อความในกล่องเลือก
+       ถ้าชื่อในแคตตาล็อกถูกแก้จนไม่ตรงกับชีต Apps Script จะเลือกแท็บผิด
+       = ประกาศของ Cookie ไปถึงคนที่ฝากแทค Cotton */
     const payload = {
         action: 'broadcast',
-        productName: selectedProductName,
+        productName: getCanonicalRegistrationProductName(selectedProductId) || selectedProductName,
         emailSubject: emailSubject,
         emailBody: emailBody
     };
 
+    /* ⭐ อ่านคำตอบจริง ไม่เดาจากจำนวนในเครื่อง
+       ของเดิมขึ้น "สำเร็จ N คน" โดย N มาจากรายชื่อในเครื่อง ต่อให้ฝั่ง Apps Script
+       ส่งไปได้แค่ 3 คนแล้วชนโควตา หน้านี้ก็ยังขึ้นว่าสำเร็จทั้งหมด */
     fetch(APPS_SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
+        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
         body: JSON.stringify(payload)
     })
-        .then(() => {
+        .then(res => res.json())
+        .then(res => {
             btn.disabled = false;
             btn.textContent = 'ส่ง Email แจ้งเตือน';
-            showToast(`ส่ง Email แจ้ง "${selectedProductName}" สำเร็จ ${uniqueEmails.size} คน ✦`, 'success');
+            if (!res || res.success !== true) throw new Error((res && res.error) || 'ส่งไม่สำเร็จ');
+
+            const sent = typeof res.count === 'number' ? res.count : uniqueEmails.size;
+            const total = typeof res.total === 'number' ? res.total : sent;
+            const failed = Array.isArray(res.failed) ? res.failed : [];
+
+            if (failed.length) {
+                console.warn('ส่งไม่ผ่าน:', failed);
+                showToast(`ส่งได้ ${sent} จาก ${total} คน · ไม่ผ่าน ${failed.length} คน (ดูรายชื่อใน console)`, 'error');
+            } else {
+                showToast(`ส่ง Email แจ้ง "${selectedProductName}" สำเร็จ ${sent} คน ✦`, 'success');
+            }
+            if (typeof res.quotaLeft === 'number' && res.quotaLeft < 20) {
+                showToast(`เหลือโควตาส่งอีเมลวันนี้อีก ${res.quotaLeft} ฉบับ`, 'info');
+            }
         })
         .catch(error => {
             console.error('Error:', error);

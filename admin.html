@@ -26,8 +26,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Poppins:wght@400;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="style.css?v=23">
+    <link rel="stylesheet" href="admin-style.css?v=2">
+    <link rel="stylesheet" href="admin-pricing.css?v=2">
 </head>
 
 <body class="admin-body">
@@ -61,6 +62,13 @@
                             <path d="M16 7V5a4 4 0 0 0-8 0v2" />
                         </svg></span>
                     <span class="sidebar-label">สินค้า</span>
+                </button>
+                <button class="sidebar-link" data-tab="pricing" onclick="switchTab('pricing')">
+                    <span class="sidebar-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" />
+                        </svg></span>
+                    <span class="sidebar-label">ประเมินต้นทุน</span>
                 </button>
                 <button class="sidebar-link" data-tab="registrations" onclick="switchTab('registrations')">
                     <span class="sidebar-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"
@@ -163,6 +171,89 @@
                     </div>
                 </div>
                 <div class="admin-list" id="adminProductsList"></div>
+            </div>
+
+            <!-- Tab: Pricing Studio -->
+            <div class="admin-tab" id="tab-pricing" style="display:none;">
+                <div class="pricing-admin-shell">
+                    <header class="pricing-admin-hero">
+                        <div>
+                            <p class="pricing-admin-kicker">MOFYCH · ARTIST LEDGER</p>
+                            <h2>ประเมินต้นทุนของศิลปิน</h2>
+                            <p>ดูราคาต้นทุนเต็ม ค่าแรงจริง และราคาที่เลือกขายในตลาดแยกจากกัน</p>
+                        </div>
+                        <a class="pricing-public-link" href="estimate.html" target="_blank" rel="noopener">เปิดหน้าประเมินสำหรับลูกค้า ↗</a>
+                    </header>
+
+                    <div class="pricing-admin-grid">
+                        <div class="pricing-admin-form">
+                            <section class="pricing-panel">
+                                <div class="pricing-panel-title"><span>01</span><h3>โมเดลและนโยบายราคา</h3></div>
+                                <div class="pricing-field-grid pricing-field-grid--3">
+                                    <label class="pricing-field"><span>ชื่อเวอร์ชัน</span><input id="pricingModelName" type="text" value="Long Body 20 cm · V2.5D"></label>
+                                    <label class="pricing-field"><span>ราคาที่เลือกขาย</span><input id="pricingSalePrice" type="number" min="0" step="50" value="1800"><small>บาท</small></label>
+                                    <label class="pricing-field"><span>Margin เป้าหมาย</span><input id="pricingMargin" type="number" min="0" max="80" step="1" value="25"><small>%</small></label>
+                                </div>
+                            </section>
+
+                            <section class="pricing-panel">
+                                <div class="pricing-panel-title"><span>02</span><h3>วัสดุและค่าใช้จ่ายเงินสด</h3></div>
+                                <div class="pricing-field-grid">
+                                    <label class="pricing-field"><span>ผ้าสีผิว</span><input data-material id="materialSkin" type="number" min="0" step="0.25" value="7.5"><small>บาท</small></label>
+                                    <label class="pricing-field"><span>ผ้าผม</span><input data-material id="materialHair" type="number" min="0" step="0.25" value="18.75"><small>บาท</small></label>
+                                    <label class="pricing-field"><span>ใยยัด</span><select data-material id="materialStuffing"><option value="6.2">ใยเดิม · 6.20</option><option value="15">ใยบอลอย่างดี · 15</option><option value="24">ขนห่านเทียม · 24</option></select></label>
+                                    <label class="pricing-field"><span>เจลละลายน้ำ</span><input data-material id="materialGel" type="number" min="0" step="1" value="5"><small>บาท</small></label>
+                                    <label class="pricing-field"><span>บรรจุภัณฑ์ทั้งหมด</span><input data-material id="materialPacking" type="number" min="0" step="5" value="80"><small>บาท</small></label>
+                                    <label class="pricing-field"><span>ด้าย/ไหม/ปากกา/เบ็ดเตล็ด</span><input data-material id="materialMisc" type="number" min="0" step="1" value="0"><small>กรอกเมื่อทราบ</small></label>
+                                    <label class="pricing-field"><span>น้ำ ไฟ น้ำยาซักต่องาน</span><input data-material id="materialUtility" type="number" min="0" step="1" value="0"><small>กรอกเมื่อทราบ</small></label>
+                                    <label class="pricing-field"><span>วัสดุเพิ่มเฉพาะงาน</span><input data-material id="materialExtra" type="number" min="0" step="1" value="0"><small>บาท</small></label>
+                                </div>
+                            </section>
+
+                            <section class="pricing-panel">
+                                <div class="pricing-panel-title"><span>03</span><h3>เวลาใช้แรงของศิลปิน</h3></div>
+                                <p class="pricing-panel-note">เวลาที่ตั้งไว้เป็นค่ากลางจากขั้นตอนปัจจุบัน แก้ได้ทุกช่องก่อนบันทึก</p>
+                                <div class="pricing-task-grid" id="pricingTaskGrid"></div>
+                                <div class="pricing-total-hours">เวลารวม <strong id="pricingTotalHours">0</strong> ชั่วโมง</div>
+                            </section>
+
+                            <section class="pricing-panel">
+                                <div class="pricing-panel-title"><span>04</span><h3>จักรเย็บผ้าและเวลาเพิ่ม</h3></div>
+                                <div class="pricing-field-grid pricing-field-grid--3">
+                                    <label class="pricing-field"><span>ราคาจักร</span><input id="machinePrice" type="number" min="0" value="4500"><small>บาท</small></label>
+                                    <label class="pricing-field"><span>อายุใช้งานโดยประมาณ</span><input id="machineLife" type="number" min="1" value="1000"><small>ชั่วโมง · แก้ได้</small></label>
+                                    <label class="pricing-field"><span>ใช้จักรกับงานนี้</span><input id="machineJobHours" type="number" min="0" step="0.25" value="3"><small>ชั่วโมง</small></label>
+                                    <label class="pricing-field"><span>เวลาเพิ่มเฉพาะงาน</span><input id="pricingExtraHours" type="number" min="0" step="0.25" value="0"><small>เช่น ใส่กระดูก +0.3 ชม.</small></label>
+                                </div>
+                            </section>
+                        </div>
+
+                        <aside class="pricing-admin-results">
+                            <section class="pricing-ledger-card">
+                                <p class="pricing-ledger-label">ราคาที่เลือกขาย</p>
+                                <div class="pricing-ledger-price" id="pricingMarketPrice">฿1,800</div>
+                                <div class="pricing-ledger-facts">
+                                    <div><span>เงินสดที่จ่าย</span><strong id="pricingCashCost">฿0</strong></div>
+                                    <div><span>ค่าแรงจริงที่ราคานี้รองรับ</span><strong id="pricingEffectiveWage">฿0/ชม.</strong></div>
+                                    <div><span>เวลารวม</span><strong id="pricingHoursSummary">0 ชม.</strong></div>
+                                </div>
+                                <p class="pricing-ledger-note">ค่าแรงจริงคำนวณจากเงินที่เหลือหลังหักวัสดุและค่าเครื่อง โดยยังไม่กันกำไรของร้าน</p>
+                            </section>
+
+                            <section class="pricing-panel pricing-comparison-panel">
+                                <div class="pricing-panel-title"><span>05</span><h3>เปรียบเทียบค่าแรง</h3></div>
+                                <div id="pricingWageComparisons"></div>
+                            </section>
+
+                            <section class="pricing-panel">
+                                <div class="pricing-panel-title"><span>06</span><h3>บันทึกส่วนตัว</h3></div>
+                                <label class="pricing-field"><span>ชื่อบันทึก</span><input id="pricingSaveName" type="text" placeholder="เช่น เบส Long Body 20 cm"></label>
+                                <button class="btn btn-primary" type="button" id="savePricingEstimate">บันทึกการประเมินนี้</button>
+                                <div class="pricing-history" id="pricingHistory"></div>
+                            </section>
+                        </aside>
+                    </div>
+                </div>
             </div>
 
             <!-- Tab: Registrations -->
@@ -347,9 +438,11 @@
     </div>
 
     <div class="toast-container" id="toastContainer"></div>
-    <script src="script.js"></script>
+    <script src="script.js?v=35"></script>
     <script src="queue-script.js"></script>
-    <script src="admin-script.js"></script>
+    <script src="pricing-data.js?v=7"></script>
+    <script src="admin-script.js?v=2"></script>
+    <script src="admin-pricing.js?v=2"></script>
 </body>
 
 </html>

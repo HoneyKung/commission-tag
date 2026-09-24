@@ -253,22 +253,17 @@
         if (typeof getProducts !== 'function') return;
         var products = getProducts();
         var regs = (typeof getRegistrations === 'function') ? getRegistrations() : [];
-        [['pcCount1', 0, true], ['pcCount2', 1, false]].forEach(function (row) {
-            var host = document.getElementById(row[0]);
+        [['countLeft', 0, true], ['countRight', 1, false]].forEach(function (row) {
+            var span = document.getElementById(row[0]);
             var p = products[row[1]];
-            if (!host || !p) return;
+            if (!span || !p) return;
             var n = regs.filter(function (r) { return r.productId === p.id; }).length;
-            var node = host.querySelector('text');
-            if (!node) return;
-            var span = node.querySelector('tspan') || node;
+
             span.textContent = 'ฝากแทคแล้ว ' + n + ' คน';
-            /* ตัวซ้ายชิดขวา — ตรึงขอบขวาไว้ที่เดิม ตัวเลขยาวขึ้นแล้วไม่ล้นไปทับไอคอน */
-            if (row[2]) {
-                node.setAttribute('text-anchor', 'end');
-                span.setAttribute('x', '250.8');
-            }
         });
     }
+
+    window.paintCounters = paintCounters;
 
     /* ---------- เริ่มทำงาน ----------
        script.js ผูก DOMContentLoaded ไว้ก่อนไฟล์นี้ → renderProductSelect() เสร็จแล้ว */
@@ -300,8 +295,7 @@
         };
     }
 
-    /* ข้อมูลจาก Google Sheets มาถึงทีหลัง (fetchRegistrations) → เขียนตัวนับใหม่
-       ดักที่ตัว render ของโค้ดเดิม แทนที่จะตั้ง timer มาคอยเช็ค */
+    /* ข้อมูลจาก Google Sheets มาถึงทีหลัง (fetchRegistrations) → เขียนตัวนับใหม่ */
     wrap('renderProducts', paintCounters);
     wrap('displayResults', paintRows);
     /* showAddMore ของเดิมใช้ scrollIntoView ซึ่งไม่รู้จัก transform เหมือนกัน

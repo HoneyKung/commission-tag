@@ -142,6 +142,7 @@ function applyRegistrationRows(rows) {
     if (typeof renderRegistrations === 'function') renderRegistrations();
     if (typeof updateStats === 'function') updateStats();
     if (typeof updateNotifyCount === 'function') updateNotifyCount();
+    if (typeof window.paintCounters === 'function') window.paintCounters();
 }
 
 function fetchRegistrations() {

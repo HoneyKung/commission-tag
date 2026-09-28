@@ -4,6 +4,11 @@
    แยกหมวด: สีผิว (skin) / สีผม (hair)
    ======================================== */
 
+// ข้อมูลชุดนี้ยังไม่ใช่สีผ้าจริงของร้าน  รหัส ชื่อ และ hex ใส่ไว้ชั่วคราว  28 ก.ย. 2569
+// หน้า fabrics.html ขึ้นป้ายข้อมูลตัวอย่างเมื่อค่านี้เป็น true  ใส่สีจริงแล้วเปลี่ยนเป็น false
+// แต่ละสีใส่ photo เป็นพาธรูปผ้าจริงได้  หน้า fabrics.html ใช้รูปก่อน hex
+const FABRIC_DATA_IS_SAMPLE = true;
+
 const FABRIC_SKIN = [
     { code: "SK-01", name: "สีขาว", hex: "#FFFFFF", available: true },
     { code: "SK-02", name: "สีขาวนวล", hex: "#FFF8F0", available: true },

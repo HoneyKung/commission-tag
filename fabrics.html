@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MOFYCH — สีผ้าสำหรับตุ๊กตา</title>
+    <meta name="description" content="ดูสีผ้าสีผิวและสีผมที่ร้านมี เลือกแล้วคัดลอกไปวางในบรีฟได้เลย">
+    <link rel="icon" href="logo/Logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- ฟอนต์ชุดเดียวกับหน้าประเมินราคา  หน้านี้ใช้แค่ Kanit กับ IBM Plex Serif ของคำว่า MOFYCH ท้ายหน้า -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@700&family=Kanit:wght@200;300;400;500;600;700&display=swap">
+    <!-- แถบหัว ท้องฟ้า และท้ายหน้า ใช้ชุดเดียวกับหน้าประเมินราคา  ส่วนของหน้านี้อยู่ใน fabrics-style.css -->
+    <link rel="stylesheet" href="estimate-style.css?v=10">
+    <link rel="stylesheet" href="fabrics-style.css?v=1">
+</head>
+
+<body class="est fab">
+    <div class="est-sky" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+
+    <header class="est-band">
+        <div class="est-band__art" aria-hidden="true">
+            <img src="images/figma/main-web/layers/04_Rectangle-12.svg" alt="">
+            <img src="images/figma/main-web/layers/05_Rectangle-34.svg" alt="">
+            <img src="images/figma/main-web/layers/06_bg-star-line.svg" alt="">
+            <img src="images/figma/main-web/layers/07_bg2.svg" alt="">
+            <img src="images/figma/main-web/layers/08_bg1.svg" alt="">
+            <img src="images/figma/main-web/layers/09_bg-spin.svg" alt="">
+            <img src="images/figma/main-web/layers/10_clound2_2.svg" alt="">
+            <img src="images/figma/main-web/layers/11_background-Star_3.svg" alt="">
+        </div>
+
+        <div class="est-band__inner">
+            <nav class="est-nav">
+                <a class="est-brand" href="index.html" aria-label="กลับหน้า MOFYCH">
+                    <img src="logo/Logo.png" alt="">
+                    <span>MOFYCH</span>
+                </a>
+                <a class="est-back" href="index.html">
+                    <span class="est-back__art" aria-hidden="true"></span>
+                    <span class="est-back__art est-back__art--on" aria-hidden="true"></span>
+                    <span class="est-back__tx">กลับหน้าฝากแทค</span>
+                </a>
+            </nav>
+
+            <div class="est-head">
+                <p class="est-eyebrow">Cotton Doll · Fabric Colors</p>
+                <h1>เลือก<em>สีผ้า</em></h1>
+                <p>แตะสีผิวกับสีผมที่ต้องการ แล้วกดคัดลอกไปวางในบรีฟทางแชตได้เลย
+                    จะแคปหน้าจอส่งมาก็ได้เหมือนกัน</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="est-main fab-main">
+        <p class="fab-sample" id="fabSample" hidden>
+            สีในหน้านี้ยังเป็นข้อมูลตัวอย่าง ยังไม่ใช่สีผ้าจริงของร้าน
+        </p>
+
+        <div class="fab-tabs" role="tablist" aria-label="หมวดสีผ้า">
+            <button type="button" class="fab-tab" role="tab" id="tabSkin" data-group="skin"
+                aria-selected="true" aria-controls="panelSkin">สีผิว</button>
+            <button type="button" class="fab-tab" role="tab" id="tabHair" data-group="hair"
+                aria-selected="false" aria-controls="panelHair">สีผม</button>
+        </div>
+
+        <p class="est-help fab-note">สีบนจออาจต่างจากผ้าจริงเล็กน้อย ถ้าไม่แน่ใจ ส่งรูปตัวละครมาให้ช่วยเลือกได้</p>
+
+        <section class="fab-panel" id="panelSkin" role="tabpanel" aria-labelledby="tabSkin">
+            <div class="fab-grid" id="gridSkin"></div>
+        </section>
+        <section class="fab-panel" id="panelHair" role="tabpanel" aria-labelledby="tabHair" hidden>
+            <div class="fab-grid" id="gridHair"></div>
+        </section>
+
+        <p class="fab-more">
+            อยากรู้ราคาคร่าว ๆ ก่อน <a href="estimate.html">ลองประกอบราคาตุ๊กตา</a>
+        </p>
+    </main>
+
+    <footer class="est-foot">
+        <div class="est-foot__art" aria-hidden="true">
+            <img src="images/figma/parts/main/Rectangle-36.svg" alt="">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 2879" fill="none">
+                <defs>
+                    <linearGradient id="fabMofych" x1="615.07" y1="2724.57" x2="1512.87" y2="3014.7"
+                        gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#0E00A8" />
+                        <stop offset="0.75" stop-color="#C8A6F7" />
+                        <stop offset="1" stop-color="#F8A9D6" />
+                    </linearGradient>
+                </defs>
+                <text opacity="0.42" fill="url(#fabMofych)" style="white-space: pre" xml:space="preserve"
+                    font-family="IBM Plex Serif" font-size="255.403" font-weight="bold" letter-spacing="0em">
+                    <tspan x="382" y="2933.78">MOFYCH</tspan>
+                </text>
+            </svg>
+        </div>
+        <div class="est-foot__inner">
+            <span>MOFYCH · HANDMADE COMMISSION</span>
+            <p>ทุกชิ้นวาดแพตเทิร์น ปัก และประกอบด้วยมือให้เหมาะกับดีไซน์ของตัวละคร</p>
+        </div>
+    </footer>
+
+    <!-- แถบสรุปติดล่างจอ  อยู่ในภาพแคปหน้าจอเสมอ -->
+    <aside class="fab-tray" id="fabTray" aria-live="polite">
+        <div class="fab-tray__rows">
+            <p class="fab-tray__row"><b>สีผิว</b><span id="traySkin">ยังไม่ได้เลือก</span></p>
+            <p class="fab-tray__row"><b>สีผม</b><span id="trayHair">ยังไม่ได้เลือก</span></p>
+            <p class="fab-tray__hint" id="trayHint" hidden></p>
+        </div>
+        <div class="fab-tray__actions">
+            <button type="button" class="fab-btn fab-btn--ghost" id="trayClear">ล้าง</button>
+            <button type="button" class="fab-btn" id="trayCopy">คัดลอกไปวางในแชต</button>
+        </div>
+        <p class="fab-tray__toast" id="trayToast" role="status" hidden></p>
+        <!-- คัดลอกไม่ได้ ให้ข้อความขึ้นตรงนี้ กดค้างเพื่อคัดลอกเองได้ -->
+        <textarea class="fab-tray__manual" id="trayManual" rows="2" readonly hidden
+            aria-label="ข้อความบรีฟสีผ้า กดค้างเพื่อคัดลอก"></textarea>
+    </aside>
+
+    <script src="fabric-data.js"></script>
+    <script src="fabrics-script.js?v=1"></script>
+</body>
+
+</html>

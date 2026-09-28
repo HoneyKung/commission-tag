@@ -1,0 +1,260 @@
+/* ========================================
+   MOFYCH  หน้าเลือกสีผ้า fabrics.html
+   โหลดต่อจาก estimate-style.css  ใช้ตัวแปรสีชุดเดียวกัน (--brand --paper --rule --gray --holo)
+   ธีมฝั่งลูกค้า  พื้นขาว  ไม่มีพื้นเข้ม  ทองเป็นเส้นบางเท่านั้น
+   ======================================== */
+
+.fab-main {
+    padding: 28px 0 200px;          /* เว้นท้ายให้แถบสรุปที่ติดล่างจอ */
+}
+
+.fab-sample {
+    margin: 0 0 18px;
+    padding: 12px 16px;
+    background: var(--paper);
+    border: 1px dashed var(--rule);
+    color: var(--brand);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.fab-tabs {
+    display: flex;
+    gap: 10px;
+}
+
+.fab-tab {
+    flex: 1 1 0;
+    min-height: 52px;
+    padding: 10px 16px;
+    background: #ffffff;
+    border: 1px solid var(--rule);
+    color: var(--ink);
+    font: 500 19px 'Kanit', sans-serif;
+    cursor: pointer;
+}
+
+.fab-tab.is-on {
+    background: var(--paper);
+    border-color: var(--brand);
+    color: var(--brand);
+    box-shadow: inset 0 -3px 0 var(--brand);
+}
+
+.fab-note {
+    margin: 12px 0 16px;
+}
+
+/* สามช่องต่อแถวบนมือถือ  เพิ่มตามความกว้างจอ */
+.fab-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+@media (min-width: 560px) {
+    .fab-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (min-width: 820px) {
+    .fab-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1100px) {
+    .fab-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+}
+
+.fab-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    min-width: 0;
+    padding: 6px 6px 10px;
+    background: #ffffff;
+    border: 1px solid var(--rule-soft);
+    color: var(--ink);
+    font-family: 'Kanit', sans-serif;
+    text-align: center;
+    cursor: pointer;
+}
+
+.fab-chip:hover:not(:disabled) {
+    border-color: var(--rule);
+}
+
+.fab-chip:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+}
+
+.fab-chip__swatch {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border: 1px solid rgba(0, 0, 0, .12);
+    background-position: center;
+    background-size: cover;
+}
+
+.fab-chip__code {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.fab-chip__name {
+    color: var(--gray);
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+/* เลือกแล้ว  กรอบน้ำเงินเข้มหนาพร้อมแถบโฮโลเส้นบางด้านบน */
+.fab-chip.is-picked {
+    border: 2px solid var(--brand);
+    padding: 5px 5px 9px;
+    background: var(--paper);
+}
+
+.fab-chip.is-picked .fab-chip__swatch::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 4px;
+    background: var(--holo);
+}
+
+.fab-chip.is-out {
+    cursor: not-allowed;
+    opacity: .45;
+}
+
+.fab-chip__out {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2px 8px;
+    background: #ffffff;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.fab-more {
+    margin: 28px 0 0;
+    color: var(--gray);
+    font-size: 15px;
+}
+
+.fab-more a {
+    color: var(--brand);
+}
+
+/* ---------- แถบสรุปติดล่างจอ ---------- */
+.fab-tray {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 16px;
+    padding: 12px max(16px, calc((100% - 1180px) / 2)) calc(12px + env(safe-area-inset-bottom));
+    background: #ffffff;
+    border-top: 1px solid var(--rule);
+    box-shadow: 0 -8px 24px rgba(14, 0, 168, .08);
+    font-family: 'Kanit', sans-serif;
+}
+
+.fab-tray::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: var(--holo);
+}
+
+.fab-tray__rows {
+    flex: 1 1 280px;
+    min-width: 0;
+}
+
+.fab-tray__row {
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.fab-tray__row b {
+    flex: 0 0 auto;
+    min-width: 44px;
+    color: var(--brand);
+    font-weight: 500;
+}
+
+.fab-tray__row span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.fab-tray__hint {
+    margin: 2px 0 0;
+    color: var(--gray);
+    font-size: 13px;
+}
+
+.fab-tray__actions {
+    display: flex;
+    gap: 8px;
+}
+
+.fab-btn {
+    min-height: 44px;
+    padding: 8px 18px;
+    background: var(--brand);
+    border: 1px solid var(--brand);
+    color: #ffffff;
+    font: 500 16px 'Kanit', sans-serif;
+    cursor: pointer;
+}
+
+.fab-btn--ghost {
+    background: #ffffff;
+    color: var(--brand);
+}
+
+.fab-btn:disabled {
+    cursor: not-allowed;
+    opacity: .4;
+}
+
+.fab-tray__toast {
+    flex-basis: 100%;
+    margin: 0;
+    color: var(--brand);
+    font-size: 14px;
+}
+
+.fab-tray__manual {
+    flex-basis: 100%;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 15px 'Kanit', sans-serif;
+    resize: none;
+}

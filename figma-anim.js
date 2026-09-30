@@ -20,49 +20,6 @@
 
     var DEG = 180 / Math.PI;
 
-    /* ---------- คำใบ้เชือก: ปรับเวลา/จำนวนครั้งได้จากบล็อกนี้ ---------- */
-    var ROPE_HINT_INITIAL_MS = 1500;
-    var ROPE_HINT_IDLE_REPEAT_MS = 8000;
-    var ROPE_HINT_PRESS_MS = 110;
-    var ROPE_HINT_REPEAT_DELAY_MS = 360;
-    var ROPE_HINT_GLOW_DURATION_MS = 2600;
-
-    (function ropeHint() {
-        if (REDUCE) return;
-        var hit = document.getElementById('ropeHit');
-        var pc = document.getElementById('pcRope');
-        if (!hit || !pc) return;
-        var touched = false, timers = [];
-        function later(fn, delay) { timers.push(setTimeout(fn, delay)); }
-        function cancel() {
-            if (touched) return;
-            touched = true;
-            timers.forEach(clearTimeout);
-            pc.classList.remove('rope-hint-glow');
-        }
-        function nudge() {
-            if (touched) return;
-            hit.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 175, pointerId: 1 }));
-            later(function () {
-                window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 175, pointerId: 1 }));
-            }, ROPE_HINT_PRESS_MS);
-        }
-        hit.addEventListener('pointerdown', function (ev) { if (ev.isTrusted) cancel(); }, { capture: true });
-        hit.addEventListener('keydown', function (ev) { if (ev.isTrusted) cancel(); }, { capture: true });
-        pc.style.setProperty('--rope-hint-glow-duration', ROPE_HINT_GLOW_DURATION_MS + 'ms');
-        pc.classList.add('rope-hint-glow');
-        later(function () {
-            if (touched) return;
-            nudge();
-            later(function () { nudge(); }, ROPE_HINT_REPEAT_DELAY_MS);
-        }, ROPE_HINT_INITIAL_MS);
-        later(function () {
-            if (touched) return;
-            nudge();
-            later(function () { nudge(); }, ROPE_HINT_REPEAT_DELAY_MS);
-        }, ROPE_HINT_INITIAL_MS + ROPE_HINT_IDLE_REPEAT_MS);
-    }());
-
     /* ============================================================
        ส่วนที่ 1 — เชือก
 

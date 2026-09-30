@@ -3447,3 +3447,20 @@
         transition: none;
     }
 }
+
+/* เชือกส่งสัญญาณเบาๆ โดยใช้แสงเดิมจากงาน Figma */
+#pcRope.rope-hint-glow [id="Ellipse 31_2"] {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation-name: ropeHintGlow;
+    animation-duration: var(--rope-hint-glow-duration);
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+@keyframes ropeHintGlow {
+    0%, 100% { opacity: .7; }
+    50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    #pcRope.rope-hint-glow [id="Ellipse 31_2"] { animation: none; }
+}

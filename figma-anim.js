@@ -119,6 +119,16 @@
         var KICK_GAIN = 0.005, KICK_MAX = 0.26;
         var KICK_KEY = 0.18;   /* เปิดด้วยคีย์บอร์ด ไม่มีตำแหน่งเมาส์ให้อ้าง */
 
+        /* ---------- คำใบ้เชือก: เด้งลงเบาๆ สองครั้ง แล้วพักก่อนบอกซ้ำ ----------
+           ใช้ระยะยืดของตัวเอง HINT_DEPTH ไม่ใช้ held  เพราะ held คือการกดจริงที่ยืดเต็ม PULL_DEPTH
+           แสงหลังดาวโตขึ้นเล็กลงด้วยคลาส rope-hint-glow ใน figma-anim.css ส่วน 1.5
+           คนแตะเชือกเมื่อไร หยุดทั้งเด้งและแสง */
+        var HINT_DEPTH = 9;           /* ราวหนึ่งในสามของ PULL_DEPTH */
+        var HINT_FIRST_MS = 1500;
+        var HINT_PRESS_MS = 220;
+        var HINT_BOUNCE_GAP_MS = 750;
+        var HINT_IDLE_MS = 8000;
+
         /* ============================================================ */
 
         /* ---------- สถานะ ----------
@@ -129,6 +139,7 @@
         var w1 = 0, w2 = 0, w3 = 0;
         var pull = 0, pullV = 0;           /* ระยะยืด ใช้ร่วมกันทั้ง 3 พาร์ท */
         var held = false, holdTimer = 0;
+        var hintPull = 0;                  /* ระยะยืดเป้าหมายตอนคำใบ้ ไม่ได้กด */
 
         function sway(time) {
             return SWAY_A1 * Math.sin(time * SWAY_W1) +
@@ -146,7 +157,7 @@
             /* ---- แกนดึง: สปริงตัวเดียว ทั้ง 3 พาร์ทยืดเท่ากัน ----
                กดค้าง = ลงไป PULL_DEPTH · ปล่อย = กลับ 0
                ที่เด้งเลยขึ้นไปตอนปล่อยเป็นเพราะโมเมนตัมล้วน ไม่ได้สั่งให้เด้ง */
-            var pa = PULL_K * ((held ? PULL_DEPTH : 0) - pull) - PULL_D * pullV;
+            var pa = PULL_K * ((held ? PULL_DEPTH : hintPull) - pull) - PULL_D * pullV;
             pullV += pa * STEP; pull += pullV * STEP;
 
             /* ---- แกนแกว่ง: ตรงนี้คือที่เดียวที่ทำให้เห็นเป็น 3 ชิ้นแยกกัน ---- */
@@ -259,8 +270,31 @@
             holdTimer = setTimeout(function () { held = false; }, PULL_HOLD);
         }
 
+        var hintStopped = false;
+        var hintTimers = [];
+
+        function stopHint() {
+            hintStopped = true;
+            hintTimers.forEach(function (timer) { clearTimeout(timer); });
+            hintTimers = [];
+            hintPull = 0;
+            pc.classList.remove('rope-hint-glow');
+        }
+
+        function hintBounce(delay) {
+            hintTimers.push(setTimeout(function () {
+                if (hintStopped) return;
+                hintPull = HINT_DEPTH;
+                start();
+                hintTimers.push(setTimeout(function () { hintPull = 0; }, HINT_PRESS_MS));
+            }, delay));
+        }
+
         if (hit) {
-            hit.addEventListener('pointerdown', function (ev) { press(ev.clientX); });
+            hit.addEventListener('pointerdown', function (ev) {
+                stopHint();
+                press(ev.clientX);
+            });
 
             /* ปล่อยนอกกล่องกดก็ต้องเด้งกลับ → ดักที่ window ไม่ใช่ที่ปุ่ม */
             window.addEventListener('pointerup', release);
@@ -268,8 +302,15 @@
 
             /* เปิดด้วยคีย์บอร์ด (Enter/Space) ไม่มี pointerdown/pointerup ให้จับ */
             hit.addEventListener('click', function (ev) {
+                stopHint();
                 if (ev.detail === 0) { press(null); release(); }
             });
+
+            pc.classList.add('rope-hint-glow');
+            hintBounce(HINT_FIRST_MS);
+            hintBounce(HINT_FIRST_MS + HINT_BOUNCE_GAP_MS);
+            hintBounce(HINT_FIRST_MS + HINT_BOUNCE_GAP_MS + HINT_IDLE_MS);
+            hintBounce(HINT_FIRST_MS + 2 * HINT_BOUNCE_GAP_MS + HINT_IDLE_MS);
         }
 
         document.addEventListener('visibilitychange', function () {

@@ -21,10 +21,11 @@
          ส่วน Figma บอก 77.54 → opsz 30 คือตัวที่ถูก และ canvas ตั้ง optical size เองไม่ได้ ต้องปักมาจาก URL -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@700&family=Kanit:wght@200;300;400;500;600;700;800;900&family=Montserrat:wght@400;500;600;800;900&family=Piazzolla:opsz,wght@30,800&display=swap">
-    <link rel="stylesheet" href="estimate-style.css?v=10">
+    <link rel="stylesheet" href="estimate-style.css?v=11">
+    <link rel="stylesheet" href="mf-dock.css?v=2">
 </head>
 
-<body class="est">
+<body class="est" data-mf-dock-page="estimate">
     <!-- ท้องฟ้าของทั้งหน้า: แสงม่วงจางบนพื้นขาว + ดาวจริงจากคลัง hero -->
     <div class="est-sky" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 
@@ -46,19 +47,6 @@
         </div>
 
         <div class="est-band__inner">
-            <nav class="est-nav">
-                <a class="est-brand" href="index.html" aria-label="กลับหน้า MOFYCH">
-                    <img src="logo/Logo.png" alt="">
-                    <span>MOFYCH</span>
-                </a>
-                <!-- ป้ายสองใบซ้อนกันแบบเดียวกับปุ่มเมนูใน hero: น้ำเงิน = ปกติ · ม่วง = เมาส์วาง
-                     ทั้งคู่เป็นไฟล์ export จาก Figma ไม่ได้เขียนค่าสีเอง -->
-                <a class="est-back" href="index.html">
-                    <span class="est-back__art" aria-hidden="true"></span>
-                    <span class="est-back__art est-back__art--on" aria-hidden="true"></span>
-                    <span class="est-back__tx">กลับหน้าฝากแทค</span>
-                </a>
-            </nav>
 
             <div class="est-head">
                 <p class="est-eyebrow">Cotton Doll · Long Body 20 cm</p>
@@ -217,6 +205,7 @@
 
     <script src="pricing-data.js?v=9"></script>
     <script src="estimate-script.js?v=21"></script>
+    <script src="mf-dock.js?v=3"></script>
 </body>
 
 </html>

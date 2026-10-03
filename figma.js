@@ -66,12 +66,30 @@
         });
     }
 
-    /* ---------- ปุ่มดาว: เมนูลอยติดจอ ---------- */
+    /* ---------- ปุ่มดาว: เมนูลอยติดจอ ----------
+       ผู้เขียนสั่ง 3 ต.ค.  เลื่อนลงแล้วหยุด เมนูกางเองให้เห็นว่าเป็นปุ่ม  เลื่อนอีกก็เก็บ หรือคนกดเก็บเอง
+       กางเองได้ทุกครั้งที่เลื่อนแล้วหยุด ไม่จำกัดครั้งเดียว
+       นับเฉพาะการเลื่อนที่คนทำเอง ล้อเมาส์ นิ้ว คีย์ แถบเลื่อน
+       ไม่นับตอนกดลิงก์ในเมนูแล้วหน้าเลื่อนไปเอง  ระหว่างนิ้วปล่อยแล้วหน้ายังไหลต่อ ยังนับเป็นการเลื่อนรอบเดียวกัน */
     var star = document.getElementById('menuStar');
+    var AUTO_DELAY_MS = 800;      /* หยุดเลื่อนนานเท่านี้แล้วกาง */
+    var INPUT_WINDOW_MS = 1000;   /* เลื่อนห่างจากอินพุตของคนเกินนี้ ไม่นับว่าคนเลื่อนเอง */
+    var autoTimer = 0;
+    var autoOpen = false;         /* true เมื่อเมนูที่เปิดอยู่เกิดจากการกางเอง  เลื่อนต่อจึงเก็บ */
+    var userScrolling = false;
+    var lastInput = 0;
+
+    function setOpen(open) {
+        if (!dock) return;
+        dock.classList.toggle('is-open', open);
+        if (star) star.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
     if (star && dock) {
         star.addEventListener('click', function () {
-            var open = dock.classList.toggle('is-open');
-            star.setAttribute('aria-expanded', open ? 'true' : 'false');
+            clearTimeout(autoTimer);
+            autoOpen = false;
+            setOpen(!dock.classList.contains('is-open'));
         });
     }
 
@@ -100,6 +118,37 @@
         markHere();
     }
     window.addEventListener('scroll', onScroll, { passive: true });
+
+    function noteInput() { lastInput = Date.now(); }
+    window.addEventListener('wheel', noteInput, { passive: true });
+    window.addEventListener('touchmove', noteInput, { passive: true });
+    window.addEventListener('keydown', function (event) {
+        if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].indexOf(event.key) !== -1) noteInput();
+    });
+
+    /* ลงทะเบียนหลัง onScroll เพื่อให้ dock.hidden เป็นค่าล่าสุดแล้ว */
+    window.addEventListener('scroll', function () {
+        if (Date.now() - lastInput < INPUT_WINDOW_MS) userScrolling = true;
+        if (autoOpen) { autoOpen = false; setOpen(false); }
+        clearTimeout(autoTimer);
+        if (!userScrolling) return;
+        autoTimer = setTimeout(function () {
+            userScrolling = false;
+            if (!dock || dock.hidden || dock.classList.contains('is-open')) return;
+            autoOpen = true;
+            setOpen(true);
+        }, AUTO_DELAY_MS);
+    }, { passive: true });
+
+    document.addEventListener('pointerdown', function (event) {
+        /* กดที่แถบเลื่อน เป้าหมายคือ html  นับเป็นการเลื่อนของคน */
+        if (event.target === document.documentElement) noteInput();
+        if (dock && !dock.contains(event.target) && dock.classList.contains('is-open')) {
+            clearTimeout(autoTimer);
+            autoOpen = false;
+            setOpen(false);
+        }
+    });
 
     /* ---------- ปุ่มเมนูของหน้าที่กำลังอยู่ ----------
        เมนูลอย: ป้ายของหน้าปัจจุบันยื่นออกมาขวา + เปลี่ยนเป็นสีสว่าง

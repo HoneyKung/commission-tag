@@ -132,6 +132,20 @@
     transition: stop-color 1.2s cubic-bezier(.4, 0, .2, 1);
 }
 
+/* ---------- 1.5 คำใบ้เชือก: แสงหลังดาวโตขึ้นเล็กลง ----------
+   figma-anim.js ส่วนที่ 1 ใส่คลาสตอนโหลด และถอดเมื่อคนแตะเชือก
+   ขยายที่วงกลมข้างใน ไม่แตะ Group 19 ซึ่ง JS เขียน transform ทุกเฟรม */
+#pcRope.rope-hint-glow [id="Ellipse 31_2"] circle {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ropeHintGlow 1.6s ease-in-out infinite;
+}
+
+@keyframes ropeHintGlow {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.45); }
+}
+
 /* ============================================================
    ส่วนที่ 2 — ปุ่ม สำรวจชิ้นงาน
 
@@ -3357,6 +3371,10 @@
     #pcRope radialGradient stop:first-child,
     #pcBtnExplore .pc {
         transition: none;
+    }
+
+    #pcRope.rope-hint-glow [id="Ellipse 31_2"] circle {
+        animation: none;
     }
 
     .b-drift,

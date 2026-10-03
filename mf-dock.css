@@ -1,0 +1,163 @@
+/* Floating customer menu. Keep every selector scoped to #mfDock. */
+#mfDock {
+    --mf-dock-top: 20px;   /* ช่องบนสุดที่แถบหัวเดิมเคยอยู่  หน้าแรกใช้ 152 เพราะมีฮีโร่ */
+    --mf-fit: .6;
+    position: fixed;
+    inset: 0 auto auto 0;
+    width: 1920px;
+    height: 366px;
+    z-index: 41;
+    transform-origin: 0 0;
+    transform: scale(var(--mf-fit)) translateY(var(--mf-dock-top));
+    pointer-events: none;
+    font-family: 'Kanit', sans-serif;
+}
+
+#mfDock[hidden] { display: none; }
+
+#mfDock .mf-dock-star-art,
+#mfDock .mf-dock-menu,
+#mfDock .mf-dock-step,
+#mfDock .mf-dock-art {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 0;
+}
+
+#mfDock .ly {
+    position: absolute;
+    left: 0;
+    top: -2061px;
+    width: 1920px;
+    height: 2879px;
+    overflow: visible;
+    pointer-events: none;
+}
+
+#mfDock .mf-dock-star-art { z-index: 2; }
+
+#mfDock .mf-dock-toggle {
+    position: absolute;
+    left: 55.9px;
+    top: 0;
+    z-index: 3;
+    width: 100.2px;
+    height: 100.2px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+#mfDock .mf-dock-toggle:focus-visible {
+    outline: 3px solid #0e00a8;
+    outline-offset: 3px;
+}
+
+#mfDock .mf-dock-step {
+    --mf-rung-top: 100.2px;
+    --mf-in-wait: .1s;
+    --mf-out-wait: 0s;
+    --mf-tilt: 7deg;
+    z-index: 1;
+    transform-origin: 39.55px var(--mf-rung-top);
+    pointer-events: none;
+    transition: translate .46s cubic-bezier(.18, 1.5, .45, 1) var(--mf-in-wait),
+        rotate .46s cubic-bezier(.18, 1.5, .45, 1) var(--mf-in-wait),
+        opacity .01s linear var(--mf-in-wait), visibility 0s var(--mf-in-wait);
+}
+
+#mfDock #mfDockStep1 { --mf-rung-top: 100.2px; --mf-in-wait: .1s; --mf-out-wait: 0s; --mf-tilt: 7deg; }
+#mfDock #mfDockStep2 { --mf-rung-top: 171.2px; --mf-in-wait: .17s; --mf-out-wait: .035s; --mf-tilt: 9deg; }
+#mfDock #mfDockStep3 { --mf-rung-top: 242px; --mf-in-wait: .24s; --mf-out-wait: .07s; --mf-tilt: 6deg; }
+#mfDock #mfDockStep4 { --mf-rung-top: 313px; --mf-in-wait: .31s; --mf-out-wait: .105s; --mf-tilt: 9deg; }
+
+#mfDock .mf-dock-art { opacity: 1; transition: opacity .16s ease; }
+#mfDock .mf-dock-art--hover { opacity: 0; }
+#mfDock .mf-dock-step.is-on .mf-dock-art--normal { opacity: 0; }
+#mfDock .mf-dock-step.is-on .mf-dock-art--hover { opacity: 1; }
+
+#mfDock #mfDockNormalArt2 .ly { transform: translateY(71px); }
+#mfDock #mfDockNormalArt3 .ly { transform: translateY(141.8px); }
+#mfDock #mfDockNormalArt4 .ly { transform: translateY(212.8px); }
+#mfDock #mfDockHoverArt1 .ly { transform: translate(-29.9px, -71px); }
+#mfDock #mfDockHoverArt2 .ly { transform: translateX(-29.9px); }
+#mfDock #mfDockHoverArt3 .ly { transform: translate(-29.9px, 70.8px); }
+#mfDock #mfDockHoverArt4 .ly { transform: translate(-29.9px, 141.8px); }
+
+#mfDock .mf-dock-label {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    color: #eff6ff;
+    font-size: 20.7543px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+#mfDock #mfDockLabel1 { left: 34.7806px; top: 133.6px; }
+#mfDock #mfDockLabel2 { left: 62.7896px; top: 204.62px; }
+#mfDock #mfDockLabel3 { left: 37.5366px; top: 275.45px; }
+#mfDock #mfDockLabel4 { left: 42.6952px; top: 346.38px; }
+
+#mfDock .mf-dock-link {
+    position: absolute;
+    left: -110px;
+    top: 100.2px;
+    z-index: 3;
+    display: block;
+    width: 299.1px;
+    height: 52.6px;
+    pointer-events: auto;
+}
+
+#mfDock #mfDockLink2 { top: 171.2px; }
+#mfDock #mfDockLink3 { top: 242px; }
+#mfDock #mfDockLink4 { top: 313px; }
+#mfDock .mf-dock-step[aria-current="page"] { transform: translateX(29.9px); }
+
+#mfDock .mf-dock-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+#mfDock:not(.is-open) .mf-dock-step {
+    opacity: 0;
+    visibility: hidden;
+    translate: 0 calc(30px - var(--mf-rung-top));
+    rotate: var(--mf-tilt);
+    transition: translate .28s cubic-bezier(.5, -.45, .8, .4) var(--mf-out-wait),
+        rotate .12s cubic-bezier(.3, 0, .3, 1) var(--mf-out-wait),
+        opacity .09s linear calc(var(--mf-out-wait) + .19s),
+        visibility 0s calc(var(--mf-out-wait) + .28s);
+}
+
+#mfDock:not(.is-open) .mf-dock-link { pointer-events: none; }
+
+#mfDock.is-open .mf-dock-step {
+    opacity: 1;
+    visibility: visible;
+    translate: 0 0;
+    rotate: 0deg;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #mfDock .mf-dock-step,
+    #mfDock .mf-dock-art,
+    #mfDock .mf-dock-label { transition: none; }
+}
+

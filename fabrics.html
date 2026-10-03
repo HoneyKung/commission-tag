@@ -13,11 +13,12 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@700&family=Kanit:wght@200;300;400;500;600;700&display=swap">
     <!-- แถบหัว ท้องฟ้า และท้ายหน้า ใช้ชุดเดียวกับหน้าประเมินราคา  ส่วนของหน้านี้อยู่ใน fabrics-style.css -->
-    <link rel="stylesheet" href="estimate-style.css?v=10">
+    <link rel="stylesheet" href="estimate-style.css?v=11">
     <link rel="stylesheet" href="fabrics-style.css?v=1">
+    <link rel="stylesheet" href="mf-dock.css?v=2">
 </head>
 
-<body class="est fab">
+<body class="est fab" data-mf-dock-page="fabrics">
     <div class="est-sky" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 
     <header class="est-band">
@@ -33,17 +34,6 @@
         </div>
 
         <div class="est-band__inner">
-            <nav class="est-nav">
-                <a class="est-brand" href="index.html" aria-label="กลับหน้า MOFYCH">
-                    <img src="logo/Logo.png" alt="">
-                    <span>MOFYCH</span>
-                </a>
-                <a class="est-back" href="index.html">
-                    <span class="est-back__art" aria-hidden="true"></span>
-                    <span class="est-back__art est-back__art--on" aria-hidden="true"></span>
-                    <span class="est-back__tx">กลับหน้าฝากแทค</span>
-                </a>
-            </nav>
 
             <div class="est-head">
                 <p class="est-eyebrow">Cotton Doll · Fabric Colors</p>
@@ -123,6 +113,7 @@
 
     <script src="fabric-data.js"></script>
     <script src="fabrics-script.js?v=1"></script>
+    <script src="mf-dock.js?v=3"></script>
 </body>
 
 </html>

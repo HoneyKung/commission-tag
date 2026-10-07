@@ -1,19 +1,16 @@
 /* ========================================
    MOFYCH Color Reference — Script
-   Part 1: Swatches, tabs, search, admin lock
+   Part 1: Swatches, tabs, search
    Part 2: Color finder (Delta E)
    ======================================== */
+
+(function () {
+'use strict';
 
 let currentLine = 'all'; // 'model' | 'game' | 'fanatic' | 'all'
 let selectedColor = null;
 
-// ============ Admin Lock ============
 document.addEventListener('DOMContentLoaded', () => {
-    if (sessionStorage.getItem('mofych_admin_logged')) {
-        validateAdminSession().then(valid => { if (valid) showColors(); });
-    }
-    document.getElementById('loginForm').addEventListener('submit', handleLogin);
-
     // Color wheel sync
     document.getElementById('colorWheel').addEventListener('input', e => {
         document.getElementById('hexInput').value = e.target.value.toUpperCase();
@@ -31,27 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('hexInput').addEventListener('keydown', e => {
         if (e.key === 'Enter') { e.preventDefault(); findClosestColors(); }
     });
-});
-
-async function handleLogin(e) {
-    e.preventDefault();
-    const key = document.getElementById('loginPassword').value;
-    const results = await verifyAdminKey(key);
-    const failed = results.filter(result => !result.success).map(result => result.service);
-    if (failed.length) {
-        alert('ตรวจรหัสไม่ผ่าน: ' + failed.join(' และ ') + ' กรุณาตั้ง ADMIN_KEY ใน Apps Script');
-        return;
-    }
-    sessionStorage.setItem('mofych_admin_key', key);
-    sessionStorage.setItem('mofych_admin_logged', 'true');
-    showColors();
-}
-
-function showColors() {
-    document.getElementById('loginOverlay').style.display = 'none';
-    document.getElementById('colorsLayout').style.display = 'grid';
     renderSwatches();
-}
+    renderFabricCards();
+});
 
 // ============ Category / Line Selection ============
 function selectCategory(cat) {
@@ -59,11 +38,11 @@ function selectCategory(cat) {
 
     if (cat === 'fabric') {
         document.getElementById('catFabric').classList.add('active');
-        document.body.classList.add('fabric-mode');
+        document.getElementById('tab-colors').classList.add('fabric-mode');
         renderFabricCards();
     } else {
         document.getElementById('catPaint').classList.add('active');
-        document.body.classList.remove('fabric-mode');
+        document.getElementById('tab-colors').classList.remove('fabric-mode');
     }
 }
 
@@ -140,7 +119,7 @@ function renderSwatches() {
         const textColor = isLightColor(c.h) ? '#333' : '#fff';
         const isOwned = ownedColors.has(c.c);
         return `
-        <div class="swatch-card ${isSelected ? 'selected' : ''}" id="swatch-${c.c.replace('.', '')}" onclick="selectSwatch('${c.c}')">
+        <div class="swatch-card ${isSelected ? 'selected' : ''}" id="swatch-${c.c.replace('.', '')}" onclick="colorReportSelectSwatch('${c.c}')">
             <div class="swatch-color">
                 <div class="swatch-color-fill" style="background:${c.h};"></div>
                 ${isOwned ? '<div class="owned-dot"></div>' : ''}
@@ -239,7 +218,7 @@ function findClosestColors() {
         else if (r.deltaE < 5) { badgeClass = 'close'; }
 
         return `
-        <div class="match-card ${i === 0 ? 'best' : ''}" onclick="selectSwatch('${r.c}')">
+        <div class="match-card ${i === 0 ? 'best' : ''}" onclick="colorReportSelectSwatch('${r.c}')">
             <div class="match-swatch" style="background:${r.h};position:relative;">${ownedColors.has(r.c) ? '<div class="owned-dot" style="top:2px;right:2px;width:10px;height:10px;"></div>' : ''}</div>
             <div class="match-info">
                 <div class="match-code">${r.c} — ${r.line || ''}</div>
@@ -385,7 +364,7 @@ function showCopyToast(text) {
     const toast = document.createElement('div');
     toast.className = 'copy-toast';
     toast.textContent = `คัดลอก ${text} แล้ว`;
-    document.body.appendChild(toast);
+    document.getElementById('tab-colors').appendChild(toast);
     setTimeout(() => toast.remove(), 1500);
 }
 
@@ -700,7 +679,7 @@ function renderInventoryTable() {
         const owned = ownedColors.has(c.c);
         const line = c.line || c.set || (c.c.startsWith('72.') ? 'Game Color' : c.c.startsWith('WP') ? 'Fanatic' : 'Model Color');
         html += `
-            <tr class="${owned ? 'owned-row' : ''}" onclick="toggleOwned('${c.c}')">
+            <tr class="${owned ? 'owned-row' : ''}" onclick="colorReportToggleOwned('${c.c}')">
                 <td><div class="inv-checkbox ${owned ? 'checked' : ''}"></div></td>
                 <td><div class="inv-swatch" style="background:${c.h};"></div></td>
                 <td><span class="inv-code">${c.set || c.c}</span></td>
@@ -844,3 +823,22 @@ function renderFabricSection(title, items) {
     html += '</div>';
     return html;
 }
+
+// Keep inline controls namespaced so the report does not replace admin functions.
+Object.assign(window, {
+    colorReportSelectCategory: selectCategory,
+    colorReportSelectLine: selectLine,
+    colorReportRenderSwatches: renderSwatches,
+    colorReportSelectSwatch: selectSwatch,
+    colorReportFindClosestColors: findClosestColors,
+    colorReportToggleInventoryModal: toggleInventoryModal,
+    colorReportCloseInventoryIfOverlay: closeInventoryIfOverlay,
+    colorReportSetInvFilter: setInvFilter,
+    colorReportRenderInventoryTable: renderInventoryTable,
+    colorReportToggleOwned: toggleOwned,
+    colorReportSelectAllVisible: selectAllVisible,
+    colorReportDeselectAllVisible: deselectAllVisible,
+    colorReportSelectFabricTab: selectFabricTab,
+    colorReportRenderFabricCards: renderFabricCards
+});
+})();

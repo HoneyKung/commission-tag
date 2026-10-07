@@ -102,7 +102,7 @@
         });
     }
 
-    fetch('mf-dock.html?v=1', { cache: 'no-cache' })
+    fetch('mf-dock.html?v=2', { cache: 'no-cache' })
         .then(function (response) {
             if (!response.ok) throw new Error('mf-dock.html could not be loaded');
             return response.text();

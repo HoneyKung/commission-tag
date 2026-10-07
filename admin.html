@@ -28,6 +28,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=23">
     <link rel="stylesheet" href="admin-style.css?v=2">
+    <link rel="stylesheet" href="colors-style.css?v=4">
     <link rel="stylesheet" href="admin-pricing.css?v=2">
 </head>
 
@@ -97,6 +98,15 @@
                             <polyline points="22 4 12 13 2 4" />
                         </svg></span>
                     <span class="sidebar-label">แจ้งเตือน</span>
+                </button>
+                <button class="sidebar-link" data-tab="colors" onclick="switchTab('colors')">
+                    <span class="sidebar-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M12 3a9 9 0 0 0 0 18c1.5 0 2.2-1.2 1.5-2.5-.5-.9-.1-2 1-2H16a5 5 0 0 0 0-10h-4Z" />
+                            <circle cx="7.5" cy="10" r="1" /><circle cx="11" cy="7" r="1" /><circle cx="16" cy="9" r="1" />
+                        </svg></span>
+                    <span class="sidebar-label">รายงานสี</span>
                 </button>
             </nav>
             <div class="sidebar-footer">
@@ -434,6 +444,169 @@
                     </div>
                 </div>
             </div>
+            <div class="admin-tab colors-tool" id="tab-colors" style="display:none;">
+<div class="colors-layout">
+
+        <!-- LEFT PANEL — Color Chart (60%) -->
+        <div class="colors-left" id="colorsLeft">
+            <div class="colors-left-header">
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <a href="index.html" class="back-btn">← กลับ</a>
+                    <button class="inventory-toggle-btn" id="inventoryToggleBtn" onclick="colorReportToggleInventoryModal()">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                        <span>คลังสี</span>
+                    </button>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span class="owned-counter" id="ownedCounter"></span>
+                    <a href="index.html" class="logo-text hologram"
+                        style="font-size:1.1rem;text-decoration:none;">MOFYCH</a>
+                </div>
+            </div>
+
+            <!-- Category -->
+            <div class="category-tabs">
+                <button class="category-tab active" id="catPaint" onclick="colorReportSelectCategory('paint')">สีเพ้นท์คุกกี้</button>
+                <button class="category-tab" id="catFabric" onclick="colorReportSelectCategory('fabric')">สีผ้า</button>
+            </div>
+
+            <!-- Sub-tabs: all paint lines -->
+            <div class="line-tabs" id="lineTabs">
+                <button class="line-tab active" data-line="all" onclick="colorReportSelectLine('all')">ทั้งหมด</button>
+                <button class="line-tab" data-line="model" onclick="colorReportSelectLine('model')">Model Color</button>
+                <button class="line-tab" data-line="game" onclick="colorReportSelectLine('game')">Game Color</button>
+                <button class="line-tab" data-line="fanatic" onclick="colorReportSelectLine('fanatic')">Fanatic</button>
+                <button class="line-tab" data-line="citadel" onclick="colorReportSelectLine('citadel')">Citadel</button>
+                <button class="line-tab" data-line="ak3rdgen" onclick="colorReportSelectLine('ak3rdgen')">AK 3rd Gen</button>
+                <button class="line-tab" data-line="thaitone" onclick="colorReportSelectLine('thaitone')">ไทยโทน</button>
+                </div>
+
+            <!-- Search -->
+            <div class="colors-search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="M21 21l-4.35-4.35" />
+                </svg>
+                <input type="text" class="colors-search" id="colorSearch"
+                    placeholder="ค้นหาชื่อสี, รหัสขวด, หรือ hex..." oninput="colorReportRenderSwatches()">
+            </div>
+
+            <!-- Count -->
+            <div class="color-count" id="colorCount"></div>
+
+            <!-- Swatch Grid -->
+            <div class="swatch-grid" id="swatchGrid"></div>
+
+            <!-- Fabric Cards Section -->
+            <div class="fabric-container" id="fabricContainer">
+                <div class="fabric-tabs" id="fabricTabs">
+                    <button class="fabric-tab active" data-fabric="all" onclick="colorReportSelectFabricTab('all')">ทั้งหมด</button>
+                    <button class="fabric-tab" data-fabric="skin" onclick="colorReportSelectFabricTab('skin')">สีผิว</button>
+                    <button class="fabric-tab" data-fabric="hair" onclick="colorReportSelectFabricTab('hair')">สีผม</button>
+                </div>
+
+                <div class="fabric-search-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="M21 21l-4.35-4.35" />
+                    </svg>
+                    <input type="text" class="fabric-search" id="fabricSearch"
+                        placeholder="ค้นหารหัสผ้าหรือชื่อสี..." oninput="colorReportRenderFabricCards()">
+                </div>
+
+                <div id="fabricGridArea"></div>
+            </div>
+
+            <!-- Inventory Modal -->
+            <div class="inventory-modal-overlay" id="inventoryModalOverlay" onclick="colorReportCloseInventoryIfOverlay(event)">
+                <div class="inventory-modal">
+                    <div class="inventory-modal-header">
+                        <div class="inventory-modal-title">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                            <h3>คลังสี — สีที่มีแล้ว</h3>
+                            <span class="inventory-count" id="inventoryCount">0 / 0</span>
+                        </div>
+                        <div class="inventory-modal-actions">
+                            <button class="inv-action-btn inv-select-all" onclick="colorReportSelectAllVisible()" title="เลือกทั้งหมดที่แสดง">✓ ทั้งหมด</button>
+                            <button class="inv-action-btn inv-deselect-all" onclick="colorReportDeselectAllVisible()" title="ยกเลิกทั้งหมดที่แสดง">✕ ล้าง</button>
+                            <button class="inv-close-btn" onclick="colorReportToggleInventoryModal()">✕</button>
+                        </div>
+                    </div>
+                    <!-- Line filter in modal -->
+                    <div class="inventory-filter-row">
+                        <button class="inv-filter active" data-inv-line="all" onclick="colorReportSetInvFilter('all')">ทั้งหมด</button>
+                        <button class="inv-filter" data-inv-line="model" onclick="colorReportSetInvFilter('model')">Model Color</button>
+                        <button class="inv-filter" data-inv-line="game" onclick="colorReportSetInvFilter('game')">Game Color</button>
+                        <button class="inv-filter" data-inv-line="fanatic" onclick="colorReportSetInvFilter('fanatic')">Fanatic</button>
+                        <button class="inv-filter" data-inv-line="citadel" onclick="colorReportSetInvFilter('citadel')">Citadel</button>
+                        <button class="inv-filter" data-inv-line="ak3rdgen" onclick="colorReportSetInvFilter('ak3rdgen')">AK 3rd Gen</button>
+                        <button class="inv-filter" data-inv-line="thaitone" onclick="colorReportSetInvFilter('thaitone')">ไทยโทน</button>
+                        </div>
+                    <div class="inventory-search-row">
+                        <input type="text" class="inventory-search" id="inventorySearch" placeholder="ค้นหาสีในคลัง..." oninput="colorReportRenderInventoryTable()">
+                    </div>
+                    <div class="inventory-table-wrap" id="inventoryTableWrap">
+                        <!-- Table rendered by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL — Tools (40%) -->
+        <div class="colors-right" id="colorsRight">
+
+            <!-- Color Picker -->
+            <div class="tools-section">
+                <h3>ค้นหาสี</h3>
+                <div class="color-picker-wrap">
+                    <div class="color-input-row">
+                        <div class="color-preview-box" id="previewBox"
+                            onclick="document.getElementById('colorWheel').click()">
+                            <div class="color-preview-fill" id="previewFill" style="background:#3687F2;"></div>
+                        </div>
+                        <input type="text" class="hex-input" id="hexInput" value="#3687F2" placeholder="#RRGGBB"
+                            maxlength="7">
+                        <input type="color" class="color-wheel" id="colorWheel" value="#3687F2">
+                    </div>
+                    <button class="btn-find" id="btnFind" onclick="colorReportFindClosestColors()">ค้นหาสีใกล้เคียง</button>
+                </div>
+            </div>
+
+            <!-- Results (placeholder) -->
+            <div class="tools-section" id="resultsSection" style="display:none;">
+                <h3>สีที่ใกล้เคียง</h3>
+                <div class="match-results" id="matchResults"></div>
+            </div>
+
+            <!-- Mixing Recipes -->
+            <div class="tools-section" id="mixSection" style="display:none;">
+                <h3>แนะนำผสมสี</h3>
+                <p class="mix-note">ประมาณจากค่า Hex ด้วยแบบจำลองสีทึบ ผลจริงขึ้นกับ pigment และควรทดลองผสมทีละน้อย</p>
+                <div class="mix-label">สูตรแม่สี (ขาว ดำ แดง เหลือง น้ำเงิน)</div>
+                <div class="mix-results" id="mixPrimaryResults"></div>
+                <div class="mix-label" style="margin-top:16px;">สูตรสีอื่น</div>
+                <div class="mix-results" id="mixExtendedResults"></div>
+            </div>
+
+            <!-- Selected Color Detail -->
+            <div class="tools-section" id="detailSection" style="display:none;">
+                <h3>รายละเอียดสี</h3>
+                <div class="selected-detail" id="selectedDetail"></div>
+            </div>
+
+            <!-- Placeholder -->
+            <div class="tools-placeholder" id="toolsPlaceholder">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 8v4l3 3" />
+                </svg>
+                <p>กรอก Hex หรือเลือกสีจากวงล้อ<br>เพื่อค้นหาสีที่ใกล้เคียงจากทุกแบรนด์</p>
+                <p style="font-size:0.78rem;margin-top:8px;color:var(--gray-300);">
+                    ประเมินความใกล้ด้วย CIEDE2000 · หรือคลิกแถบสีฝั่งซ้ายเพื่อดูรายละเอียด</p>
+            </div>
+        </div>
+    </div>
+            </div>
         </main>
     </div>
 
@@ -441,7 +614,10 @@
     <script src="script.js?v=36"></script>
     <script src="queue-script.js"></script>
     <script src="pricing-data.js?v=7"></script>
-    <script src="admin-script.js?v=3"></script>
+    <script src="admin-script.js?v=4"></script>
+    <script src="colors-data.js"></script>
+    <script src="fabric-data.js"></script>
+    <script src="colors-script.js?v=5"></script>
     <script src="admin-pricing.js?v=2"></script>
 </body>
 

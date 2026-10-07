@@ -130,6 +130,10 @@ function switchTab(name) {
     if (name === 'notify') { showNotifySelector(); }
     if (name === 'queues') { showQueueSelector(); }
     if (name === 'pricing' && window.refreshAdminPricing) window.refreshAdminPricing();
+    if (name === 'colors') {
+        if (window.colorReportRenderSwatches) window.colorReportRenderSwatches();
+        if (window.colorReportRenderFabricCards) window.colorReportRenderFabricCards();
+    }
 }
 
 // ============ Admin Product Selector ============
